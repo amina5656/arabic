@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arabic Academy - Visual Edition</title>
+    <title>Arabic Academy - 100 Levels</title>
     <style>
         :root {
             --primary: #1a2a3a;
@@ -65,7 +65,7 @@
 
     <section id="welcome-screen">
         <h1>ARABIC ACADEMY</h1>
-        <p>Phonetic Reading & Visual Feedback</p>
+        <p>Phonetic Reading • Levels 1 - 10</p>
         <button class="btn-main" onclick="initApp()">START LEARNING</button>
     </section>
 
@@ -101,39 +101,127 @@
                 words: [
                     {a:"مَرْحَبًا", e:"Hello", p:"Mar-ha-ban"}, {a:"أَهْلًا", e:"Welcome", p:"Ah-lan"},
                     {a:"شُكْرًا", e:"Thank you", p:"Shuk-ran"}, {a:"عَفْوًا", e:"You're welcome", p:"Af-wan"},
-                    {a:"كَيْفَ حَالُكَ؟", e:"How are you?", p:"Kay-fa Ha-luk?"}, {a:"أَنَا بِخَيْر", e:"I am fine", p:"A-na Bi-khayr"},
-                    {a:"صَبَاحُ الْخَيْرِ", e:"Good Morning", p:"Sa-ba-hul Khayr"}, {a:"مَسَاءُ الْخَيْرِ", e:"Good Evening", p:"Ma-sa-ul Khayr"},
-                    {a:"مَعَ السَّلَامَةِ", e:"Goodbye", p:"Ma-as Sa-la-mah"}, {a:"تَصْبَحُ عَلَى خَيْر", e:"Good night", p:"Tas-bah A-la Khayr"}
+                    {a:"كَيْفَ حَالُكَ؟", e:"How are you?", p:"Kay-fa Ha-luk?"}, {a:"أَنَا بِخَيْر", e:"I am fine", p:"A-na Bi-khayr"}
                 ],
                 sentences: [
-                    {a:"مَرْحَبًا، كَيْفَ حَالُكَ؟", e:"Hello, how are you?", p:"Marhaban, kayfa haluk?"},
-                    {a:"أَنَا بِخَيْر، شُكْرًا", e:"I am fine, thank you", p:"Ana bikhayr, shukran"},
-                    {a:"صَبَاحُ الْخَيْرِ يَا أُمِّي", e:"Good morning, mother", p:"Sabahul khayri ya ummi"},
-                    {a:"عَفْوًا، مَعَ السَّلَامَةِ", e:"You are welcome, goodbye", p:"Afwan, ma'as salamah"},
-                    {a:"أَهْلًا وَسَهْلًا بِكُمْ", e:"Welcome to you all", p:"Ahlan wa sahlan bikum"}
+                    {a:"مَرْحَبًا، كَيْفَ حَالُكَ؟", e:"Hello, how are you?", p:"Mar-ha-ban, kay-fa ha-luk?"},
+                    {a:"صَبَاحُ الْخَيْرِ يَا أُمِّي", e:"Good morning, mother", p:"Sa-ba-hul khay-ri ya um-mi"}
                 ]
             },
             {
                 id: 1, title: "Level 2: Colours",
                 words: [
-                    {a:"أَبْيَض", e:"White", p:"Ab-yad"}, {a:"أَسْوَد", e:"Black", p:"As-wad"},
                     {a:"أَحْمَر", e:"Red", p:"Ah-mar"}, {a:"أَزْرَق", e:"Blue", p:"Az-raq"},
                     {a:"أَخْضَر", e:"Green", p:"Akh-dar"}, {a:"أَصْفَر", e:"Yellow", p:"As-far"},
-                    {a:"بُرْتُقَالِي", e:"Orange", p:"Bur-tu-qa-li"}, {a:"وَرْدِي", e:"Pink", p:"War-di"},
-                    {a:"بَنَفْسَجِي", e:"Purple", p:"Ba-naf-sa-ji"}, {a:"بُنِّي", e:"Brown", p:"Bun-ni"}
+                    {a:"أَبْيَض", e:"White", p:"Ab-yad"}, {a:"أَسْوَد", e:"Black", p:"As-wad"}
                 ],
                 sentences: [
-                    {a:"التُّفَّاحُ أَحْمَر", e:"The apple is red", p:"At-tuffahu ahmar"},
-                    {a:"السَّمَاءُ أَزْرَق", e:"The sky is blue", p:"As-samau azraq"},
-                    {a:"الْعُشْبُ أَخْضَر", e:"The grass is green", p:"Al-ushbu akhdar"}
+                    {a:"التُّفَّاحُ أَحْمَر", e:"The apple is red", p:"At-tuf-fa-hu ah-mar"},
+                    {a:"السَّمَاءُ أَزْرَق", e:"The sky is blue", p:"As-sa-ma-u az-raq"}
+                ]
+            },
+            {
+                id: 2, title: "Level 3: My Family",
+                words: [
+                    {a:"أَب", e:"Father", p:"Ab"}, {a:"أُم", e:"Mother", p:"Umm"},
+                    {a:"أَخ", e:"Brother", p:"Akh"}, {a:"أُخْت", e:"Sister", p:"Ukht"},
+                    {a:"جَدّ", e:"Grandfather", p:"Jadd"}, {a:"جَدَّة", e:"Grandmother", p:"Jad-dah"}
+                ],
+                sentences: [
+                    {a:"هَذَا أَبِي", e:"This is my father", p:"Ha-dha a-bi"},
+                    {a:"أَنَا أُحِبُّ عَائِلَتِي", e:"I love my family", p:"A-na u-hib-bu a-i-la-ti"}
+                ]
+            },
+            {
+                id: 3, title: "Level 4: Numbers 1-10",
+                words: [
+                    {a:"وَاحِد", e:"One", p:"Wa-hid"}, {a:"اِثْنَان", e:"Two", p:"Ith-nan"},
+                    {a:"ثَلَاثَة", e:"Three", p:"Tha-la-thah"}, {a:"أَرْبَعَة", e:"Four", p:"Ar-ba-ah"},
+                    {a:"خَمْسَة", e:"Five", p:"Kham-sah"}, {a:"عَشَرَة", e:"Ten", p:"A-sha-rah"}
+                ],
+                sentences: [
+                    {a:"عِنْدِي كِتَابٌ وَاحِد", e:"I have one book", p:"In-di ki-ta-bun wa-hid"},
+                    {a:"رَقَمِي هُوَ سَبْعَة", e:"My number is seven", p:"Ra-qa-mi hu-wa sab-ah"}
+                ]
+            },
+            {
+                id: 4, title: "Level 5: Common Objects",
+                words: [
+                    {a:"كِتَاب", e:"Book", p:"Ki-tab"}, {a:"قَلَم", e:"Pen", p:"Qa-lam"},
+                    {a:"مِفْتَاح", e:"Key", p:"Mif-tah"}, {a:"هَاتِف", e:"Phone", p:"Ha-tif"},
+                    {a:"حَقِيبَة", e:"Bag", p:"Ha-qi-bah"}, {a:"كُرْسِيّ", e:"Chair", p:"Kur-si"}
+                ],
+                sentences: [
+                    {a:"أَيْنَ مِفْتَاحِي؟", e:"Where is my key?", p:"Ay-na mif-ta-hi?"},
+                    {a:"هَذَا هَاتِفِي", e:"This is my phone", p:"Ha-dha ha-ti-fi"}
+                ]
+            },
+            {
+                id: 5, title: "Level 6: Around the House",
+                words: [
+                    {a:"بَيْت", e:"House", p:"Bayt"}, {a:"بَاب", e:"Door", p:"Bab"},
+                    {a:"نَافِذَة", e:"Window", p:"Na-fi-dhah"}, {a:"غُرْفَة", e:"Room", p:"Ghur-fah"},
+                    {a:"مَطْبَخ", e:"Kitchen", p:"Mat-bakh"}, {a:"سَرِير", e:"Bed", p:"Sa-rir"}
+                ],
+                sentences: [
+                    {a:"الْبَابُ مَفْتُوح", e:"The door is open", p:"Al-ba-bu maf-tuh"},
+                    {a:"أَنَا فِي الْغُرْفَة", e:"I am in the room", p:"A-na fil ghur-fah"}
+                ]
+            },
+            {
+                id: 6, title: "Level 7: Food & Drink",
+                words: [
+                    {a:"مَاء", e:"Water", p:"Ma'"}, {a:"خُبْز", e:"Bread", p:"Khubz"},
+                    {a:"حَلِيب", e:"Milk", p:"Ha-lib"}, {a:"تُفَّاح", e:"Apple", p:"Tuf-fah"},
+                    {a:"قَهْوَة", e:"Coffee", p:"Qah-wah"}, {a:"لَحْم", e:"Meat", p:"Lahm"}
+                ],
+                sentences: [
+                    {a:"أُرِيدُ مَاءً", e:"I want water", p:"U-ri-du ma-an"},
+                    {a:"الْخُبْزُ لَذِيذ", e:"The bread is delicious", p:"Al-khub-zu la-dhidh"}
+                ]
+            },
+            {
+                id: 7, title: "Level 8: The City",
+                words: [
+                    {a:"سُوق", e:"Market", p:"Suq"}, {a:"مَدْرَسَة", e:"School", p:"Mad-ra-sah"},
+                    {a:"مَسْجِد", e:"Mosque", p:"Mas-jid"}, {a:"مُسْتَشْفَى", e:"Hospital", p:"Mus-tash-fa"},
+                    {a:"طَرِيق", e:"Road", p:"Ta-riq"}, {a:"مَدِينَة", e:"City", p:"Ma-di-nah"}
+                ],
+                sentences: [
+                    {a:"الْمَسْجِدُ قَرِيب", e:"The mosque is near", p:"Al-mas-ji-du qa-rib"},
+                    {a:"أَذْهَبُ إِلَى السُّوق", e:"I go to the market", p:"Adh-ha-bu i-las suq"}
+                ]
+            },
+            {
+                id: 8, title: "Level 9: Pronouns",
+                words: [
+                    {a:"أَنَا", e:"I", p:"A-na"}, {a:"أَنْتَ", e:"You (Male)", p:"An-ta"},
+                    {a:"أَنْتِ", e:"You (Female)", p:"An-ti"}, {a:"هُوَ", e:"He", p:"Hu-wa"},
+                    {a:"هِيَ", e:"She", p:"Hi-ya"}, {a:"نَحْنُ", e:"We", p:"Nah-nu"}
+                ],
+                sentences: [
+                    {a:"أَنَا عَرَبِي", e:"I am Arab", p:"A-na a-ra-bi"},
+                    {a:"هُوَ مُعَلِّم", e:"He is a teacher", p:"Hu-wa mu-al-lim"}
+                ]
+            },
+            {
+                id: 9, title: "Level 10: Simple Verbs",
+                words: [
+                    {a:"يَأْكُل", e:"Eat", p:"Ya'-kul"}, {a:"يَشْرَب", e:"Drink", p:"Yash-rab"},
+                    {a:"يَذْهَب", e:"Go", p:"Yadh-hab"}, {a:"يَنَام", e:"Sleep", p:"Ya-nam"},
+                    {a:"يَقْرَأ", e:"Read", p:"Yaq-ra'"}, {a:"يَكْتُب", e:"Write", p:"Yak-tub"}
+                ],
+                sentences: [
+                    {a:"أَنَا أَكْتُبُ رِسَالَة", e:"I am writing a letter", p:"A-na ak-tu-bu ri-sa-lah"},
+                    {a:"هُوَ يَقْرَأُ الْكِتَاب", e:"He is reading the book", p:"Hu-wa yaq-ra-ul ki-tab"}
                 ]
             }
         ];
 
-        let userProgress = JSON.parse(localStorage.getItem('arabic_academy_v2')) || { unlocked: 0 };
+        let userProgress = JSON.parse(localStorage.getItem('arabic_academy_v10')) || { unlocked: 0 };
         let currentLevel = 0, quizPool = [], score = 0, qIdx = 0, isAnswering = false;
 
-        function save() { localStorage.setItem('arabic_academy_v2', JSON.stringify(userProgress)); }
+        function save() { localStorage.setItem('arabic_academy_v10', JSON.stringify(userProgress)); }
 
         function initApp() {
             document.getElementById('welcome-screen').style.display = 'none';
@@ -189,7 +277,7 @@
             if(qIdx >= quizPool.length) { finish(); return; }
             isAnswering = false;
             const item = quizPool[qIdx];
-            document.getElementById('q-text').innerText = `Question ${qIdx+1}/13:`;
+            document.getElementById('q-text').innerText = `Question ${qIdx+1}/${quizPool.length}:`;
             document.getElementById('q-display').innerText = item.a;
             
             const options = [item.e];
@@ -219,7 +307,6 @@
                 score++;
             } else {
                 btn.classList.add('wrong');
-                // Highlight the correct one too
                 Array.from(document.getElementsByClassName('option-btn')).forEach(b => {
                     if(b.innerText === correct) b.classList.add('correct');
                 });
