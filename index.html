@@ -15,7 +15,6 @@
 
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; color: var(--primary); }
 
-        /* Welcome Page */
         #welcome-screen {
             height: 100vh; display: flex; flex-direction: column; justify-content: center;
             align-items: center; background: radial-gradient(circle, #2c3e50 0%, #000000 100%);
@@ -28,7 +27,6 @@
             font-weight: bold; margin-top: 20px;
         }
 
-        /* Dashboard */
         #main-app { display: none; padding: 20px; max-width: 800px; margin: auto; }
         .progress-bar { background: #ddd; height: 12px; border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
         #progress-fill { background: var(--secondary); height: 100%; width: 0%; transition: 0.8s; }
@@ -40,14 +38,12 @@
         }
         .module-card.unlocked { border-left-color: var(--secondary); }
 
-        /* Lesson View */
         .card-box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; }
         .item-row { display: flex; flex-direction: column; padding: 15px 0; border-bottom: 1px solid #eee; }
         .arabic-text { font-size: 2.2rem; font-weight: bold; color: #000; direction: rtl; }
         .pronunciation { font-size: 1.1rem; color: var(--accent); font-style: italic; margin: 5px 0; }
         .translation { font-size: 1.2rem; color: #444; font-weight: bold; }
 
-        /* Quiz Buttons & Feedback */
         #quiz-box { display: none; background: white; padding: 30px; border-radius: 15px; text-align: center; }
         .option-btn { 
             display: block; width: 100%; padding: 15px; margin: 10px 0; 
@@ -96,132 +92,23 @@
 
     <script>
         const courseData = [
-            {
-                id: 0, title: "Level 1: Greetings",
-                words: [
-                    {a:"مَرْحَبًا", e:"Hello", p:"Mar-ha-ban"}, {a:"أَهْلًا", e:"Welcome", p:"Ah-lan"},
-                    {a:"شُكْرًا", e:"Thank you", p:"Shuk-ran"}, {a:"عَفْوًا", e:"You're welcome", p:"Af-wan"},
-                    {a:"كَيْفَ حَالُكَ؟", e:"How are you?", p:"Kay-fa Ha-luk?"}, {a:"أَنَا بِخَيْر", e:"I am fine", p:"A-na Bi-khayr"}
-                ],
-                sentences: [
-                    {a:"مَرْحَبًا، كَيْفَ حَالُكَ؟", e:"Hello, how are you?", p:"Mar-ha-ban, kay-fa ha-luk?"},
-                    {a:"صَبَاحُ الْخَيْرِ يَا أُمِّي", e:"Good morning, mother", p:"Sa-ba-hul khay-ri ya um-mi"}
-                ]
-            },
-            {
-                id: 1, title: "Level 2: Colours",
-                words: [
-                    {a:"أَحْمَر", e:"Red", p:"Ah-mar"}, {a:"أَزْرَق", e:"Blue", p:"Az-raq"},
-                    {a:"أَخْضَر", e:"Green", p:"Akh-dar"}, {a:"أَصْفَر", e:"Yellow", p:"As-far"},
-                    {a:"أَبْيَض", e:"White", p:"Ab-yad"}, {a:"أَسْوَد", e:"Black", p:"As-wad"}
-                ],
-                sentences: [
-                    {a:"التُّفَّاحُ أَحْمَر", e:"The apple is red", p:"At-tuf-fa-hu ah-mar"},
-                    {a:"السَّمَاءُ أَزْرَق", e:"The sky is blue", p:"As-sa-ma-u az-raq"}
-                ]
-            },
-            {
-                id: 2, title: "Level 3: My Family",
-                words: [
-                    {a:"أَب", e:"Father", p:"Ab"}, {a:"أُم", e:"Mother", p:"Umm"},
-                    {a:"أَخ", e:"Brother", p:"Akh"}, {a:"أُخْت", e:"Sister", p:"Ukht"},
-                    {a:"جَدّ", e:"Grandfather", p:"Jadd"}, {a:"جَدَّة", e:"Grandmother", p:"Jad-dah"}
-                ],
-                sentences: [
-                    {a:"هَذَا أَبِي", e:"This is my father", p:"Ha-dha a-bi"},
-                    {a:"أَنَا أُحِبُّ عَائِلَتِي", e:"I love my family", p:"A-na u-hib-bu a-i-la-ti"}
-                ]
-            },
-            {
-                id: 3, title: "Level 4: Numbers 1-10",
-                words: [
-                    {a:"وَاحِد", e:"One", p:"Wa-hid"}, {a:"اِثْنَان", e:"Two", p:"Ith-nan"},
-                    {a:"ثَلَاثَة", e:"Three", p:"Tha-la-thah"}, {a:"أَرْبَعَة", e:"Four", p:"Ar-ba-ah"},
-                    {a:"خَمْسَة", e:"Five", p:"Kham-sah"}, {a:"عَشَرَة", e:"Ten", p:"A-sha-rah"}
-                ],
-                sentences: [
-                    {a:"عِنْدِي كِتَابٌ وَاحِد", e:"I have one book", p:"In-di ki-ta-bun wa-hid"},
-                    {a:"رَقَمِي هُوَ سَبْعَة", e:"My number is seven", p:"Ra-qa-mi hu-wa sab-ah"}
-                ]
-            },
-            {
-                id: 4, title: "Level 5: Common Objects",
-                words: [
-                    {a:"كِتَاب", e:"Book", p:"Ki-tab"}, {a:"قَلَم", e:"Pen", p:"Qa-lam"},
-                    {a:"مِفْتَاح", e:"Key", p:"Mif-tah"}, {a:"هَاتِف", e:"Phone", p:"Ha-tif"},
-                    {a:"حَقِيبَة", e:"Bag", p:"Ha-qi-bah"}, {a:"كُرْسِيّ", e:"Chair", p:"Kur-si"}
-                ],
-                sentences: [
-                    {a:"أَيْنَ مِفْتَاحِي؟", e:"Where is my key?", p:"Ay-na mif-ta-hi?"},
-                    {a:"هَذَا هَاتِفِي", e:"This is my phone", p:"Ha-dha ha-ti-fi"}
-                ]
-            },
-            {
-                id: 5, title: "Level 6: Around the House",
-                words: [
-                    {a:"بَيْت", e:"House", p:"Bayt"}, {a:"بَاب", e:"Door", p:"Bab"},
-                    {a:"نَافِذَة", e:"Window", p:"Na-fi-dhah"}, {a:"غُرْفَة", e:"Room", p:"Ghur-fah"},
-                    {a:"مَطْبَخ", e:"Kitchen", p:"Mat-bakh"}, {a:"سَرِير", e:"Bed", p:"Sa-rir"}
-                ],
-                sentences: [
-                    {a:"الْبَابُ مَفْتُوح", e:"The door is open", p:"Al-ba-bu maf-tuh"},
-                    {a:"أَنَا فِي الْغُرْفَة", e:"I am in the room", p:"A-na fil ghur-fah"}
-                ]
-            },
-            {
-                id: 6, title: "Level 7: Food & Drink",
-                words: [
-                    {a:"مَاء", e:"Water", p:"Ma'"}, {a:"خُبْز", e:"Bread", p:"Khubz"},
-                    {a:"حَلِيب", e:"Milk", p:"Ha-lib"}, {a:"تُفَّاح", e:"Apple", p:"Tuf-fah"},
-                    {a:"قَهْوَة", e:"Coffee", p:"Qah-wah"}, {a:"لَحْم", e:"Meat", p:"Lahm"}
-                ],
-                sentences: [
-                    {a:"أُرِيدُ مَاءً", e:"I want water", p:"U-ri-du ma-an"},
-                    {a:"الْخُبْزُ لَذِيذ", e:"The bread is delicious", p:"Al-khub-zu la-dhidh"}
-                ]
-            },
-            {
-                id: 7, title: "Level 8: The City",
-                words: [
-                    {a:"سُوق", e:"Market", p:"Suq"}, {a:"مَدْرَسَة", e:"School", p:"Mad-ra-sah"},
-                    {a:"مَسْجِد", e:"Mosque", p:"Mas-jid"}, {a:"مُسْتَشْفَى", e:"Hospital", p:"Mus-tash-fa"},
-                    {a:"طَرِيق", e:"Road", p:"Ta-riq"}, {a:"مَدِينَة", e:"City", p:"Ma-di-nah"}
-                ],
-                sentences: [
-                    {a:"الْمَسْجِدُ قَرِيب", e:"The mosque is near", p:"Al-mas-ji-du qa-rib"},
-                    {a:"أَذْهَبُ إِلَى السُّوق", e:"I go to the market", p:"Adh-ha-bu i-las suq"}
-                ]
-            },
-            {
-                id: 8, title: "Level 9: Pronouns",
-                words: [
-                    {a:"أَنَا", e:"I", p:"A-na"}, {a:"أَنْتَ", e:"You (Male)", p:"An-ta"},
-                    {a:"أَنْتِ", e:"You (Female)", p:"An-ti"}, {a:"هُوَ", e:"He", p:"Hu-wa"},
-                    {a:"هِيَ", e:"She", p:"Hi-ya"}, {a:"نَحْنُ", e:"We", p:"Nah-nu"}
-                ],
-                sentences: [
-                    {a:"أَنَا عَرَبِي", e:"I am Arab", p:"A-na a-ra-bi"},
-                    {a:"هُوَ مُعَلِّم", e:"He is a teacher", p:"Hu-wa mu-al-lim"}
-                ]
-            },
-            {
-                id: 9, title: "Level 10: Simple Verbs",
-                words: [
-                    {a:"يَأْكُل", e:"Eat", p:"Ya'-kul"}, {a:"يَشْرَب", e:"Drink", p:"Yash-rab"},
-                    {a:"يَذْهَب", e:"Go", p:"Yadh-hab"}, {a:"يَنَام", e:"Sleep", p:"Ya-nam"},
-                    {a:"يَقْرَأ", e:"Read", p:"Yaq-ra'"}, {a:"يَكْتُب", e:"Write", p:"Yak-tub"}
-                ],
-                sentences: [
-                    {a:"أَنَا أَكْتُبُ رِسَالَة", e:"I am writing a letter", p:"A-na ak-tu-bu ri-sa-lah"},
-                    {a:"هُوَ يَقْرَأُ الْكِتَاب", e:"He is reading the book", p:"Hu-wa yaq-ra-ul ki-tab"}
-                ]
-            }
+            { id: 0, title: "Level 1: Greetings", words: [{a:"مَرْحَبًا", e:"Hello", p:"Mar-ha-ban"}, {a:"أَهْلًا", e:"Welcome", p:"Ah-lan"}, {a:"شُكْرًا", e:"Thank you", p:"Shuk-ran"}, {a:"عَفْوًا", e:"You're welcome", p:"Af-wan"}, {a:"كَيْفَ حَالُكَ؟", e:"How are you?", p:"Kay-fa Ha-luk?"}, {a:"أَنَا بِخَيْر", e:"I am fine", p:"A-na Bi-khayr"}], sentences: [{a:"مَرْحَبًا، كَيْفَ حَالُكَ؟", e:"Hello, how are you?", p:"Mar-ha-ban, kay-fa ha-luk?"}] },
+            { id: 1, title: "Level 2: Colours", words: [{a:"أَحْمَر", e:"Red", p:"Ah-mar"}, {a:"أَزْرَق", e:"Blue", p:"Az-raq"}, {a:"أَخْضَر", e:"Green", p:"Akh-dar"}, {a:"أَصْفَر", e:"Yellow", p:"As-far"}, {a:"أَبْيَض", e:"White", p:"Ab-yad"}, {a:"أَسْوَد", e:"Black", p:"As-wad"}], sentences: [{a:"التُّفَّاحُ أَحْمَر", e:"The apple is red", p:"At-tuf-fa-hu ah-mar"}] },
+            { id: 2, title: "Level 3: My Family", words: [{a:"أَب", e:"Father", p:"Ab"}, {a:"أُم", e:"Mother", p:"Umm"}, {a:"أَخ", e:"Brother", p:"Akh"}, {a:"أُخْت", e:"Sister", p:"Ukht"}, {a:"جَدّ", e:"Grandfather", p:"Jadd"}, {a:"جَدَّة", e:"Grandmother", p:"Jad-dah"}], sentences: [{a:"هَذَا أَبِي", e:"This is my father", p:"Ha-dha a-bi"}] },
+            { id: 3, title: "Level 4: Numbers 1-10", words: [{a:"وَاحِد", e:"One", p:"Wa-hid"}, {a:"اِثْنَان", e:"Two", p:"Ith-nan"}, {a:"ثَلَاثَة", e:"Three", p:"Tha-la-thah"}, {a:"أَرْبَعَة", e:"Four", p:"Ar-ba-ah"}, {a:"خَمْسَة", e:"Five", p:"Kham-sah"}, {a:"عَشَرَة", e:"Ten", p:"A-sha-rah"}], sentences: [{a:"عِنْدِي كِتَابٌ وَاحِد", e:"I have one book", p:"In-di ki-ta-bun wa-hid"}] },
+            { id: 4, title: "Level 5: Common Objects", words: [{a:"كِتَاب", e:"Book", p:"Ki-tab"}, {a:"قَلَم", e:"Pen", p:"Qa-lam"}, {a:"مِفْتَاح", e:"Key", p:"Mif-tah"}, {a:"هَاتِف", e:"Phone", p:"Ha-tif"}, {a:"حَقِيبَة", e:"Bag", p:"Ha-qi-bah"}, {a:"كُرْسِيّ", e:"Chair", p:"Kur-si"}], sentences: [{a:"أَيْنَ مِفْتَاحِي؟", e:"Where is my key?", p:"Ay-na mif-ta-hi?"}] },
+            { id: 5, title: "Level 6: Around the House", words: [{a:"بَيْت", e:"House", p:"Bayt"}, {a:"بَاب", e:"Door", p:"Bab"}, {a:"نَافِذَة", e:"Window", p:"Na-fi-dhah"}, {a:"غُرْفَة", e:"Room", p:"Ghur-fah"}, {a:"مَطْبَخ", e:"Kitchen", p:"Mat-bakh"}, {a:"سَرِير", e:"Bed", p:"Sa-rir"}], sentences: [{a:"الْبَابُ مَفْتُوح", e:"The door is open", p:"Al-ba-bu maf-tuh"}] },
+            { id: 6, title: "Level 7: Food & Drink", words: [{a:"مَاء", e:"Water", p:"Ma'"}, {a:"خُبْز", e:"Bread", p:"Khubz"}, {a:"حَلِيب", e:"Milk", p:"Ha-lib"}, {a:"تُفَّاح", e:"Apple", p:"Tuf-fah"}, {a:"قَهْوَة", e:"Coffee", p:"Qah-wah"}, {a:"لَحْم", e:"Meat", p:"Lahm"}], sentences: [{a:"أُرِيدُ مَاءً", e:"I want water", p:"U-ri-du ma-an"}] },
+            { id: 7, title: "Level 8: The City", words: [{a:"سُوق", e:"Market", p:"Suq"}, {a:"مَدْرَسَة", e:"School", p:"Mad-ra-sah"}, {a:"مَسْجِد", e:"Mosque", p:"Mas-jid"}, {a:"مُسْتَشْفَى", e:"Hospital", p:"Mus-tash-fa"}, {a:"طَرِيق", e:"Road", p:"Ta-riq"}, {a:"مَدِينَة", e:"City", p:"Ma-di-nah"}], sentences: [{a:"الْمَسْجِدُ قَرِيب", e:"The mosque is near", p:"Al-mas-ji-du qa-rib"}] },
+            { id: 8, title: "Level 9: Pronouns", words: [{a:"أَنَا", e:"I", p:"A-na"}, {a:"أَنْتَ", e:"You (Male)", p:"An-ta"}, {a:"أَنْتِ", e:"You (Female)", p:"An-ti"}, {a:"هُوَ", e:"He", p:"Hu-wa"}, {a:"هِيَ", e:"She", p:"Hi-ya"}, {a:"نَحْنُ", e:"We", p:"Nah-nu"}], sentences: [{a:"أَنَا عَرَبِي", e:"I am Arab", p:"A-na a-ra-bi"}] },
+            { id: 9, title: "Level 10: Simple Verbs", words: [{a:"يَأْكُل", e:"Eat", p:"Ya'-kul"}, {a:"يَشْرَب", e:"Drink", p:"Yash-rab"}, {a:"يَذْهَب", e:"Go", p:"Yadh-hab"}, {a:"يَنَام", e:"Sleep", p:"Ya-nam"}, {a:"يَقْرَأ", e:"Read", p:"Yaq-ra'"}, {a:"يَكْتُب", e:"Write", p:"Yak-tub"}], sentences: [{a:"أَنَا أَكْتُبُ رِسَالَة", e:"I am writing a letter", p:"A-na ak-tu-bu ri-sa-lah"}] }
         ];
 
-        let userProgress = JSON.parse(localStorage.getItem('arabic_academy_v10')) || { unlocked: 0 };
+        // CHANGED STORAGE KEY TO RESET PROGRESS AND SHOW ALL LEVELS
+        let userProgress = JSON.parse(localStorage.getItem('arabic_academy_v100_final')) || { unlocked: 0 };
         let currentLevel = 0, quizPool = [], score = 0, qIdx = 0, isAnswering = false;
 
-        function save() { localStorage.setItem('arabic_academy_v10', JSON.stringify(userProgress)); }
+        function save() { localStorage.setItem('arabic_academy_v100_final', JSON.stringify(userProgress)); }
 
         function initApp() {
             document.getElementById('welcome-screen').style.display = 'none';
@@ -251,11 +138,9 @@
             document.getElementById('dashboard').classList.add('hidden');
             document.getElementById('lesson-view').classList.remove('hidden');
             document.getElementById('lesson-title').innerText = courseData[i].title;
-            
             const vC = document.getElementById('vocab-container');
             const sC = document.getElementById('sentence-container');
             vC.innerHTML = "<h3>Vocabulary</h3>"; sC.innerHTML = "<h3>Sentences</h3>";
-
             courseData[i].words.forEach(w => {
                 vC.innerHTML += `<div class="item-row"><div class="arabic-text">${w.a}</div><div class="pronunciation">Pronounced: ${w.p}</div><div class="translation">English: ${w.e}</div></div>`;
             });
@@ -279,14 +164,12 @@
             const item = quizPool[qIdx];
             document.getElementById('q-text').innerText = `Question ${qIdx+1}/${quizPool.length}:`;
             document.getElementById('q-display').innerText = item.a;
-            
             const options = [item.e];
             const decoys = [...courseData[currentLevel].words, ...courseData[currentLevel].sentences].map(x => x.e).filter(x => x !== item.e);
             while(options.length < 4 && decoys.length > 0) {
                 options.push(decoys.splice(Math.floor(Math.random()*decoys.length), 1)[0]);
             }
             options.sort(() => Math.random() - 0.5);
-
             const optDiv = document.getElementById('q-options');
             optDiv.innerHTML = "";
             options.forEach(o => {
@@ -301,7 +184,6 @@
         function checkAnswer(btn, selected, correct) {
             if(isAnswering) return;
             isAnswering = true;
-
             if(selected === correct) {
                 btn.classList.add('correct');
                 score++;
@@ -311,11 +193,7 @@
                     if(b.innerText === correct) b.classList.add('correct');
                 });
             }
-
-            setTimeout(() => {
-                qIdx++;
-                ask();
-            }, 1000);
+            setTimeout(() => { qIdx++; ask(); }, 1000);
         }
 
         function finish() {
