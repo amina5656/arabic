@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arabic Mastery - Phonetic Edition</title>
+    <title>Arabic Academy - Visual Edition</title>
     <style>
         :root {
             --primary: #1a2a3a;
             --secondary: #27ae60;
             --accent: #d35400;
+            --error: #e74c3c;
             --bg: #f4f7f6;
-            --white: #ffffff;
-            --locked: #bdc3c7;
         }
 
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; color: var(--primary); }
@@ -31,35 +30,32 @@
 
         /* Dashboard */
         #main-app { display: none; padding: 20px; max-width: 800px; margin: auto; }
-        
         .progress-bar { background: #ddd; height: 12px; border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
         #progress-fill { background: var(--secondary); height: 100%; width: 0%; transition: 0.8s; }
 
         .module-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-
         .module-card {
-            background: white; padding: 20px; border-radius: 12px; border-left: 10px solid var(--locked);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; position: relative;
+            background: white; padding: 20px; border-radius: 12px; border-left: 10px solid #bdc3c7;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer;
         }
         .module-card.unlocked { border-left-color: var(--secondary); }
-        .module-card.locked { opacity: 0.6; cursor: not-allowed; }
 
         /* Lesson View */
-        .card-box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .card-box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; }
         .item-row { display: flex; flex-direction: column; padding: 15px 0; border-bottom: 1px solid #eee; }
-        .item-row:last-child { border-bottom: none; }
-        
-        .arabic-text { font-size: 2.2rem; font-weight: bold; color: #000; direction: rtl; margin-bottom: 5px; }
-        .pronunciation { font-size: 1.1rem; color: var(--accent); font-style: italic; font-weight: 500; }
+        .arabic-text { font-size: 2.2rem; font-weight: bold; color: #000; direction: rtl; }
+        .pronunciation { font-size: 1.1rem; color: var(--accent); font-style: italic; margin: 5px 0; }
         .translation { font-size: 1.2rem; color: #444; font-weight: bold; }
 
-        /* Quiz */
+        /* Quiz Buttons & Feedback */
         #quiz-box { display: none; background: white; padding: 30px; border-radius: 15px; text-align: center; }
         .option-btn { 
             display: block; width: 100%; padding: 15px; margin: 10px 0; 
-            border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.1rem;
+            border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.1rem;
+            background: white; transition: 0.2s;
         }
-        .option-btn:hover { background: #f0f0f0; }
+        .correct { background-color: #2ecc71 !important; color: white !important; border-color: #27ae60 !important; }
+        .wrong { background-color: #e74c3c !important; color: white !important; border-color: #c0392b !important; }
 
         .hidden { display: none; }
         .back-link { cursor: pointer; color: var(--accent); margin-bottom: 20px; display: inline-block; font-weight: bold; }
@@ -69,7 +65,7 @@
 
     <section id="welcome-screen">
         <h1>ARABIC ACADEMY</h1>
-        <p>100 Levels of Mastery • Progress Saved</p>
+        <p>Phonetic Reading & Visual Feedback</p>
         <button class="btn-main" onclick="initApp()">START LEARNING</button>
     </section>
 
@@ -83,17 +79,8 @@
         <div id="lesson-view" class="hidden">
             <div class="back-link" onclick="showDashboard()">← Back to Dashboard</div>
             <h2 id="lesson-title"></h2>
-            
-            <div class="card-box">
-                <h3>Vocabulary & Pronunciation</h3>
-                <div id="vocab-container"></div>
-            </div>
-
-            <div class="card-box">
-                <h3>Practice Sentences</h3>
-                <div id="sentence-container"></div>
-            </div>
-
+            <div class="card-box" id="vocab-container"></div>
+            <div class="card-box" id="sentence-container"></div>
             <button class="btn-main" style="width:100%;" onclick="startQuiz()">TAKE THE QUIZ</button>
         </div>
 
@@ -138,37 +125,15 @@
                 sentences: [
                     {a:"التُّفَّاحُ أَحْمَر", e:"The apple is red", p:"At-tuffahu ahmar"},
                     {a:"السَّمَاءُ أَزْرَق", e:"The sky is blue", p:"As-samau azraq"},
-                    {a:"الْعُشْبُ أَخْضَر", e:"The grass is green", p:"Al-ushbu akhdar"},
-                    {a:"هَذَا كِتَابٌ أَسْوَد", e:"This is a black book", p:"Hadha kitabun aswad"},
-                    {a:"أَنَا أُحِبُّ اللَّوْنَ الْوَرْدِي", e:"I love the color pink", p:"Ana uhibbul lawnal wardi"}
-                ]
-            },
-            {
-                id: 2, title: "Level 3: Family",
-                words: [
-                    {a:"أَب", e:"Father", p:"Ab"}, {a:"أُم", e:"Mother", p:"Umm"},
-                    {a:"أَخ", e:"Brother", p:"Akh"}, {a:"أُخْت", e:"Sister", p:"Ukht"},
-                    {a:"جَدّ", e:"Grandfather", p:"Jadd"}, {a:"جَدَّة", e:"Grandmother", p:"Jaddah"},
-                    {a:"اِبْن", e:"Son", p:"Ibn"}, {a:"اِبْنَة", e:"Daughter", p:"Ibnah"},
-                    {a:"عَمّ", e:"Uncle (Dad side)", p:"Amm"}, {a:"خَال", e:"Uncle (Mom side)", p:"Khaal"}
-                ],
-                sentences: [
-                    {a:"هَذَا أَبِي وَهَذِهِ أُمِّي", e:"This is my father and this is my mother", p:"Hadha abi wa hadhihi ummi"},
-                    {a:"أَنَا أُحِبُّ أُخْتِي", e:"I love my sister", p:"Ana uhibbu ukhti"},
-                    {a:"أَخِي يَلْعَبُ", e:"My brother is playing", p:"Akhi yal'ab"},
-                    {a:"جَدِّي رَجُلٌ طَيِّب", e:"My grandfather is a good man", p:"Jaddi rajulun tayyib"},
-                    {a:"عِنْدِي اِبْنَةٌ جَمِيلَة", e:"I have a beautiful daughter", p:"Indi ibnatun jamilah"}
+                    {a:"الْعُشْبُ أَخْضَر", e:"The grass is green", p:"Al-ushbu akhdar"}
                 ]
             }
         ];
 
-        let userProgress = JSON.parse(localStorage.getItem('arabic_academy_v1')) || { unlocked: 0 };
-        let currentLevel = 0;
-        let quizPool = [];
-        let score = 0;
-        let qIdx = 0;
+        let userProgress = JSON.parse(localStorage.getItem('arabic_academy_v2')) || { unlocked: 0 };
+        let currentLevel = 0, quizPool = [], score = 0, qIdx = 0, isAnswering = false;
 
-        function save() { localStorage.setItem('arabic_academy_v1', JSON.stringify(userProgress)); }
+        function save() { localStorage.setItem('arabic_academy_v2', JSON.stringify(userProgress)); }
 
         function initApp() {
             document.getElementById('welcome-screen').style.display = 'none';
@@ -201,7 +166,7 @@
             
             const vC = document.getElementById('vocab-container');
             const sC = document.getElementById('sentence-container');
-            vC.innerHTML = ""; sC.innerHTML = "";
+            vC.innerHTML = "<h3>Vocabulary</h3>"; sC.innerHTML = "<h3>Sentences</h3>";
 
             courseData[i].words.forEach(w => {
                 vC.innerHTML += `<div class="item-row"><div class="arabic-text">${w.a}</div><div class="pronunciation">Pronounced: ${w.p}</div><div class="translation">English: ${w.e}</div></div>`;
@@ -222,8 +187,9 @@
 
         function ask() {
             if(qIdx >= quizPool.length) { finish(); return; }
+            isAnswering = false;
             const item = quizPool[qIdx];
-            document.getElementById('q-text').innerText = `Translate Question ${qIdx+1}/15:`;
+            document.getElementById('q-text').innerText = `Question ${qIdx+1}/13:`;
             document.getElementById('q-display').innerText = item.a;
             
             const options = [item.e];
@@ -239,20 +205,41 @@
                 const b = document.createElement('button');
                 b.className = "option-btn";
                 b.innerText = o;
-                b.onclick = () => { if(o === item.e) score++; qIdx++; ask(); };
+                b.onclick = () => checkAnswer(b, o, item.e);
                 optDiv.appendChild(b);
             });
         }
 
+        function checkAnswer(btn, selected, correct) {
+            if(isAnswering) return;
+            isAnswering = true;
+
+            if(selected === correct) {
+                btn.classList.add('correct');
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                // Highlight the correct one too
+                Array.from(document.getElementsByClassName('option-btn')).forEach(b => {
+                    if(b.innerText === correct) b.classList.add('correct');
+                });
+            }
+
+            setTimeout(() => {
+                qIdx++;
+                ask();
+            }, 1000);
+        }
+
         function finish() {
-            const pass = score === 15;
+            const pass = score === quizPool.length;
             const feedback = document.getElementById('q-feedback');
             document.getElementById('q-ui').classList.add('hidden');
             if(pass) {
-                feedback.innerHTML = `<h2 style="color:green">15/15! Level Complete!</h2>`;
+                feedback.innerHTML = `<h2 style="color:green">${score}/${quizPool.length}! Perfect!</h2>`;
                 if(currentLevel === userProgress.unlocked) { userProgress.unlocked++; save(); }
             } else {
-                feedback.innerHTML = `<h2 style="color:red">Score: ${score}/15</h2><p>You need 100% to pass. Try again!</p>`;
+                feedback.innerHTML = `<h2 style="color:red">${score}/${quizPool.length}</h2><p>100% required to pass.</p>`;
             }
             setTimeout(() => { feedback.innerHTML = ""; document.getElementById('q-ui').classList.remove('hidden'); showDashboard(); }, 3000);
         }
