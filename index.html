@@ -1,0 +1,317 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arabic Mastery Pro - Voice & Progress</title>
+    <style>
+        :root {
+            --primary: #1a2a3a;
+            --secondary: #27ae60;
+            --accent: #d35400;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+            --locked: #bdc3c7;
+        }
+
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; color: var(--primary); }
+
+        /* Welcome Page */
+        #welcome-screen {
+            height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; background: radial-gradient(circle, #2c3e50 0%, #000000 100%);
+            color: white; text-align: center;
+        }
+
+        .btn-main {
+            padding: 15px 50px; font-size: 1.2rem; border-radius: 8px; border: none;
+            background: var(--secondary); color: white; cursor: pointer; transition: 0.3s;
+            font-weight: bold; margin-top: 20px;
+        }
+        .btn-main:hover { background: #219150; transform: scale(1.02); }
+
+        /* Dashboard */
+        #main-app { display: none; padding: 40px; max-width: 900px; margin: auto; }
+        
+        .progress-container { margin-bottom: 40px; }
+        .progress-bar { background: #ddd; height: 12px; border-radius: 6px; overflow: hidden; }
+        #progress-fill { background: var(--secondary); height: 100%; width: 0%; transition: 0.8s; }
+
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+
+        .module-card {
+            background: white; padding: 25px; border-radius: 12px; border-left: 10px solid var(--locked);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; position: relative; transition: 0.3s;
+        }
+        .module-card.unlocked { border-left-color: var(--secondary); }
+        .module-card.locked { opacity: 0.6; cursor: not-allowed; }
+        .module-card.locked::after { content: "🔒"; position: absolute; right: 20px; top: 20px; }
+
+        /* Lesson View */
+        .vocab-section, .sentence-section { background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; }
+        .word-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; font-size: 1.4rem; }
+        .arabic-container { display: flex; align-items: center; gap: 15px; direction: rtl; }
+        .arabic { font-weight: bold; font-size: 1.8rem; }
+        .speaker-icon { cursor: pointer; font-size: 1.5rem; filter: grayscale(1); transition: 0.2s; padding: 5px; }
+        .speaker-icon:hover { filter: grayscale(0); transform: scale(1.3); }
+        .english-sub { font-size: 1rem; color: #7f8c8d; text-align: left; max-width: 50%; }
+        
+        /* Quiz */
+        #quiz-box { display: none; background: white; padding: 40px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .option-btn { 
+            display: block; width: 100%; padding: 18px; margin: 12px 0; 
+            border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.1rem; transition: 0.2s;
+        }
+        .option-btn:hover { background: #f8f9fa; border-color: var(--secondary); }
+
+        .hidden { display: none; }
+        .back-link { cursor: pointer; color: var(--accent); margin-bottom: 20px; display: inline-block; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <section id="welcome-screen">
+        <h1>WELCOME!</h1>
+        <p>Professional Arabic - Gated Progression & Voice</p>
+        <button class="btn-main" onclick="initApp()">Resume My Progress</button>
+    </section>
+
+    <main id="main-app">
+        <div id="dashboard">
+            <div class="back-link" onclick="location.reload()">← Logout</div>
+            <h2>My Course Progress</h2>
+            <div class="progress-container">
+                <div class="progress-bar"><div id="progress-fill"></div></div>
+                <p id="progress-text">0% Complete</p>
+            </div>
+            <div id="module-list" class="module-grid"></div>
+        </div>
+
+        <div id="lesson-view" class="hidden">
+            <div class="back-link" onclick="showDashboard()">← Back to Dashboard</div>
+            <h2 id="lesson-title"></h2>
+            
+            <div class="vocab-section">
+                <h3>Vocabulary (10 Words)</h3>
+                <div id="vocab-container"></div>
+            </div>
+
+            <div class="sentence-section">
+                <h3>Practical Sentences (5 Sentences)</h3>
+                <div id="sentence-container"></div>
+            </div>
+
+            <button class="btn-main" style="width:100%;" onclick="startQuiz()">Start Mastery Quiz (15 Questions)</button>
+        </div>
+
+        <div id="quiz-box">
+            <h3 id="q-text">Question</h3>
+            <div id="quiz-ui">
+                <div id="q-audio-hint"></div>
+                <div id="q-options"></div>
+            </div>
+            <p id="q-feedback"></p>
+        </div>
+    </main>
+
+    <script>
+        // --- DATA HUB ---
+        const courseData = [
+            {
+                id: 0, title: "Level 1: Essential Greetings",
+                words: [
+                    {a:"مَرْحَبًا", e:"Hello", p:"Marhaban"}, {a:"أَهْلًا", e:"Welcome", p:"Ahlan"},
+                    {a:"صَبَاحُ الْخَيْرِ", e:"Good Morning", p:"Sabah al-khair"}, {a:"مَسَاءُ الْخَيْرِ", e:"Good Evening", p:"Masa al-khair"},
+                    {a:"كَيْفَ حَالُكَ؟", e:"How are you?", p:"Kayfa haluk?"}, {a:"أَنَا بِخَيْر", e:"I am fine", p:"Ana bikhayr"},
+                    {a:"شُكْرًا", e:"Thank you", p:"Shukran"}, {a:"عَفْوًا", e:"You are welcome", p:"Afwan"},
+                    {a:"مَعَ السَّلَامَةِ", e:"Goodbye", p:"Ma'a salama"}, {a:"تَصْبَحُ عَلَى خَيْر", e:"Good night", p:"Tasbah ala khair"}
+                ],
+                sentences: [
+                    {a:"مَرْحَبًا، كَيْفَ حَالُكَ؟", e:"Hello, how are you?"},
+                    {a:"أَنَا بِخَيْر، شُكْرًا", e:"I am fine, thank you"},
+                    {a:"صَبَاحُ الْخَيْرِ يَا أُمِّي", e:"Good morning, my mother"},
+                    {a:"عَفْوًا، مَعَ السَّلَامَةِ", e:"You are welcome, goodbye"},
+                    {a:"أَهْلًا وَسَهْلًا بِكُمْ", e:"A very warm welcome to you all"}
+                ]
+            },
+            {
+                id: 1, title: "Level 2: Common Colours",
+                words: [
+                    {a:"أَبْيَض", e:"White", p:"Abyad"}, {a:"أَسْوَد", e:"Black", p:"Aswad"},
+                    {a:"أَحْمَر", e:"Red", p:"Ahmar"}, {a:"أَزْرَق", e:"Blue", p:"Azraq"},
+                    {a:"أَخْضَر", e:"Green", p:"Akhdar"}, {a:"أَصْفَر", e:"Yellow", p:"Asfar"},
+                    {a:"بُرْتُقَالِي", e:"Orange", p:"Burtuqali"}, {a:"وَرْدِي", e:"Pink", p:"Wardi"},
+                    {a:"بَنَفْسَجِي", e:"Purple", p:"Banafsaji"}, {a:"بُنِّي", e:"Brown", p:"Bunni"}
+                ],
+                sentences: [
+                    {a:"التُّفَّاحُ أَحْمَر", e:"The apple is red"},
+                    {a:"السَّمَاءُ أَزْرَق", e:"The sky is blue"},
+                    {a:"الْعُشْبُ أَخْضَر", e:"The grass is green"},
+                    {a:"هَذَا كِتَابٌ أَسْوَد", e:"This is a black book"},
+                    {a:"أَنَا أُحِبُّ اللَّوْنَ الْوَرْدِي", e:"I love the color pink"}
+                ]
+            }
+        ];
+
+        // --- CORE APP LOGIC ---
+        let userProgress = JSON.parse(localStorage.getItem('arabic_pro_v3')) || { unlockedLevel: 0 };
+        let currentLevel = 0;
+        let quizPool = [];
+        let quizScore = 0;
+        let currentQIndex = 0;
+
+        // --- VOICE ENGINE ---
+        let selectedVoice = null;
+
+        function loadVoices() {
+            const voices = window.speechSynthesis.getVoices();
+            // Try to find a high-quality Arabic voice
+            selectedVoice = voices.find(v => v.lang === 'ar-SA' || v.lang === 'ar-EG' || v.lang.includes('ar'));
+        }
+
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+        loadVoices();
+
+        function speak(text) {
+            window.speechSynthesis.cancel(); // Stop current speech
+            const msg = new SpeechSynthesisUtterance(text);
+            if (selectedVoice) msg.voice = selectedVoice;
+            msg.lang = 'ar-SA';
+            msg.rate = 0.75;
+            window.speechSynthesis.speak(msg);
+        }
+
+        // --- UI LOGIC ---
+        function save() { localStorage.setItem('arabic_pro_v3', JSON.stringify(userProgress)); }
+
+        function initApp() {
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            showDashboard();
+            speak("مَرْحَبًا"); // Test sound on entry
+        }
+
+        function showDashboard() {
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('lesson-view').classList.add('hidden');
+            document.getElementById('quiz-box').style.display = 'none';
+            
+            const list = document.getElementById('module-list');
+            list.innerHTML = "";
+            
+            courseData.forEach((level, index) => {
+                const isUnlocked = index <= userProgress.unlockedLevel;
+                const card = document.createElement('div');
+                card.className = `module-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+                card.innerHTML = `<h3>${level.title}</h3><p>Status: ${isUnlocked ? 'Ready' : 'Locked'}</p>`;
+                if(isUnlocked) card.onclick = () => startLesson(index);
+                list.appendChild(card);
+            });
+
+            const percent = Math.round(((userProgress.unlockedLevel + 1) / courseData.length) * 100);
+            document.getElementById('progress-fill').style.width = percent + "%";
+            document.getElementById('progress-text').innerText = `${percent}% of available levels unlocked`;
+        }
+
+        function startLesson(idx) {
+            currentLevel = idx;
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('lesson-view').classList.remove('hidden');
+            document.getElementById('lesson-title').innerText = courseData[idx].title;
+            
+            renderList('vocab-container', courseData[idx].words, true);
+            renderList('sentence-container', courseData[idx].sentences, false);
+        }
+
+        function renderList(targetId, data, showPhonetic) {
+            const container = document.getElementById(targetId);
+            container.innerHTML = "";
+            data.forEach(item => {
+                container.innerHTML += `
+                    <div class="word-row">
+                        <div class="english-sub"><b>${item.e}</b>${showPhonetic ? '<br><i>'+item.p+'</i>' : ''}</div>
+                        <div class="arabic-container">
+                            <span class="arabic">${item.a}</span>
+                            <span class="speaker-icon" onclick="speak('${item.a}')">🔊</span>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function startQuiz() {
+            document.getElementById('lesson-view').classList.add('hidden');
+            document.getElementById('quiz-box').style.display = 'block';
+            const levelData = courseData[currentLevel];
+            quizPool = [...levelData.words, ...levelData.sentences];
+            quizPool.sort(() => Math.random() - 0.5);
+            quizScore = 0;
+            currentQIndex = 0;
+            askQuestion();
+        }
+
+        function askQuestion() {
+            if(currentQIndex >= quizPool.length) {
+                finishQuiz();
+                return;
+            }
+
+            const item = quizPool[currentQIndex];
+            document.getElementById('q-text').innerText = `Question ${currentQIndex + 1}/15:`;
+            
+            const audioHint = document.getElementById('q-audio-hint');
+            audioHint.innerHTML = `
+                <div style="margin:20px 0; font-size:2.2rem; color:var(--secondary);">
+                    ${item.a} <span class="speaker-icon" onclick="speak('${item.a}')">🔊</span>
+                </div>
+                <p>What does this mean in English?</p>
+            `;
+
+            const options = [item.e];
+            let allOptions = [...courseData[currentLevel].words, ...courseData[currentLevel].sentences].map(i => i.e);
+            let decoys = allOptions.filter(e => e !== item.e);
+            
+            while(options.length < 4 && decoys.length > 0) {
+                let randomDecoy = decoys.splice(Math.floor(Math.random() * decoys.length), 1)[0];
+                options.push(randomDecoy);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const optDiv = document.getElementById('q-options');
+            optDiv.innerHTML = "";
+            options.forEach(opt => {
+                const b = document.createElement('button');
+                b.className = "option-btn";
+                b.innerText = opt;
+                b.onclick = () => {
+                    if(opt === item.e) quizScore++;
+                    currentQIndex++;
+                    askQuestion();
+                };
+                optDiv.appendChild(b);
+            });
+        }
+
+        function finishQuiz() {
+            const feedback = document.getElementById('q-feedback');
+            const passed = quizScore === 15;
+            document.getElementById('quiz-ui').classList.add('hidden');
+
+            if(passed) {
+                feedback.innerHTML = `<h2 style='color:green'>15/15! MASHALLAH!</h2><p>You unlocked the next stage.</p>`;
+                if(currentLevel === userProgress.unlockedLevel && userProgress.unlockedLevel < courseData.length - 1) {
+                    userProgress.unlockedLevel++;
+                    save();
+                }
+            } else {
+                feedback.innerHTML = `<h2 style='color:red'>Score: ${quizScore}/15</h2><p>You must get every single one right to pass.</p>`;
+            }
+
+            setTimeout(() => {
+                feedback.innerHTML = "";
+                document.getElementById('quiz-ui').classList.remove('hidden');
+                showDashboard();
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
