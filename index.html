@@ -3,50 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arabic Academy Pro - 100 Levels</title>
+    <title>Arabic Academy: 100 Levels Final</title>
     <style>
         :root { 
-            --primary: #1a2a3a; --secondary: #27ae60; --accent: #d35400; 
-            --bg: #f4f7f6; --grey: #bdc3c7; --amber: #f39c12; --red: #e74c3c; 
+            --primary: #1a2a3a; --secondary: #27ae60; --bg: #f4f7f6; 
+            --grey: #bdc3c7; --amber: #f39c12; --red: #e74c3c;
         }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: var(--primary); }
         .screen { display: none; min-height: 100vh; padding: 20px; box-sizing: border-box; }
         .active { display: flex; flex-direction: column; }
         
-        /* Welcome & Modes */
         #welcome-page { background: #1a2a3a; color: white; justify-content: center; align-items: center; text-align: center; }
         .mode-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; margin: 40px auto; }
         .mode-block { background: white; padding: 30px; border-radius: 15px; cursor: pointer; border-bottom: 6px solid var(--grey); transition: 0.3s; color: #333; }
         .mode-block:hover { transform: translateY(-5px); border-bottom-color: var(--secondary); }
 
-        /* Level Grid */
         .level-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; max-width: 1200px; margin: auto; }
         .level-card { background: white; padding: 15px; border-radius: 8px; border-top: 5px solid var(--grey); cursor: pointer; text-align: center; font-size: 0.8rem; }
         .status-completed { border-top-color: var(--secondary) !important; }
         .status-started { border-top-color: var(--amber) !important; }
         .status-failed { border-top-color: var(--red) !important; }
 
-        /* Content Area */
         .content-card { background: white; max-width: 700px; margin: 20px auto; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: center; }
-        .arabic-display { font-size: 2.2rem; font-weight: bold; direction: rtl; margin-bottom: 20px; color: #000; }
+        .arabic-display { font-size: 2.5rem; font-weight: bold; direction: rtl; margin-bottom: 20px; color: #000; }
         .input-box { width: 100%; padding: 15px; font-size: 1.2rem; border: 2px solid #ddd; border-radius: 8px; direction: rtl; text-align: center; }
         .btn { padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: var(--primary); color: white; margin-top: 10px; }
-        .hidden { display: none; }
     </style>
 </head>
 <body>
 
     <section id="welcome-page" class="screen active">
-        <h1>MARHABAN AMINA</h1>
-        <button class="btn" onclick="showScreen('mode-selection')">GO TO DASHBOARD</button>
+        <h1>ARABIC ACADEMY PRO</h1>
+        <p>Amina's 100-Level Mastery System</p>
+        <button class="btn" onclick="showScreen('mode-selection')" style="background:var(--secondary); padding: 20px 40px;">START LEARNING</button>
     </section>
 
     <section id="mode-selection" class="screen">
-        <h2 style="text-align:center;">Choose Your Block</h2>
+        <h2 style="text-align:center;">Select Learning Block</h2>
         <div class="mode-container">
-            <div class="mode-block" onclick="startMode('words')"><h2>📚 WORDS</h2><p>Vocab Mastery</p></div>
+            <div class="mode-block" onclick="startMode('words')"><h2>📚 WORDS</h2><p>Vocabulary Mastery</p></div>
             <div class="mode-block" onclick="startMode('sentences')"><h2>✍️ SENTENCES</h2><p>Translation Skills</p></div>
-            <div class="mode-block" onclick="startMode('practice')"><h2>⌨️ PRACTICE</h2><p>Keyboard Speed</p></div>
+            <div class="mode-block" onclick="startMode('practice')"><h2>⌨️ PRACTICE</h2><p>Arabic Typing Speed</p></div>
         </div>
     </section>
 
@@ -61,13 +58,12 @@
             <h3 id="lvl-title"></h3>
             <div id="q-prompt" class="arabic-display"></div>
             <p id="q-instruction"></p>
-            <input type="text" id="answer-input" class="input-box" placeholder="Type here...">
-            <button class="btn" style="background:var(--secondary); width:100%; margin-top:20px;" onclick="checkAnswer()">SUBMIT</button>
+            <input type="text" id="answer-input" class="input-box" placeholder="Type answer here...">
+            <button class="btn" style="background:var(--secondary); width:100%; margin-top:20px;" onclick="checkAnswer()">SUBMIT ANSWER</button>
         </div>
     </section>
 
     <script>
-        // HARD-CODED DATA STORAGE
         const rawData = {
             1: { title: "Greetings", word: "مَرْحَبًا", s_ara: "مَرْحَبًا، كَيْفَ حَالُكَ؟", s_eng: "Hello, how are you?", p_ara: "مَرْحَبًا" },
             2: { title: "Colors", word: "أَحْمَر", s_ara: "التُّفَّاحَةُ لَوْنُهَا أَحْمَر", s_eng: "The apple is red", p_ara: "أَحْمَر" },
@@ -79,7 +75,6 @@
             8: { title: "Places", word: "مَسْجِد", s_ara: "أَذْهَبُ إِلَى الْمَسْجِد", s_eng: "I go to the mosque", p_ara: "الْمَسْجِد" },
             9: { title: "Pronouns", word: "أَنَا", s_ara: "أَنَا أَعْمَلُ كَمُهَنْدِسَة", s_eng: "I work as an engineer", p_ara: "أَنَا مُهَنْدِسَة" },
             10: { title: "Verbs", word: "يَقْرَأ", s_ara: "الْوَلَدُ يَقْرَأُ كِتَابًا", s_eng: "The boy reads a book", p_ara: "يَقْرَأُ كِتَابًا" },
-            // LEVELS 11-20 PRE-FILLED
             11: { title: "Time", word: "سَاعَة", s_ara: "كَمِ السَّاعَةُ الآن؟", s_eng: "What time is it now?", p_ara: "كَمِ السَّاعَة" },
             12: { title: "Weather", word: "مَطَر", s_ara: "الْجَوُّ مُمْطِرٌ الْيَوْم", s_eng: "The weather is rainy today", p_ara: "الْجَوُّ مُمْطِر" },
             13: { title: "Clothes", word: "قَمِيص", s_ara: "هَذَا قَمِيصٌ جَمِيل", s_eng: "This is a beautiful shirt", p_ara: "قَمِيصٌ جَمِيل" },
@@ -89,84 +84,7 @@
             17: { title: "Restaurant", word: "قَائِمَة", s_ara: "أَعْطِنِي الْقَائِمَةَ مِنْ فَضْلِك", s_eng: "Give me the menu please", p_ara: "أَعْطِنِي الْقَائِمَة" },
             18: { title: "Hobbies", word: "رِيَاضَة", s_ara: "الرِّيَاضَةُ تَقْوِي الْجِسْم", s_eng: "Sports strengthen the body", p_ara: "الرِّيَاضَةُ تَقْوِي" },
             19: { title: "Transport", word: "سَيَّارَة", s_ara: "سَيَّارَتِي سَرِيعَةٌ جِدًّا", s_eng: "My car is very fast", p_ara: "سَيَّارَتِي سَرِيعَة" },
-            20: { title: "Directions", word: "يَمِين", s_ara: "اتَّجِهْ نَحْوَ الْيَمِين", s_eng: "Turn toward the right", p_ara: "نَحْوَ الْيَمِين" }
-        };
-
-        // Add empty levels 21-100 so the grid shows up
-        for(let i=21; i<=100; i++) { rawData[i] = { title: "Topic " + i, word: "Coming Soon", s_ara: "...", s_eng: "...", p_ara: "..." }; }
-
-        let currentMode = '';
-        let currentLvl = 0;
-        let progress = JSON.parse(localStorage.getItem('ara_final_v5')) || { words:{}, sentences:{}, practice:{} };
-
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        function startMode(m) {
-            currentMode = m;
-            document.getElementById('mode-header').innerText = m.toUpperCase();
-            renderGrid();
-            showScreen('level-page');
-        }
-
-        function renderGrid() {
-            const grid = document.getElementById('level-grid');
-            grid.innerHTML = '';
-            for(let i=1; i<=100; i++) {
-                const status = progress[currentMode][i] || 'never';
-                const div = document.createElement('div');
-                div.className = `level-card status-${status}`;
-                div.innerHTML = `<strong>Lv ${i}</strong><br>${rawData[i].title}`;
-                div.onclick = () => openStudy(i);
-                grid.appendChild(div);
-            }
-        }
-
-        function openStudy(lvl) {
-            currentLvl = lvl;
-            const data = rawData[lvl];
-            showScreen('study-page');
-            document.getElementById('lvl-title').innerText = `${currentMode.toUpperCase()}: ${data.title}`;
-            const prompt = document.getElementById('q-prompt');
-            const instruct = document.getElementById('q-instruction');
-            const input = document.getElementById('answer-input');
-            input.value = "";
-
-            if(currentMode === 'words') {
-                prompt.innerText = data.word;
-                instruct.innerText = "Translate this word to English:";
-            } else if(currentMode === 'sentences') {
-                prompt.innerText = data.s_ara;
-                instruct.innerText = "Translate this sentence to English:";
-            } else {
-                prompt.innerText = data.p_ara;
-                instruct.innerText = "Type this exactly in Arabic:";
-            }
-        }
-
-        function checkAnswer() {
-            const val = document.getElementById('answer-input').value.trim().toLowerCase();
-            const data = rawData[currentLvl];
-            let correct = false;
-
-            if(currentMode === 'words' && val === data.word_eng_placeholder) correct = true; // Simplified for now
-            if(currentMode === 'sentences' && val === data.s_eng.toLowerCase()) correct = true;
-            if(currentMode === 'practice' && val === data.p_ara) correct = true;
-
-            // Forced correct for first 20 levels for demo/learning
-            progress[currentMode][currentLvl] = 'completed';
-            localStorage.setItem('ara_final_v5', JSON.stringify(progress));
-            alert("Level Mastered! Status is now GREEN.");
-            startMode(currentMode);
-        }
-    </script>
-</body>
-</html>
-
-// LEVELS 21-40: Communication, Travel & Health
-        const batch2 = {
+            20: { title: "Directions", word: "يَمِين", s_ara: "اتَّجِهْ نَحْوَ الْيَمِين", s_eng: "Turn toward the right", p_ara: "نَحْوَ الْيَمِين" },
             21: { title: "Personality", word: "لَطِيف", s_ara: "أَخِي إِنْسَانٌ لَطِيفٌ جِدًّا", s_eng: "My brother is a very kind person", p_ara: "إِنْسَانٌ لَطِيف" },
             22: { title: "Emotions", word: "سَعِيد", s_ara: "أَنَا سَعِيدٌ بِنَجَاحِكَ", s_eng: "I am happy with your success", p_ara: "أَنَا سَعِيد" },
             23: { title: "Questions", word: "لِمَاذَا", s_ara: "لِمَاذَا تَأَخَّرْتَ عَنِ الْعَمَل؟", s_eng: "Why were you late for work?", p_ara: "لِمَاذَا تَأَخَّرْت" },
@@ -186,15 +104,7 @@
             37: { title: "Money", word: "نُقُود", s_ara: "أَيْنَ مِحْفَظَةُ النُّقُود؟", s_eng: "Where is the money wallet?", p_ara: "مِحْفَظَةُ النُّقُود" },
             38: { title: "Emergency", word: "مُسَاعَدَة", s_ara: "أَحْتَاجُ إِلَى مُسَاعَدَةٍ سَرِيعَة", s_eng: "I need quick help", p_ara: "أَحْتَاجُ مُسَاعَدَة" },
             39: { title: "Health", word: "مُسْتَشْفَى", s_ara: "الْمُسْتَشْفَى بَعِيدٌ عَنْ هُنَا", s_eng: "The hospital is far from here", p_ara: "الْمُسْتَشْفَى بَعِيد" },
-            40: { title: "Future Tense", word: "سَأَسَافِر", s_ara: "سَأَسَافِرُ إِلَى مَكَّةَ قَرِيبًا", s_eng: "I will travel to Makkah soon", p_ara: "سَأَسَافِرُ قَرِيبًا" }
-        };
-
-        // Integration Logic: Add this below the batch object
-        Object.assign(rawData, batch2);
-
-
-// LEVELS 41-60: Work, Education & Professional Skills
-        const batch3 = {
+            40: { title: "Future Tense", word: "سَأَسَافِر", s_ara: "سَأَسَافِرُ إِلَى مَكَّةَ قَرِيبًا", s_eng: "I will travel to Makkah soon", p_ara: "سَأَسَافِرُ قَرِيبًا" },
             41: { title: "Classroom", word: "دَفْتَر", s_ara: "أَكْتُبُ الْمُلَاحَظَاتِ فِي الدَّفْتَر", s_eng: "I write the notes in the notebook", p_ara: "أَكْتُبُ فِي الدَّفْتَر" },
             42: { title: "University", word: "مَاجِسْتِير", s_ara: "أُرِيدُ دِرَاسَةَ الْمَاجِسْتِير", s_eng: "I want to study for a Master's degree", p_ara: "دِرَاسَةُ الْمَاجِسْتِير" },
             43: { title: "Jobs", word: "مُدِير", s_ara: "مُدِيرِي فِي الْعَمَلِ طَيِّبٌ جِدًّا", s_eng: "My manager at work is very kind", p_ara: "مُدِيرِي فِي الْعَمَل" },
@@ -214,14 +124,7 @@
             57: { title: "Environment", word: "أَرْض", s_ara: "يَجِبُ أَنْ نَحْمِيَ الأَرْض", s_eng: "We must protect the Earth", p_ara: "نَحْمِيَ الأَرْض" },
             58: { title: "Farming", word: "مَزْرَعَة", s_ara: "أَسْكُنُ فِي مَزْرَعَةٍ كَبِيرَة", s_eng: "I live in a large farm", p_ara: "مَزْرَعَةٌ كَبِيرَة" },
             59: { title: "Disasters", word: "زِلْزَال", s_ara: "حَدَثَ زِلْزَالٌ قَوِيٌّ هُنَا", s_eng: "A strong earthquake happened here", p_ara: "زِلْزَالٌ قَوِي" },
-            60: { title: "Comparisons", word: "أَفْضَل", s_ara: "هَذَا الْكِتَابُ أَفْضَلُ مِنْ ذَاك", s_eng: "This book is better than that", p_ara: "هَذَا أَفْضَل" }
-        };
-
-        Object.assign(rawData, batch3);
-
-
-// LEVELS 61-80: Tech, Hardware, Databases & Society
-        const batch4 = {
+            60: { title: "Comparisons", word: "أَفْضَل", s_ara: "هَذَا الْكِتَابُ أَفْضَلُ مِنْ ذَاك", s_eng: "This book is better than that", p_ara: "هَذَا أَفْضَل" },
             61: { title: "Hardware", word: "شَاشَة", s_ara: "الشَّاشَةُ مَكْسُورَةٌ تَمَامًا", s_eng: "The screen is completely broken", p_ara: "الشَّاشَةُ مَكْسُورَة" },
             62: { title: "Software", word: "تَحْدِيث", s_ara: "يَحْتَاجُ النِّظَامُ إِلَى تَحْدِيث", s_eng: "The system needs an update", p_ara: "تَحْدِيثُ النِّظَام" },
             63: { title: "Databases", word: "قَاعِدَةُ بَيَانَات", s_ara: "قَاعِدَةُ الْبَيَانَاتِ بَطِيئَةٌ جِدًّا", s_eng: "The database is very slow", p_ara: "قَاعِدَةُ الْبَيَانَات" },
@@ -241,13 +144,7 @@
             77: { title: "Politics", word: "حُكُومَة", s_ara: "الْحُكُومَةُ تُسَاعِدُ الشَّعْبَ فَقَط", s_eng: "The government helps the people only", p_ara: "الْحُكُومَةُ فَقَط" },
             78: { title: "Sports", word: "فَرِيق", s_ara: "فَرِيقِي الْمُفَضَّلُ خَسِرَ الْيَوْم", s_eng: "My favorite team lost today", p_ara: "فَرِيقِي الْمُفَضَّل" },
             79: { title: "Recipes", word: "طَبْخ", s_ara: "طَبْخُ أُمِّي لَذِيذٌ جِدًّا", s_eng: "My mother's cooking is very delicious", p_ara: "طَبْخٌ لَذِيذ" },
-            80: { title: "Conditionals", word: "لَوْ", s_ara: "لَوْ كَانَ عِنْدِي مَالٌ لَسَافَرْت", s_eng: "If I had money I would travel", p_ara: "لَوْ كَانَ عِنْدِي" }
-        };
-
-        Object.assign(rawData, batch4);
-
-// LEVELS 81-100: Abstract Concepts, Mastery & Big Data
-        const batch5 = {
+            80: { title: "Conditionals", word: "لَوْ", s_ara: "لَوْ كَانَ عِنْدِي مَالٌ لَسَافَرْت", s_eng: "If I had money I would travel", p_ara: "لَوْ كَانَ عِنْدِي" },
             81: { title: "Truth", word: "حَقِيقَة", s_ara: "الْحَقِيقَةُ مُرَّةٌ أَحْيَانًا", s_eng: "The truth is bitter sometimes", p_ara: "الْحَقِيقَةُ مُرَّة" },
             82: { title: "Beauty", word: "جَمَال", s_ara: "الْجَمَالُ جَمَالُ الرُّوح", s_eng: "Beauty is the beauty of the soul", p_ara: "جَمَالُ الرُّوح" },
             83: { title: "Conflict", word: "حَرْب", s_ara: "الْحَرْبُ لَا تُخْلِفُ إِلَّا الدَّمَار", s_eng: "War only leaves destruction", p_ara: "الْحَرْبُ وَالدَّمَار" },
@@ -270,30 +167,81 @@
             100: { title: "Final Mastery", word: "إِتْقَان", s_ara: "أَتْقَنْتُ اللُّغَةَ الْعَرَبِيَّةَ تَمَامًا", s_eng: "I have mastered the Arabic language completely", p_ara: "أَتْقَنْتُ الْعَرَبِيَّة" }
         };
 
-        Object.assign(rawData, batch5);
+        let currentMode = '';
+        let currentLvl = 0;
+        let progress = JSON.parse(localStorage.getItem('ara_final_v10')) || { words:{}, sentences:{}, practice:{} };
 
-        // 1. Merge all batches into the main rawData object
-        Object.assign(rawData, batch1); // (If you named the first one batch1)
-        Object.assign(rawData, batch2);
-        Object.assign(rawData, batch3);
-        Object.assign(rawData, batch4);
-        Object.assign(rawData, batch5);
-
-        // 2. The Initialization Function (Starts the App)
-        function init() {
-            // Check if there is existing progress in LocalStorage
-            const savedProgress = localStorage.getItem('ara_final_v5');
-            if (savedProgress) {
-                progress = JSON.parse(savedProgress);
-            }
-            
-            // Start at the Welcome Screen
-            showScreen('welcome-page');
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
 
-        // 3. Run the init function when the page loads
-        window.onload = init;
+        function startMode(m) {
+            currentMode = m;
+            document.getElementById('mode-header').innerText = m.toUpperCase() + " MASTER LIST";
+            renderGrid();
+            showScreen('level-page');
+        }
 
+        function renderGrid() {
+            const grid = document.getElementById('level-grid');
+            grid.innerHTML = '';
+            for(let i=1; i<=100; i++) {
+                const status = progress[currentMode][i] || 'never';
+                const div = document.createElement('div');
+                div.className = `level-card status-${status}`;
+                div.innerHTML = `<strong>Level ${i}</strong><br>${rawData[i].title}`;
+                div.onclick = () => openLevel(i);
+                grid.appendChild(div);
+            }
+        }
+
+        function openLevel(lvl) {
+            currentLvl = lvl;
+            const data = rawData[lvl];
+            showScreen('study-page');
+            document.getElementById('lvl-title').innerText = `${currentMode.toUpperCase()} - Level ${lvl}: ${data.title}`;
+            const prompt = document.getElementById('q-prompt');
+            const instr = document.getElementById('q-instruction');
+            const input = document.getElementById('answer-input');
+            input.value = "";
+
+            if(currentMode === 'words') {
+                prompt.innerText = data.word;
+                instr.innerText = "What is the English name for this word? (Hint: The Topic name)";
+            } else if(currentMode === 'sentences') {
+                prompt.innerText = data.s_ara;
+                instr.innerText = "Translate the full sentence to English:";
+            } else {
+                prompt.innerText = data.p_ara;
+                instr.innerText = "Type the Arabic text exactly to pass:";
+            }
+        }
+
+        function checkAnswer() {
+            const val = document.getElementById('answer-input').value.trim();
+            const data = rawData[currentLvl];
+            let isCorrect = false;
+
+            if (currentMode === 'words') {
+                if (val.toLowerCase() === data.title.toLowerCase()) isCorrect = true;
+            } else if (currentMode === 'sentences') {
+                if (val.toLowerCase() === data.s_eng.toLowerCase()) isCorrect = true;
+            } else if (currentMode === 'practice') {
+                if (val === data.p_ara) isCorrect = true;
+            }
+
+            if (isCorrect) {
+                progress[currentMode][currentLvl] = 'completed';
+                alert("🎉 Correct!");
+            } else {
+                progress[currentMode][currentLvl] = 'failed';
+                alert("❌ Incorrect. Expected: " + (currentMode === 'practice' ? data.p_ara : (currentMode === 'words' ? data.title : data.s_eng)));
+            }
+
+            localStorage.setItem('ara_final_v10', JSON.stringify(progress));
+            startMode(currentMode);
+        }
     </script>
 </body>
 </html>
