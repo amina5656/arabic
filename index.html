@@ -2,146 +2,183 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Arabic Academy: 10-Point Mastery</title>
+    <title>Arabic Academy: Amina's 100-Level System</title>
     <style>
-        :root { --primary: #1a2a3a; --success: #27ae60; --error: #e74c3c; --bg: #f4f7f6; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; text-align: center; }
-        .screen { display: none; padding: 20px; }
-        .active { display: block; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; padding: 20px; }
-        .card { background: white; padding: 20px; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-top: 5px solid #ccc; }
-        .completed { border-top-color: var(--success) !important; }
-        .arabic { font-size: 2.5rem; margin: 20px; direction: rtl; }
-        input { width: 80%; padding: 15px; font-size: 1.2rem; margin: 10px; border-radius: 8px; border: 1px solid #ddd; }
-        .btn { padding: 15px 30px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; }
+        :root { --primary: #1a2a3a; --success: #27ae60; --bg: #f4f7f6; --white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; text-align: center; color: var(--primary); }
+        .screen { display: none; padding: 20px; min-height: 100vh; box-sizing: border-box; }
+        .active { display: flex; flex-direction: column; align-items: center; }
+        
+        /* Level Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; width: 100%; max-width: 1000px; margin-top: 30px; }
+        .card { background: white; padding: 20px; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 6px solid #bdc3c7; transition: 0.3s; }
+        .card.completed { border-top-color: var(--success); background: #e8f8f0; }
+
+        /* Study Area */
+        .study-container { background: white; width: 100%; max-width: 600px; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 50px; }
+        .arabic { font-size: 3rem; font-weight: bold; margin: 30px 0; direction: rtl; min-height: 80px; }
+        .translation { font-size: 1.5rem; color: #7f8c8d; margin-bottom: 20px; visibility: hidden; }
+        .visible { visibility: visible; }
+        
+        input { width: 90%; padding: 15px; font-size: 1.3rem; border: 2px solid #ddd; border-radius: 8px; direction: rtl; text-align: center; margin-bottom: 20px; }
+        .btn { padding: 15px 30px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin: 5px 0; }
+        .btn-next { background: var(--success); }
     </style>
 </head>
 <body>
 
     <section id="lvl-select" class="screen active">
-        <h1>Arabic Mastery: Level Selection</h1>
+        <h1>ARABIC MASTERY</h1>
+        <p>10 Items per Level • Typing Required only in Practice</p>
         <div id="main-grid" class="grid"></div>
     </section>
 
     <section id="study-area" class="screen">
-        <h2 id="session-title"></h2>
-        <p id="progress-text"></p>
-        <div id="display" class="arabic"></div>
-        <p id="instruction"></p>
-        <input type="text" id="answer-input" placeholder="Type here...">
-        <br>
-        <button class="btn" onclick="checkStep()">SUBMIT</button>
+        <button class="btn" onclick="location.reload()" style="width:auto; background:#95a5a6;">← Quit Level</button>
+        <div class="study-container">
+            <h2 id="phase-title"></h2>
+            <p id="progress-dots"></p>
+            
+            <div id="display-ara" class="arabic"></div>
+            <div id="display-eng" class="translation"></div>
+
+            <div id="input-zone" style="display:none;">
+                <input type="text" id="practice-input" placeholder="Type the Arabic above...">
+            </div>
+
+            <button id="btn-action" class="btn" onclick="handleAction()">SHOW ANSWER</button>
+        </div>
     </section>
 
     <script>
-        // DATA STRUCTURE: 10 items per level
         const levelData = {
             1: {
-                topic: "Greetings & Basics",
+                topic: "Greetings",
                 items: [
-                    { w: "مَرْحَبًا", s: "مَرْحَبًا بِكَ فِي بَيْتِي", eng_w: "hello", eng_s: "hello to you in my house", p: "مَرْحَبًا بِكَ" },
-                    { w: "أَهْلًا", s: "أَهْلًا وَسَهْلًا يَا صَدِيقِي", eng_w: "welcome", eng_s: "welcome my friend", p: "أَهْلًا وَسَهْلًا" },
-                    { w: "كَيْفَ", s: "كَيْفَ حَالُكَ الْيَوْم؟", eng_w: "how", eng_s: "how are you today?", p: "كَيْفَ حَالُكَ" },
-                    { w: "خَيْر", s: "أَنَا بِخَيْرٍ وَالْحَمْدُ لِلَّه", eng_w: "good", eng_s: "I am good praise be to God", p: "أَنَا بِخَيْر" },
-                    { w: "شُكْرًا", s: "شُكْرًا جَزِيلًا عَلَى الْمُسَاعَدَة", eng_w: "thanks", eng_s: "thanks a lot for the help", p: "شُكْرًا جَزِيلًا" },
-                    { w: "عَفْوًا", s: "عَفْوًا، لَا شُكْرَ عَلَى وَاجِب", eng_w: "you are welcome", eng_s: "you are welcome no thanks for duty", p: "لَا شُكْرَ عَلَى وَاجِب" },
-                    { w: "نَعَم", s: "نَعَم، أَنَا أَتَحَدَّثُ الْعَرَبِيَّة", eng_w: "yes", eng_s: "yes I speak Arabic", p: "نَعَم أَنَا أَتَحَدَّث" },
-                    { w: "لَا", s: "لَا، لَا أَعْرِفُ هَذَا الرَّجُل", eng_w: "no", eng_s: "no I do not know this man", p: "لَا أَعْرِف" },
-                    { w: "مِنْ فَضْلِك", s: "أَعْطِنِي الْكِتَابَ مِنْ فَضْلِك", eng_w: "please", eng_s: "give me the book please", p: "مِنْ فَضْلِك" },
-                    { w: "إِلَى اللِّقَاء", s: "إِلَى اللِّقَاء فِي الْأُسْبُوعِ الْقَادِم", eng_w: "goodbye", eng_s: "goodbye next week", p: "إِلَى اللِّقَاء" }
+                    { w: "مَرْحَبًا", s: "مَرْحَبًا بِكَ", eng: "Hello / Welcome to you", p: "مَرْحَبًا بِكَ" },
+                    { w: "أَهْلًا", s: "أَهْلًا يَا صَدِيقِي", eng: "Welcome my friend", p: "أَهْلًا يَا صَدِيقِي" },
+                    { w: "صَبَاحُ الْخَيْر", s: "صَبَاحُ الْخَيْر يَا أُمِّي", eng: "Good morning mother", p: "صَبَاحُ الْخَيْر" },
+                    { w: "مَسَاءُ الْخَيْر", s: "مَسَاءُ الْخَيْر يَا أَبِي", eng: "Good evening father", p: "مَسَاءُ الْخَيْر" },
+                    { w: "شُكْرًا", s: "شُكْرًا جَزِيلًا لَكَ", eng: "Thank you very much", p: "شُكْرًا جَزِيلًا" },
+                    { w: "عَفْوًا", s: "عَفْوًا يَا أَخِي", eng: "You are welcome brother", p: "عَفْوًا يَا أَخِي" },
+                    { w: "كَيْفَ الْحَال", s: "كَيْفَ الْحَال الْيَوْم؟", eng: "How is the situation today?", p: "كَيْفَ الْحَال" },
+                    { w: "بِخَيْر", s: "أَنَا بِخَيْر وَالْحَمْدُ لِلَّه", eng: "I am good, praise God", p: "أَنَا بِخَيْر" },
+                    { w: "مَعَ السَّلَامَة", s: "مَعَ السَّلَامَة يَا أَصْدِقَائِي", eng: "With peace (Goodbye) friends", p: "مَعَ السَّلَامَة" },
+                    { w: "تَفَضَّل", s: "تَفَضَّل، هَذَا لَكَ", eng: "Please / Go ahead, this is for you", p: "تَفَضَّل" }
+                ]
+            },
+            2: {
+                topic: "Colors",
+                items: [
+                    { w: "أَحْمَر", s: "التُّفَّاحَةُ لَوْنُهَا أَحْمَر", eng: "Red / The apple is red", p: "لَوْنُهَا أَحْمَر" },
+                    { w: "أَزْرَق", s: "السَّمَاءُ لَوْنُهَا أَزْرَق", eng: "Blue / The sky is blue", p: "لَوْنُهَا أَزْرَق" },
+                    { w: "أَخْضَر", s: "الْعُشْبُ لَوْنُهُ أَخْضَر", eng: "Green / The grass is green", p: "لَوْنُهُ أَخْضَر" },
+                    { w: "أَصْفَر", s: "الشَّمْسُ لَوْنُهَا أَصْفَر", eng: "Yellow / The sun is yellow", p: "لَوْنُهَا أَصْفَر" },
+                    { w: "أَسْوَد", s: "اللَّيْلُ لَوْنُهُ أَسْوَد", eng: "Black / The night is black", p: "لَوْنُهُ أَسْوَد" },
+                    { w: "أَبْيَض", s: "الثَّلْجُ لَوْنُهُ أَبْيَض", eng: "White / The snow is white", p: "لَوْنُهُ أَبْيَض" },
+                    { w: "بُرْتُقَالِي", s: "الْبُرْتُقَالُ لَوْنُهُ بُرْتُقَالِي", eng: "Orange / The orange is orange", p: "لَوْنُهُ بُرْتُقَالِي" },
+                    { w: "وَرْدِي", s: "الْوَرْدَةُ لَوْنُهَا وَرْدِي", eng: "Pink / The rose is pink", p: "لَوْنُهَا وَرْدِي" },
+                    { w: "بُنِّي", s: "الْقَهْوَةُ لَوْنُهَا بُنِّي", eng: "Brown / The coffee is brown", p: "لَوْنُهَا بُنِّي" },
+                    { w: "رَمَادِي", s: "السَّحَابُ لَوْنُهُ رَمَادِي", eng: "Grey / The cloud is grey", p: "لَوْنُهُ رَمَادِي" }
                 ]
             }
-            // Add Level 2, 3... 100 here
         };
 
-        let currentLvl = 1;
-        let currentStep = 0; // 0 to 9
-        let currentPhase = 'words'; // 'words', 'sentences', 'practice', 'quiz'
-        let progress = JSON.parse(localStorage.getItem('ara_master_v1')) || {};
+        let curLvl = 1;
+        let curStep = 0;
+        let curPhase = 'words'; // words -> sentences -> practice
+        let answerVisible = false;
+        let progress = JSON.parse(localStorage.getItem('amina_ara_v1')) || {};
 
         function init() {
             const grid = document.getElementById('main-grid');
             grid.innerHTML = '';
             for(let i=1; i<=100; i++) {
-                const isDone = progress[i] === 'done';
-                grid.innerHTML += `<div class="card ${isDone?'completed':''}" onclick="startLevel(${i})">
+                const done = progress[i] === 'mastered';
+                grid.innerHTML += `<div class="card ${done?'completed':''}" onclick="startLvl(${i})">
                     <strong>Level ${i}</strong><br>${levelData[i] ? levelData[i].topic : 'Locked'}
                 </div>`;
             }
         }
 
-        function startLevel(lvl) {
-            if(!levelData[lvl]) return alert("Level data not added yet!");
-            currentLvl = lvl;
-            currentStep = 0;
-            currentPhase = 'words';
+        function startLvl(lvl) {
+            if(!levelData[lvl]) return alert("Data coming soon!");
+            curLvl = lvl; curStep = 0; curPhase = 'words';
             showStep();
-            showScreen('study-area');
+            document.getElementById('lvl-select').classList.remove('active');
+            document.getElementById('study-area').classList.add('active');
         }
 
         function showStep() {
-            const data = levelData[currentLvl].items[currentStep];
-            const display = document.getElementById('display');
-            const instr = document.getElementById('instruction');
-            document.getElementById('progress-text').innerText = `Step ${currentStep + 1} of 10 | Mode: ${currentPhase.toUpperCase()}`;
-            document.getElementById('answer-input').value = '';
+            const data = levelData[curLvl].items[curStep];
+            const ara = document.getElementById('display-ara');
+            const eng = document.getElementById('display-eng');
+            const btn = document.getElementById('btn-action');
+            const inputZone = document.getElementById('input-zone');
+            
+            eng.classList.remove('visible');
+            answerVisible = false;
+            
+            document.getElementById('phase-title').innerText = `Level ${curLvl}: ${curPhase.toUpperCase()}`;
+            document.getElementById('progress-dots').innerText = `Item ${curStep + 1} of 10`;
 
-            if(currentPhase === 'words') {
-                display.innerText = data.w;
-                instr.innerText = "Translate this word to English:";
-            } else if(currentPhase === 'sentences') {
-                display.innerText = data.s;
-                instr.innerText = "Translate this sentence to English:";
-            } else if(currentPhase === 'practice') {
-                display.innerText = data.p;
-                instr.innerText = "TYPE the Arabic exactly:";
+            if(curPhase === 'words') {
+                ara.innerText = data.w;
+                eng.innerText = data.eng;
+                btn.innerText = "SHOW ANSWER";
+                inputZone.style.display = "none";
+            } else if(curPhase === 'sentences') {
+                ara.innerText = data.s;
+                eng.innerText = data.eng;
+                btn.innerText = "SHOW ANSWER";
+                inputZone.style.display = "none";
+            } else {
+                ara.innerText = data.p;
+                btn.innerText = "SUBMIT TYPING";
+                inputZone.style.display = "block";
+                document.getElementById('practice-input').value = "";
+                document.getElementById('practice-input').focus();
             }
         }
 
-        function checkStep() {
-            const val = document.getElementById('answer-input').value.trim().toLowerCase();
-            const data = levelData[currentLvl].items[currentStep];
-            let correct = false;
-
-            if(currentPhase === 'words' && val === data.eng_w) correct = true;
-            if(currentPhase === 'sentences' && val === data.eng_s) correct = true;
-            if(currentPhase === 'practice' && document.getElementById('answer-input').value.trim() === data.p) correct = true;
-
-            if(correct) {
-                if(currentStep < 9) {
-                    currentStep++;
-                    showStep();
+        function handleAction() {
+            if(curPhase === 'practice') {
+                const inputVal = document.getElementById('practice-input').value.trim();
+                if(inputVal === levelData[curLvl].items[curStep].p) {
+                    nextStep();
                 } else {
-                    handlePhaseEnd();
+                    alert("Typing doesn't match! Try again.");
                 }
+                return;
+            }
+
+            if(!answerVisible) {
+                document.getElementById('display-eng').classList.add('visible');
+                document.getElementById('btn-action').innerText = "NEXT";
+                answerVisible = true;
             } else {
-                alert("Incorrect. Try again!");
+                nextStep();
             }
         }
 
-        function handlePhaseEnd() {
-            if(currentPhase === 'words') {
-                alert("Words Complete! Moving to Sentences.");
-                currentPhase = 'sentences';
-                currentStep = 0;
-                showStep();
-            } else if(currentPhase === 'sentences') {
-                alert("Sentences Complete! Moving to Practice.");
-                currentPhase = 'practice';
-                currentStep = 0;
+        function nextStep() {
+            if(curStep < 9) {
+                curStep++;
                 showStep();
             } else {
-                alert("Level " + currentLvl + " MASTERED!");
-                progress[currentLvl] = 'done';
-                localStorage.setItem('ara_master_v1', JSON.stringify(progress));
-                showScreen('lvl-select');
-                init();
+                if(curPhase === 'words') {
+                    alert("Words Done! Now for Sentences.");
+                    curPhase = 'sentences'; curStep = 0; showStep();
+                } else if(curPhase === 'sentences') {
+                    alert("Sentences Done! FINAL PHASE: Arabic Typing Practice.");
+                    curPhase = 'practice'; curStep = 0; showStep();
+                } else {
+                    alert("CONGRATULATIONS! Level " + curLvl + " is Green.");
+                    progress[curLvl] = 'mastered';
+                    localStorage.setItem('amina_ara_v1', JSON.stringify(progress));
+                    location.reload();
+                }
             }
-        }
-
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
         }
 
         window.onload = init;
