@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Arabic Academy: Scroll & Quiz</title>
+    <title>Arabic Academy: Pro Scroll</title>
     <style>
         :root { --primary: #1a2a3a; --success: #27ae60; --bg: #f4f7f6; --text: #333; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
@@ -15,16 +15,18 @@
         .card.completed { border-top-color: var(--success); background: #e8f8f0; }
 
         /* Study List */
-        .study-container { background: white; width: 100%; max-width: 700px; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-top: 20px; }
-        h2 { border-bottom: 2px solid var(--primary); padding-bottom: 10px; color: var(--primary); }
-        .row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .study-container { background: white; width: 100%; max-width: 800px; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-top: 20px; }
+        h2 { border-bottom: 2px solid var(--primary); padding-bottom: 10px; color: var(--primary); margin-top: 40px; }
+        .row { display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; text-align: center; }
         .ara { font-size: 1.8rem; font-weight: bold; direction: rtl; color: #000; }
-        .eng { font-size: 1.1rem; color: #666; }
+        .pron { font-style: italic; color: #2980b9; font-size: 1rem; }
+        .eng { font-size: 1.1rem; color: #666; font-weight: 500; }
 
         /* Quiz Area */
         .quiz-box { background: white; width: 100%; max-width: 600px; padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .q-display { font-size: 2.5rem; margin: 30px 0; font-weight: bold; direction: rtl; }
-        .ans-display { font-size: 1.5rem; color: var(--success); margin-bottom: 20px; min-height: 1.6rem; }
+        .q-display { font-size: 2.8rem; margin: 20px 0; font-weight: bold; direction: rtl; }
+        .ans-display { font-size: 1.5rem; color: var(--success); font-weight: bold; min-height: 1.6rem; }
+        .pron-display { font-size: 1.2rem; color: #2980b9; font-style: italic; margin-bottom: 15px; }
         .btn { padding: 15px 30px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 1.1rem; }
         .btn-quiz-start { background: var(--success); margin-top: 40px; padding: 25px; font-size: 1.3rem; }
     </style>
@@ -33,35 +35,42 @@
 
     <section id="welcome" class="screen active" style="justify-content:center; background: var(--primary); color:white; text-align:center;">
         <h1>AHALAN AMINA</h1>
-        <p>10 Words • 10 Sentences • One Quiz</p>
+        <p>Listen, Read, and Conquer Arabic</p>
         <button class="btn" style="width:auto; background:var(--success);" onclick="showScreen('lvl-select')">OPEN DASHBOARD</button>
     </section>
 
     <section id="lvl-select" class="screen">
-        <h2>Select Level</h2>
+        <h2>Select Your Level</h2>
         <div id="main-grid" class="grid"></div>
     </section>
 
     <section id="study-page" class="screen">
-        <button class="btn" onclick="showScreen('lvl-select')" style="width:auto; margin-bottom:20px;">← Back</button>
+        <button class="btn" onclick="showScreen('lvl-select')" style="width:auto; margin-bottom:20px;">← Dashboard</button>
         <div class="study-container">
             <h1 id="lvl-title" style="text-align:center;"></h1>
             
-            <h2>📚 Vocabulary (10 Words)</h2>
+            <h2>📚 10 Vocabulary Words</h2>
+            <div id="words-header" class="row" style="font-weight:bold; border-bottom: 2px solid #ddd;">
+                <span>English</span><span>Pronunciation</span><span>Arabic</span>
+            </div>
             <div id="words-list"></div>
 
-            <h2 style="margin-top:40px;">✍️ Sentences (10 Phrases)</h2>
+            <h2>✍️ 10 Key Sentences</h2>
+            <div id="sentences-header" class="row" style="font-weight:bold; border-bottom: 2px solid #ddd;">
+                <span>English</span><span>Pronunciation</span><span>Arabic</span>
+            </div>
             <div id="sentences-list"></div>
 
-            <button class="btn btn-quiz-start" onclick="startQuiz()">I'VE READ THEM ALL - START QUIZ</button>
+            <button class="btn btn-quiz-start" onclick="startQuiz()">READY FOR THE QUIZ?</button>
         </div>
     </section>
 
     <section id="quiz-page" class="screen">
         <div class="quiz-box">
-            <h2 id="quiz-header">Level Quiz</h2>
+            <h2 id="quiz-header">Level Mastery Quiz</h2>
             <p id="quiz-progress"></p>
             <div id="q-text" class="q-display"></div>
+            <div id="p-text" class="pron-display"></div>
             <div id="a-text" class="ans-display"></div>
             <button id="quiz-btn" class="btn" onclick="handleQuizAction()">SHOW ANSWER</button>
         </div>
@@ -70,29 +79,36 @@
     <script>
         const levelData = {
             1: {
-                topic: "Greetings & Basics",
+                topic: "The Basics",
                 words: [
-                    { a: "مَرْحَبًا", e: "Hello" }, { a: "أَهْلًا", e: "Welcome" }, { a: "شُكْرًا", e: "Thanks" },
-                    { a: "كَيْفَ", e: "How" }, { a: "بِخَيْر", e: "Good/Fine" }, { a: "نَعَم", e: "Yes" },
-                    { a: "لَا", e: "No" }, { a: "أَيْنَ", e: "Where" }, { a: "مَنْ", e: "Who" }, { a: "أَنَا", e: "I am" }
+                    { a: "مَرْحَبًا", p: "Mar-ha-ban", e: "Hello" },
+                    { a: "أَهْلًا", p: "Ah-lan", e: "Welcome" },
+                    { a: "شُكْرًا", p: "Shuk-ran", e: "Thanks" },
+                    { a: "كَيْفَ", p: "Kay-fa", e: "How" },
+                    { a: "بِخَيْر", p: "Bi-khayr", e: "Good/Fine" },
+                    { a: "نَعَم", p: "Na-am", e: "Yes" },
+                    { a: "لَا", p: "Laa", e: "No" },
+                    { a: "أَيْنَ", p: "Ay-na", e: "Where" },
+                    { a: "مَنْ", p: "Man", e: "Who" },
+                    { a: "أَنَا", p: "Ana", e: "I am" }
                 ],
                 sentences: [
-                    { a: "مَرْحَبًا بِكَ يَا صَدِيقِي", e: "Hello to you my friend" },
-                    { a: "أَهْلًا وَسَهْلًا فِي بَيْتِي", e: "Welcome to my house" },
-                    { a: "شُكْرًا جَزِيلًا عَلَى الْمُسَاعَدَة", e: "Thank you very much for the help" },
-                    { a: "كَيْفَ حَالُكَ الْيَوْم؟", e: "How are you today?" },
-                    { a: "أَنَا بِخَيْر وَالْحَمْدُ لِلَّه", e: "I am fine, praise be to God" },
-                    { a: "نَعَم أَنَا أَتَحَدَّثُ الْعَرَبِيَّة", e: "Yes, I speak Arabic" },
-                    { a: "لَا لَسْتُ جَائِعًا الآن", e: "No, I am not hungry now" },
-                    { a: "أَيْنَ مَكْتَبُكَ الْجَدِيد؟", e: "Where is your new office?" },
-                    { a: "مَنْ أَنْتَ يَا أَخِي؟", e: "Who are you, brother?" },
-                    { a: "أَنَا مُهَنْدِسَةُ بَيَانَات", e: "I am a Data Engineer" }
+                    { a: "مَرْحَبًا بِكَ يَا صَدِيقِي", p: "Marhaban bika ya sadeeqi", e: "Hello to you my friend" },
+                    { a: "أَهْلًا وَسَهْلًا فِي بَيْتِي", p: "Ahlan wa sahlan fee bayti", e: "Welcome to my house" },
+                    { a: "شُكْرًا جَزِيلًا عَلَى الْمُسَاعَدَة", p: "Shukran jazeelan ala al-musaa'adah", e: "Thank you very much for the help" },
+                    { a: "كَيْفَ حَالُكَ الْيَوْم؟", p: "Kayfa haaluka al-yawm?", e: "How are you today?" },
+                    { a: "أَنَا بِخَيْر وَالْحَمْدُ لِلَّه", p: "Ana bikhayr wal-hamdulillah", e: "I am fine, praise be to God" },
+                    { a: "نَعَم أَنَا أَتَحَدَّثُ الْعَرَبِيَّة", p: "Na-am ana atahaddathu al-arabiyyah", e: "Yes, I speak Arabic" },
+                    { a: "لَا لَسْتُ جَائِعًا الآن", p: "Laa lastu jaa-i'an al-aan", e: "No, I am not hungry now" },
+                    { a: "أَيْنَ مَكْتَبُكَ الْجَدِيد؟", p: "Ayna maktabuka al-jadeed?", e: "Where is your new office?" },
+                    { a: "مَنْ أَنْتَ يَا أَخِي؟", p: "Man anta ya akhi?", e: "Who are you, brother?" },
+                    { a: "أَنَا مُهَنْدِسَةُ بَيَانَات", p: "Ana muhandisatu bayaanaat", e: "I am a Data Engineer" }
                 ]
             }
         };
 
         let curLvl = 1; let curQ = 0; let showingAns = false; let quizPool = [];
-        let progress = JSON.parse(localStorage.getItem('amina_scroll_v1')) || {};
+        let progress = JSON.parse(localStorage.getItem('amina_pron_v1')) || {};
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -118,48 +134,47 @@
             wList.innerHTML = ''; sList.innerHTML = '';
 
             levelData[lvl].words.forEach(item => {
-                wList.innerHTML += `<div class="row"><span class="eng">${item.e}</span><span class="ara">${item.a}</span></div>`;
+                wList.innerHTML += `<div class="row"><span class="eng">${item.e}</span><span class="pron">${item.p}</span><span class="ara">${item.a}</span></div>`;
             });
             levelData[lvl].sentences.forEach(item => {
-                sList.innerHTML += `<div class="row"><span class="eng">${item.e}</span><span class="ara">${item.a}</span></div>`;
+                sList.innerHTML += `<div class="row"><span class="eng">${item.e}</span><span class="pron">${item.p}</span><span class="ara">${item.a}</span></div>`;
             });
 
             showScreen('study-page');
         }
 
         function startQuiz() {
-            // Combine words and sentences into one quiz pool of 20 items
             quizPool = [...levelData[curLvl].words, ...levelData[curLvl].sentences];
-            // Shuffle the pool
             quizPool.sort(() => Math.random() - 0.5);
-            curQ = 0;
-            showingAns = false;
+            curQ = 0; showingAns = false;
             showScreen('quiz-page');
             updateQuizUI();
         }
 
         function updateQuizUI() {
             const item = quizPool[curQ];
-            document.getElementById('quiz-progress').innerText = `Question ${curQ + 1} of 20`;
+            document.getElementById('quiz-progress').innerText = `Item ${curQ + 1} of 20`;
             document.getElementById('q-text').innerText = item.a;
-            document.getElementById('a-text').innerText = "";
+            document.getElementById('p-text').innerText = ""; // Hide pronunciation initially
+            document.getElementById('a-text').innerText = ""; // Hide English initially
             document.getElementById('quiz-btn').innerText = "SHOW ANSWER";
             showingAns = false;
         }
 
         function handleQuizAction() {
             if(!showingAns) {
-                document.getElementById('a-text').innerText = quizPool[curQ].e;
-                document.getElementById('quiz-btn').innerText = "NEXT QUESTION";
+                const item = quizPool[curQ];
+                document.getElementById('p-text').innerText = item.p;
+                document.getElementById('a-text').innerText = item.e;
+                document.getElementById('quiz-btn').innerText = "NEXT";
                 showingAns = true;
             } else {
                 if(curQ < quizPool.length - 1) {
-                    curQ++;
-                    updateQuizUI();
+                    curQ++; updateQuizUI();
                 } else {
                     alert("🎉 Level " + curLvl + " Complete!");
                     progress[curLvl] = true;
-                    localStorage.setItem('amina_scroll_v1', JSON.stringify(progress));
+                    localStorage.setItem('amina_pron_v1', JSON.stringify(progress));
                     showScreen('lvl-select');
                 }
             }
