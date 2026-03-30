@@ -2,34 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Arabic Academy: Interactive Quiz</title>
+    <title>Arabic Academy: Level Map & MCQ</title>
     <style>
         :root { --primary: #1a2a3a; --success: #2ecc71; --error: #e74c3c; --bg: #f4f7f6; --text: #333; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
         .screen { display: none; padding: 20px; min-height: 100vh; flex-direction: column; align-items: center; }
         .active { display: flex; }
         
-        /* Dashboard Cards */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; width: 100%; max-width: 900px; margin-top: 20px; }
-        .card { background: white; padding: 20px; border-radius: 12px; cursor: pointer; border-top: 6px solid #bdc3c7; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s; }
+        /* Dashboard with Topic Names */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; margin-top: 20px; }
+        .card { background: white; padding: 25px; border-radius: 12px; cursor: pointer; border-top: 6px solid #bdc3c7; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s; }
+        .card:hover { transform: translateY(-5px); }
+        .card h3 { margin: 0; color: var(--primary); font-size: 0.9rem; text-transform: uppercase; }
+        .card p { margin: 10px 0 0 0; font-weight: bold; font-size: 1.1rem; }
         .card.completed { border-top-color: var(--success); background: #e8f8f0; }
 
-        /* Study List Table */
+        /* Study Table */
         .study-container { background: white; width: 100%; max-width: 850px; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-top: 20px; }
-        .row { display: grid; grid-template-columns: 1.2fr 1.2fr 1.5fr; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; text-align: center; }
+        .row { display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; text-align: center; }
         .ara { font-size: 1.8rem; font-weight: bold; direction: rtl; color: #000; }
         .pron { font-style: italic; color: #2980b9; font-size: 1.1rem; }
         .eng { font-size: 1.1rem; color: #555; }
 
-        /* Multiple Choice Quiz */
+        /* MCQ Quiz */
         .quiz-box { background: white; width: 100%; max-width: 600px; padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         .q-display { font-size: 2.8rem; margin: 10px 0; font-weight: bold; direction: rtl; }
         .p-display { font-style: italic; color: #2980b9; margin-bottom: 25px; font-size: 1.2rem; }
         .options-grid { display: grid; gap: 12px; width: 100%; margin-top: 20px; }
-        .option-btn { padding: 18px; border: 2px solid #ddd; border-radius: 10px; background: white; cursor: pointer; font-size: 1.1rem; transition: 0.2s; }
-        .option-btn:hover { border-color: var(--primary); }
+        .option-btn { padding: 18px; border: 2px solid #ddd; border-radius: 10px; background: white; cursor: pointer; font-size: 1.1rem; }
         
-        /* Quiz Feedback Colors */
         .correct { background: var(--success) !important; color: white !important; border-color: var(--success) !important; }
         .wrong { background: var(--error) !important; color: white !important; border-color: var(--error) !important; }
 
@@ -41,24 +42,24 @@
 
     <section id="welcome" class="screen active" style="justify-content:center; background: var(--primary); color:white; text-align:center;">
         <h1>AHALAN AMINA</h1>
-        <p>Study the list, then beat the Multiple Choice Quest!</p>
-        <button class="btn" style="width:auto; background:var(--success);" onclick="showScreen('lvl-select')">OPEN DASHBOARD</button>
+        <p>Your Path to Arabic Mastery Begins Here</p>
+        <button class="btn" style="width:auto; background:var(--success);" onclick="showScreen('lvl-select')">ENTER LEARNING MAP</button>
     </section>
 
     <section id="lvl-select" class="screen">
-        <h2>Learning Map</h2>
+        <h1>Learning Map</h1>
         <div id="main-grid" class="grid"></div>
     </section>
 
     <section id="study-page" class="screen">
-        <button class="btn" onclick="showScreen('lvl-select')" style="width:auto; margin-bottom:20px;">← Back</button>
+        <button class="btn" onclick="showScreen('lvl-select')" style="width:auto; margin-bottom:20px;">← Back to Map</button>
         <div class="study-container">
             <h1 id="lvl-title" style="text-align:center;"></h1>
             <div class="row" style="font-weight:bold; border-bottom: 3px solid var(--primary); background: #f9f9f9;">
-                <span>English</span><span>Pronunciation</span><span>Arabic</span>
+                <span>English Meaning</span><span>Pronunciation</span><span>Arabic Script</span>
             </div>
             <div id="full-list"></div>
-            <button class="btn btn-quiz-start" onclick="startQuiz()">START MULTIPLE CHOICE QUIZ</button>
+            <button class="btn btn-quiz-start" onclick="startQuiz()">TAKE THE LEVEL QUIZ</button>
         </div>
     </section>
 
@@ -68,14 +69,15 @@
             <div id="q-text" class="q-display"></div>
             <div id="p-text" class="p-display"></div>
             <div id="options" class="options-grid"></div>
-            <button id="next-btn" class="btn" style="display:none; margin-top:20px;" onclick="nextQuestion()">NEXT QUESTION</button>
+            <button id="next-btn" class="btn" style="display:none; margin-top:20px;" onclick="nextQuestion()">CONTINUE</button>
         </div>
     </section>
 
     <script>
+        // Data containing level names and items
         const levelData = {
             1: {
-                topic: "Basics & Greetings",
+                topic: "The Greetings",
                 items: [
                     { a: "مَرْحَبًا", p: "Mar-ha-ban", e: "Hello" },
                     { a: "أَهْلًا", p: "Ah-lan", e: "Welcome" },
@@ -98,11 +100,13 @@
                     { a: "مَنْ أَنْتَ يَا أَخِي؟", p: "Man anta ya akhi?", e: "Who are you, brother?" },
                     { a: "أَنَا مُهَنْدِسَةُ بَيَانَات", p: "Ana muhandisatu bayaanaat", e: "I am a Data Engineer" }
                 ]
-            }
+            },
+            2: { topic: "Colors", items: [] }, 
+            3: { topic: "The Family", items: [] }
         };
 
         let curLvl = 1; let curQ = 0; let quizPool = [];
-        let progress = JSON.parse(localStorage.getItem('amina_mcq_v1')) || {};
+        let progress = JSON.parse(localStorage.getItem('amina_map_v1')) || {};
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -113,18 +117,22 @@
 
         function renderGrid() {
             const grid = document.getElementById('main-grid'); grid.innerHTML = '';
-            for(let i=1; i<=100; i++) {
-                grid.innerHTML += `<div class="card ${progress[i]?'completed':''}" onclick="loadLevel(${i})"><strong>Level ${i}</strong></div>`;
+            for(let i=1; i<=10; i++) { // Showing 10 for demo, set to 100 as needed
+                const info = levelData[i] || { topic: "Locked Level" };
+                grid.innerHTML += `
+                    <div class="card ${progress[i]?'completed':''}" onclick="loadLevel(${i})">
+                        <h3>Level ${i}</h3>
+                        <p>${info.topic}</p>
+                    </div>`;
             }
         }
 
         function loadLevel(lvl) {
-            if(!levelData[lvl]) return alert("Data for this level is not yet added.");
+            if(!levelData[lvl] || levelData[lvl].items.length === 0) return alert("Working on this level data!");
             curLvl = lvl;
-            document.getElementById('lvl-title').innerText = `Level ${lvl}: ${levelData[lvl].topic}`;
+            document.getElementById('lvl-title').innerText = `Study: ${levelData[lvl].topic}`;
             const list = document.getElementById('full-list');
             list.innerHTML = '';
-
             levelData[lvl].items.forEach(item => {
                 list.innerHTML += `<div class="row"><span class="eng">${item.e}</span><span class="pron">${item.p}</span><span class="ara">${item.a}</span></div>`;
             });
@@ -132,6 +140,7 @@
         }
 
         function startQuiz() {
+            // "No Repeats" logic: We shuffle the pool once and step through it.
             quizPool = [...levelData[curLvl].items].sort(() => Math.random() - 0.5);
             curQ = 0;
             showScreen('quiz-page');
@@ -141,14 +150,13 @@
         function loadQuestion() {
             const item = quizPool[curQ];
             document.getElementById('next-btn').style.display = "none";
-            document.getElementById('quiz-progress').innerText = `Question ${curQ + 1} of ${quizPool.length}`;
+            document.getElementById('quiz-progress').innerText = `Quest: ${curQ + 1} / ${quizPool.length}`;
             document.getElementById('q-text').innerText = item.a;
-            document.getElementById('p-text').innerText = item.p; // Pronunciation is shown to help connect sound to script
+            document.getElementById('p-text').innerText = item.p;
 
             const optionsDiv = document.getElementById('options');
             optionsDiv.innerHTML = '';
 
-            // Generate 1 correct + 3 wrong options
             let choices = [item.e];
             while(choices.length < 4) {
                 let randomItem = levelData[curLvl].items[Math.floor(Math.random() * levelData[curLvl].items.length)].e;
@@ -160,31 +168,25 @@
                 const b = document.createElement('button');
                 b.className = 'option-btn';
                 b.innerText = choice;
-                b.onclick = () => checkAnswer(choice, b, item.e);
+                b.onclick = () => {
+                    const btns = document.querySelectorAll('.option-btn');
+                    btns.forEach(btn => {
+                        btn.onclick = null;
+                        if(btn.innerText === item.e) btn.classList.add('correct');
+                        else if(btn.innerText === choice) btn.classList.add('wrong');
+                    });
+                    document.getElementById('next-btn').style.display = "block";
+                };
                 optionsDiv.appendChild(b);
             });
         }
 
-        function checkAnswer(selected, btn, correct) {
-            const allBtns = document.querySelectorAll('.option-btn');
-            allBtns.forEach(b => {
-                b.onclick = null; // Disable clicking after choice
-                if(b.innerText === correct) b.classList.add('correct');
-            });
-
-            if(selected !== correct) {
-                btn.classList.add('wrong');
-            }
-            document.getElementById('next-btn').style.display = "block";
-        }
-
         function nextQuestion() {
-            if(curQ < quizPool.length - 1) {
-                curQ++; loadQuestion();
-            } else {
-                alert("🎉 MABROOK! Level " + curLvl + " Mastered.");
+            if(curQ < quizPool.length - 1) { curQ++; loadQuestion(); }
+            else {
+                alert("Mabrook! You've mastered " + levelData[curLvl].topic);
                 progress[curLvl] = true;
-                localStorage.setItem('amina_mcq_v1', JSON.stringify(progress));
+                localStorage.setItem('amina_map_v1', JSON.stringify(progress));
                 showScreen('lvl-select');
             }
         }
