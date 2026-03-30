@@ -2,32 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Arabic Academy: Pro Scroll</title>
+    <title>Arabic Academy: Interactive Quiz</title>
     <style>
-        :root { --primary: #1a2a3a; --success: #27ae60; --bg: #f4f7f6; --text: #333; }
+        :root { --primary: #1a2a3a; --success: #2ecc71; --error: #e74c3c; --bg: #f4f7f6; --text: #333; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
         .screen { display: none; padding: 20px; min-height: 100vh; flex-direction: column; align-items: center; }
         .active { display: flex; }
         
-        /* Dashboard */
+        /* Dashboard Cards */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; width: 100%; max-width: 900px; margin-top: 20px; }
-        .card { background: white; padding: 20px; border-radius: 12px; cursor: pointer; border-top: 6px solid #bdc3c7; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .card { background: white; padding: 20px; border-radius: 12px; cursor: pointer; border-top: 6px solid #bdc3c7; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s; }
         .card.completed { border-top-color: var(--success); background: #e8f8f0; }
 
-        /* Study List */
-        .study-container { background: white; width: 100%; max-width: 800px; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-top: 20px; }
-        h2 { border-bottom: 2px solid var(--primary); padding-bottom: 10px; color: var(--primary); margin-top: 40px; }
-        .row { display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; text-align: center; }
+        /* Study List Table */
+        .study-container { background: white; width: 100%; max-width: 850px; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-top: 20px; }
+        .row { display: grid; grid-template-columns: 1.2fr 1.2fr 1.5fr; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; text-align: center; }
         .ara { font-size: 1.8rem; font-weight: bold; direction: rtl; color: #000; }
-        .pron { font-style: italic; color: #2980b9; font-size: 1rem; }
-        .eng { font-size: 1.1rem; color: #666; font-weight: 500; }
+        .pron { font-style: italic; color: #2980b9; font-size: 1.1rem; }
+        .eng { font-size: 1.1rem; color: #555; }
 
-        /* Quiz Area */
+        /* Multiple Choice Quiz */
         .quiz-box { background: white; width: 100%; max-width: 600px; padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .q-display { font-size: 2.8rem; margin: 20px 0; font-weight: bold; direction: rtl; }
-        .ans-display { font-size: 1.5rem; color: var(--success); font-weight: bold; min-height: 1.6rem; }
-        .pron-display { font-size: 1.2rem; color: #2980b9; font-style: italic; margin-bottom: 15px; }
-        .btn { padding: 15px 30px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 1.1rem; }
+        .q-display { font-size: 2.8rem; margin: 10px 0; font-weight: bold; direction: rtl; }
+        .p-display { font-style: italic; color: #2980b9; margin-bottom: 25px; font-size: 1.2rem; }
+        .options-grid { display: grid; gap: 12px; width: 100%; margin-top: 20px; }
+        .option-btn { padding: 18px; border: 2px solid #ddd; border-radius: 10px; background: white; cursor: pointer; font-size: 1.1rem; transition: 0.2s; }
+        .option-btn:hover { border-color: var(--primary); }
+        
+        /* Quiz Feedback Colors */
+        .correct { background: var(--success) !important; color: white !important; border-color: var(--success) !important; }
+        .wrong { background: var(--error) !important; color: white !important; border-color: var(--error) !important; }
+
+        .btn { padding: 15px 30px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1.1rem; }
         .btn-quiz-start { background: var(--success); margin-top: 40px; padding: 25px; font-size: 1.3rem; }
     </style>
 </head>
@@ -35,52 +41,42 @@
 
     <section id="welcome" class="screen active" style="justify-content:center; background: var(--primary); color:white; text-align:center;">
         <h1>AHALAN AMINA</h1>
-        <p>Listen, Read, and Conquer Arabic</p>
+        <p>Study the list, then beat the Multiple Choice Quest!</p>
         <button class="btn" style="width:auto; background:var(--success);" onclick="showScreen('lvl-select')">OPEN DASHBOARD</button>
     </section>
 
     <section id="lvl-select" class="screen">
-        <h2>Select Your Level</h2>
+        <h2>Learning Map</h2>
         <div id="main-grid" class="grid"></div>
     </section>
 
     <section id="study-page" class="screen">
-        <button class="btn" onclick="showScreen('lvl-select')" style="width:auto; margin-bottom:20px;">← Dashboard</button>
+        <button class="btn" onclick="showScreen('lvl-select')" style="width:auto; margin-bottom:20px;">← Back</button>
         <div class="study-container">
             <h1 id="lvl-title" style="text-align:center;"></h1>
-            
-            <h2>📚 10 Vocabulary Words</h2>
-            <div id="words-header" class="row" style="font-weight:bold; border-bottom: 2px solid #ddd;">
+            <div class="row" style="font-weight:bold; border-bottom: 3px solid var(--primary); background: #f9f9f9;">
                 <span>English</span><span>Pronunciation</span><span>Arabic</span>
             </div>
-            <div id="words-list"></div>
-
-            <h2>✍️ 10 Key Sentences</h2>
-            <div id="sentences-header" class="row" style="font-weight:bold; border-bottom: 2px solid #ddd;">
-                <span>English</span><span>Pronunciation</span><span>Arabic</span>
-            </div>
-            <div id="sentences-list"></div>
-
-            <button class="btn btn-quiz-start" onclick="startQuiz()">READY FOR THE QUIZ?</button>
+            <div id="full-list"></div>
+            <button class="btn btn-quiz-start" onclick="startQuiz()">START MULTIPLE CHOICE QUIZ</button>
         </div>
     </section>
 
     <section id="quiz-page" class="screen">
         <div class="quiz-box">
-            <h2 id="quiz-header">Level Mastery Quiz</h2>
             <p id="quiz-progress"></p>
             <div id="q-text" class="q-display"></div>
-            <div id="p-text" class="pron-display"></div>
-            <div id="a-text" class="ans-display"></div>
-            <button id="quiz-btn" class="btn" onclick="handleQuizAction()">SHOW ANSWER</button>
+            <div id="p-text" class="p-display"></div>
+            <div id="options" class="options-grid"></div>
+            <button id="next-btn" class="btn" style="display:none; margin-top:20px;" onclick="nextQuestion()">NEXT QUESTION</button>
         </div>
     </section>
 
     <script>
         const levelData = {
             1: {
-                topic: "The Basics",
-                words: [
+                topic: "Basics & Greetings",
+                items: [
                     { a: "مَرْحَبًا", p: "Mar-ha-ban", e: "Hello" },
                     { a: "أَهْلًا", p: "Ah-lan", e: "Welcome" },
                     { a: "شُكْرًا", p: "Shuk-ran", e: "Thanks" },
@@ -90,12 +86,10 @@
                     { a: "لَا", p: "Laa", e: "No" },
                     { a: "أَيْنَ", p: "Ay-na", e: "Where" },
                     { a: "مَنْ", p: "Man", e: "Who" },
-                    { a: "أَنَا", p: "Ana", e: "I am" }
-                ],
-                sentences: [
+                    { a: "أَنَا", p: "Ana", e: "I am" },
                     { a: "مَرْحَبًا بِكَ يَا صَدِيقِي", p: "Marhaban bika ya sadeeqi", e: "Hello to you my friend" },
                     { a: "أَهْلًا وَسَهْلًا فِي بَيْتِي", p: "Ahlan wa sahlan fee bayti", e: "Welcome to my house" },
-                    { a: "شُكْرًا جَزِيلًا عَلَى الْمُسَاعَدَة", p: "Shukran jazeelan ala al-musaa'adah", e: "Thank you very much for the help" },
+                    { a: "شُكْرًا جَزِيلًا لَكَ", p: "Shukran jazeelan laka", e: "Thank you very much to you" },
                     { a: "كَيْفَ حَالُكَ الْيَوْم؟", p: "Kayfa haaluka al-yawm?", e: "How are you today?" },
                     { a: "أَنَا بِخَيْر وَالْحَمْدُ لِلَّه", p: "Ana bikhayr wal-hamdulillah", e: "I am fine, praise be to God" },
                     { a: "نَعَم أَنَا أَتَحَدَّثُ الْعَرَبِيَّة", p: "Na-am ana atahaddathu al-arabiyyah", e: "Yes, I speak Arabic" },
@@ -107,8 +101,8 @@
             }
         };
 
-        let curLvl = 1; let curQ = 0; let showingAns = false; let quizPool = [];
-        let progress = JSON.parse(localStorage.getItem('amina_pron_v1')) || {};
+        let curLvl = 1; let curQ = 0; let quizPool = [];
+        let progress = JSON.parse(localStorage.getItem('amina_mcq_v1')) || {};
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -128,55 +122,70 @@
             if(!levelData[lvl]) return alert("Data for this level is not yet added.");
             curLvl = lvl;
             document.getElementById('lvl-title').innerText = `Level ${lvl}: ${levelData[lvl].topic}`;
-            
-            const wList = document.getElementById('words-list');
-            const sList = document.getElementById('sentences-list');
-            wList.innerHTML = ''; sList.innerHTML = '';
+            const list = document.getElementById('full-list');
+            list.innerHTML = '';
 
-            levelData[lvl].words.forEach(item => {
-                wList.innerHTML += `<div class="row"><span class="eng">${item.e}</span><span class="pron">${item.p}</span><span class="ara">${item.a}</span></div>`;
+            levelData[lvl].items.forEach(item => {
+                list.innerHTML += `<div class="row"><span class="eng">${item.e}</span><span class="pron">${item.p}</span><span class="ara">${item.a}</span></div>`;
             });
-            levelData[lvl].sentences.forEach(item => {
-                sList.innerHTML += `<div class="row"><span class="eng">${item.e}</span><span class="pron">${item.p}</span><span class="ara">${item.a}</span></div>`;
-            });
-
             showScreen('study-page');
         }
 
         function startQuiz() {
-            quizPool = [...levelData[curLvl].words, ...levelData[curLvl].sentences];
-            quizPool.sort(() => Math.random() - 0.5);
-            curQ = 0; showingAns = false;
+            quizPool = [...levelData[curLvl].items].sort(() => Math.random() - 0.5);
+            curQ = 0;
             showScreen('quiz-page');
-            updateQuizUI();
+            loadQuestion();
         }
 
-        function updateQuizUI() {
+        function loadQuestion() {
             const item = quizPool[curQ];
-            document.getElementById('quiz-progress').innerText = `Item ${curQ + 1} of 20`;
+            document.getElementById('next-btn').style.display = "none";
+            document.getElementById('quiz-progress').innerText = `Question ${curQ + 1} of ${quizPool.length}`;
             document.getElementById('q-text').innerText = item.a;
-            document.getElementById('p-text').innerText = ""; // Hide pronunciation initially
-            document.getElementById('a-text').innerText = ""; // Hide English initially
-            document.getElementById('quiz-btn').innerText = "SHOW ANSWER";
-            showingAns = false;
+            document.getElementById('p-text').innerText = item.p; // Pronunciation is shown to help connect sound to script
+
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+
+            // Generate 1 correct + 3 wrong options
+            let choices = [item.e];
+            while(choices.length < 4) {
+                let randomItem = levelData[curLvl].items[Math.floor(Math.random() * levelData[curLvl].items.length)].e;
+                if(!choices.includes(randomItem)) choices.push(randomItem);
+            }
+            choices.sort(() => Math.random() - 0.5);
+
+            choices.forEach(choice => {
+                const b = document.createElement('button');
+                b.className = 'option-btn';
+                b.innerText = choice;
+                b.onclick = () => checkAnswer(choice, b, item.e);
+                optionsDiv.appendChild(b);
+            });
         }
 
-        function handleQuizAction() {
-            if(!showingAns) {
-                const item = quizPool[curQ];
-                document.getElementById('p-text').innerText = item.p;
-                document.getElementById('a-text').innerText = item.e;
-                document.getElementById('quiz-btn').innerText = "NEXT";
-                showingAns = true;
+        function checkAnswer(selected, btn, correct) {
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => {
+                b.onclick = null; // Disable clicking after choice
+                if(b.innerText === correct) b.classList.add('correct');
+            });
+
+            if(selected !== correct) {
+                btn.classList.add('wrong');
+            }
+            document.getElementById('next-btn').style.display = "block";
+        }
+
+        function nextQuestion() {
+            if(curQ < quizPool.length - 1) {
+                curQ++; loadQuestion();
             } else {
-                if(curQ < quizPool.length - 1) {
-                    curQ++; updateQuizUI();
-                } else {
-                    alert("🎉 Level " + curLvl + " Complete!");
-                    progress[curLvl] = true;
-                    localStorage.setItem('amina_pron_v1', JSON.stringify(progress));
-                    showScreen('lvl-select');
-                }
+                alert("🎉 MABROOK! Level " + curLvl + " Mastered.");
+                progress[curLvl] = true;
+                localStorage.setItem('amina_mcq_v1', JSON.stringify(progress));
+                showScreen('lvl-select');
             }
         }
 
