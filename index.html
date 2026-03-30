@@ -81,30 +81,12 @@
     </section>
 
     <script>
-        const levelData = {
+       const levelData = {
             1: {
                 topic: "The Greetings",
                 items: [
-                    { a: "مَرْحَبًا", p: "Mar-ha-ban", e: "Hello" },
-                    { a: "أَهْلًا", p: "Ah-lan", e: "Welcome" },
-                    { a: "شُكْرًا", p: "Shuk-ran", e: "Thanks" },
-                    { a: "كَيْفَ", p: "Kay-fa", e: "How" },
-                    { a: "بِخَيْر", p: "Bi-khayr", e: "Good/Fine" },
-                    { a: "نَعَم", p: "Na-am", e: "Yes" },
-                    { a: "لَا", p: "Laa", e: "No" },
-                    { a: "أَيْنَ", p: "Ay-na", e: "Where" },
-                    { a: "مَنْ", p: "Man", e: "Who" },
-                    { a: "أَنَا", p: "Ana", e: "I am" },
-                    { a: "مَرْحَبًا بِكَ يَا صَدِيقِي", p: "Marhaban bika ya sadeeqi", e: "Hello to you my friend" },
-                    { a: "أَهْلًا وَسَهْلًا فِي بَيْتِي", p: "Ahlan wa sahlan fee bayti", e: "Welcome to my house" },
-                    { a: "شُكْرًا جَزِيلًا لَكَ", p: "Shukran jazeelan laka", e: "Thank you very much to you" },
-                    { a: "كَيْفَ حَالُكَ الْيَوْم؟", p: "Kayfa haaluka al-yawm?", e: "How are you today?" },
-                    { a: "أَنَا بِخَيْر وَالْحَمْدُ لِلَّه", p: "Ana bikhayr wal-hamdulillah", e: "I am fine, praise be to God" },
-                    { a: "نَعَم أَنَا أَتَحَدَّثُ الْعَرَبِيَّة", p: "Na-am ana atahaddathu al-arabiyyah", e: "Yes, I speak Arabic" },
-                    { a: "لَا لَسْتُ جَائِعًا الآن", p: "Laa lastu jaa-i'an al-aan", e: "No, I am not hungry now" },
-                    { a: "أَيْنَ مَكْتَبُكَ الْجَدِيد؟", p: "Ayna maktabuka al-jadeed?", e: "Where is your new office?" },
-                    { a: "مَنْ أَنْتَ يَا أَخِي؟", p: "Man anta ya akhi?", e: "Who are you, brother?" },
-                    { a: "أَنَا مُهَنْدِسَةُ بَيَانَات", p: "Ana muhandisatu bayaanaat", e: "I am a Data Engineer" }
+                    { a: "مَرْحَبًا", p: "Mar-ha-ban", e: "Hello" }, { a: "أَهْلًا", p: "Ah-lan", e: "Welcome" }, { a: "شُكْرًا", p: "Shuk-ran", e: "Thanks" }, { a: "كَيْفَ", p: "Kay-fa", e: "How" }, { a: "بِخَيْر", p: "Bi-khayr", e: "Good/Fine" }, { a: "نَعَم", p: "Na-am", e: "Yes" }, { a: "لَا", p: "Laa", e: "No" }, { a: "أَيْنَ", p: "Ay-na", e: "Where" }, { a: "مَنْ", p: "Man", e: "Who" }, { a: "أَنَا", p: "Ana", e: "I am" },
+                    { a: "مَرْحَبًا بِكَ يَا صَدِيقِي", p: "Marhaban bika ya sadeeqi", e: "Hello to you my friend" }, { a: "أَهْلًا وَسَهْلًا فِي بَيْتِي", p: "Ahlan wa sahlan fee bayti", e: "Welcome to my house" }, { a: "شُكْرًا جَزِيلًا لَكَ", p: "Shukran jazeelan laka", e: "Thank you very much" }, { a: "كَيْفَ حَالُكَ الْيَوْم؟", p: "Kayfa haaluka al-yawm?", e: "How are you today?" }, { a: "أَنَا بِخَيْر وَالْحَمْدُ لِلَّه", p: "Ana bikhayr wal-hamdulillah", e: "I am fine, praise be to God" }, { a: "نَعَم أَنَا أَتَحَدَّثُ الْعَرَبِيَّة", p: "Na-am ana atahaddathu al-arabiyyah", e: "Yes, I speak Arabic" }, { a: "لَا لَسْتُ جَائِعًا الآن", p: "Laa lastu jaa-i'an al-aan", e: "No, I am not hungry now" }, { a: "أَيْنَ مَكْتَبُكَ الْجَدِيد؟", p: "Ayna maktabuka al-jadeed?", e: "Where is your new office?" }, { a: "مَنْ أَنْتَ يَا أَخِي؟", p: "Man anta ya akhi?", e: "Who are you, brother?" }, { a: "أَنَا مُهَنْدِسَة", p: "Ana muhandisah", e: "I am an engineer" }
                 ]
             },
             2: {
@@ -168,6 +150,76 @@
                 items: [
                     { a: "مَدِينَة", p: "Ma-dee-nah", e: "City" }, { a: "دَوْلَة", p: "Daw-lah", e: "Country" }, { a: "مَطَار", p: "Ma-taar", e: "Airport" }, { a: "فُنْدُق", p: "Fun-duq", e: "Hotel" }, { a: "سُوق", p: "Sooq", e: "Market" }, { a: "مُسْتَشْفَى", p: "Mus-tash-fa", e: "Hospital" }, { a: "مَدْرَسَة", p: "Mad-ra-sah", e: "School" }, { a: "شَارِع", p: "Shaa-ri-a", e: "Street" }, { a: "مَطْعَم", p: "Mat-am", e: "Restaurant" }, { a: "مَحَطَّة", p: "Ma-hat-tah", e: "Station" },
                     { a: "أَسْكُنُ فِي مَدِينَةٍ كَبِيرَة", p: "As-kunu fee madeenatin kabeerah", e: "I live in a big city" }, { a: "أَيْنَ يَقَعُ الْمَطَار؟", p: "Ayna yaqa'u al-mataar?", e: "Where is the airport located?" }, { a: "الْمَطْعَمُ قَرِيبٌ مِنْ هُنَا", p: "Al-mat-amu qareebun min huna", e: "The restaurant is near here" }, { a: "سَأَذْهَبُ إِلَى السُّوق", p: "Sa-adh-habu ila as-sooq", e: "I will go to the market" }, { a: "الْفُنْدُقُ غَالِي السِّعْر", p: "Al-funduqu ghaali as-si'r", e: "The hotel is expensive" }, { a: "أَيْنَ هِيَ الْمُسْتَشْفَى؟", p: "Ayna hiya al-mustashfa?", e: "Where is the hospital?" }, { a: "هَذَا الشَّارِعُ هَادِئ", p: "Haadha ash-shaari-u haadi", e: "This street is quiet" }, { a: "سَأَنْتَظِرُكَ فِي الْمَحَطَّة", p: "Sa-antadhiruka feel mahattah", e: "I will wait for you at the station" }, { a: "كَيْفَ نَصِلُ إِلَى الْمَدْرَسَة؟", p: "Kayfa nasilu ila al-madrasah?", e: "How do we get to school?" }, { a: "الدَّوْلَةُ جَمِيلَةٌ فِي الصَّيْف", p: "Ad-dawlatu jameelatun fees-sayf", e: "The country is beautiful in summer" }
+                ]
+            },
+            11: {
+                topic: "The Body (الْجِسْم)",
+                items: [
+                    { a: "رَأْس", p: "Ra-as", e: "Head" }, { a: "عَيْن", p: "Ayn", e: "Eye" }, { a: "يَد", p: "Yad", e: "Hand" }, { a: "رِجْل", p: "Rijl", e: "Leg" }, { a: "قَلْب", p: "Qalb", e: "Heart" }, { a: "وَجْه", p: "Wajh", e: "Face" }, { a: "فَم", p: "Fam", e: "Mouth" }, { a: "أُذُن", p: "Udhun", e: "Ear" }, { a: "أَنْف", p: "Anf", e: "Nose" }, { a: "شَعْر", p: "Sha-ar", e: "Hair" },
+                    { a: "رَأْسِي يُؤْلِمُنِي", p: "Ra-asee yu-limu-nee", e: "My head hurts" }, { a: "عَيْنُكَ جَمِيلَة", p: "Aynuka jameelah", e: "Your eye is beautiful" }, { a: "اغْسِلْ يَدَيْكَ جَيِّدًا", p: "Ighsil yadayka jayyidan", e: "Wash your hands well" }, { a: "عِنْدَهُ قَلْبٌ طَيِّب", p: "Indahu qalbun tayyib", e: "He has a kind heart" }, { a: "وَجْهُكَ مُشْرِقٌ الْيَوْم", p: "Wajhuka mushriqun al-yawm", e: "Your face is bright today" }, { a: "افْتَحْ فَمَكَ مِنْ فَضْلِك", p: "Iftah famaka min fadlik", e: "Open your mouth please" }, { a: "أَسْمَعُ بِأُذُنِي", p: "Asma'u bi-udhuni", e: "I hear with my ear" }, { a: "أَنْفِي صَغِير", p: "Anfee sagheer", e: "My nose is small" }, { a: "شَعْرُهَا طَوِيلٌ وَأَسْوَد", p: "Sha-ruha taweelun wa aswad", e: "Her hair is long and black" }, { a: "أَمْشِي عَلَى رِجْلَيّ", p: "Am-shee ala rijlayya", e: "I walk on my legs" }
+                ]
+            },
+            12: {
+                topic: "Clothing (الْمَلَابِس)",
+                items: [
+                    { a: "قَمِيص", p: "Qa-mees", e: "Shirt" }, { a: "سِرْوَال", p: "Sir-waal", e: "Pants" }, { a: "ثَوْب", p: "Thawb", e: "Dress" }, { a: "حِذَاء", p: "Hi-dhaa", e: "Shoes" }, { a: "قُبَّعَة", p: "Qub-ba-ah", e: "Hat" }, { a: "حَقِيبَة", p: "Ha-qee-bah", e: "Bag" }, { a: "نَظَّارَة", p: "Nad-dhaa-rah", e: "Glasses" }, { a: "وِشَاح", p: "Wi-shaah", e: "Scarf" }, { a: "مِعْطَف", p: "Mi-taf", e: "Coat" }, { a: "جَوْرَب", p: "Jaw-rab", e: "Sock" },
+                    { a: "هَذَا الْقَمِيصُ جَدِيد", p: "Haadhal qameesu jadeed", e: "This shirt is new" }, { a: "أَيْنَ حِذَائِي؟", p: "Ayna hidhaa-ee?", e: "Where are my shoes?" }, { a: "أُرِيدُ شِرَاءَ وِشَاح", p: "Ureedu shiraa-a wishaah", e: "I want to buy a scarf" }, { a: "النَّظَّارَةُ عَلَى الطَّاوِلَة", p: "An-naddhaaratu ala at-taawilah", e: "The glasses are on the table" }, { a: "الْمِعْطَفُ ثَقِيلٌ جِدًّا", p: "Al-mi'tafu thaqeelun jiddan", e: "The coat is very heavy" }, { a: "لَوْنُ الْقُبَّعَةِ أَزْرَق", p: "Lawnul qubba'ati azraq", e: "The color of the hat is blue" }, { a: "حَقِيبَتِي ضَاعَت", p: "Haqeebatee daa-at", e: "My bag is lost" }, { a: "أَلْبَسُ سِرْوَالًا أَسْوَد", p: "Albasu sirwaalan aswad", e: "I am wearing black pants" }, { a: "الثَّوْبُ جَمِيلٌ جِدًّا", p: "Ath-thawbu jameelun jiddan", e: "The dress is very beautiful" }, { a: "هَذَا الْجَوْرَبُ مُمَزَّق", p: "Haadhal jawrabu mumazzaq", e: "This sock is torn" }
+                ]
+            },
+            13: {
+                topic: "Emotions (الْمَشَاعِر)",
+                items: [
+                    { a: "سَعِيد", p: "Sa-eed", e: "Happy" }, { a: "حَزِين", p: "Ha-zeen", e: "Sad" }, { a: "غَاضِب", p: "Ghaa-dib", e: "Angry" }, { a: "مُتْعَب", p: "Mut-ab", e: "Tired" }, { a: "خَائِف", p: "Khaa-if", e: "Afraid" }, { a: "مُتَفَاجِئ", p: "Mu-ta-faa-ji", e: "Surprised" }, { a: "هَادِئ", p: "Haa-di", e: "Calm" }, { a: "قَلِق", p: "Qa-liq", e: "Worried" }, { a: "مَشْغُول", p: "Mash-ghool", e: "Busy" }, { a: "مُتَحَمِّس", p: "Mu-ta-ham-mis", e: "Excited" },
+                    { a: "أَنَا سَعِيدَةٌ جِدًّا", p: "Ana sa-eedatun jiddan", e: "I am very happy" }, { a: "لِمَاذَا أَنْتَ حَزِين؟", p: "Limaadha anta hazeen?", e: "Why are you sad?" }, { a: "أَنَا مُتْعَبَةٌ الْيَوْم", p: "Ana mut-abatun al-yawm", e: "I am tired today" }, { a: "لَا تَكُنْ غَاضِبًا", p: "Laa takun ghaadiban", e: "Don't be angry" }, { a: "أَنَا مَشْغُولَةٌ الآن", p: "Ana mashghoolatun al-aan", e: "I am busy now" }, { a: "الْجوُّ هَادِئٌ هُنَا", p: "Al-jawwu haadi-un huna", e: "The atmosphere is calm here" }, { a: "أَنَا قَلِقَةٌ عَلَيْك", p: "Ana qaliqatun alayk", e: "I am worried about you" }, { a: "هُوَ مُتَحَمِّسٌ لِلرِّحْلَة", p: "Huwa mutahammisun lir-rihlah", e: "He is excited for the trip" }, { a: "لَا تَخَفْ، أَنَا مَعَك", p: "Laa takhaf, ana ma'ak", e: "Don't be afraid, I am with you" }, { a: "كُنْتُ مُتَفَاجِئَةً جِدًّا", p: "Kuntu mutafaaji-atan jiddan", e: "I was very surprised" }
+                ]
+            },
+            14: {
+                topic: "The Weather (الطَّقْس)",
+                items: [
+                    { a: "شَمْس", p: "Shams", e: "Sun" }, { a: "مَطَر", p: "Ma-tar", e: "Rain" }, { a: "ثَلْج", p: "Thalj", e: "Snow" }, { a: "رِيح", p: "Reeh", e: "Wind" }, { a: "سَحَاب", p: "Sa-haab", e: "Cloud" }, { a: "حَار", p: "Haar", e: "Hot" }, { a: "بَارِد", p: "Baa-rid", e: "Cold" }, { a: "جَمِيل", p: "Ja-meel", e: "Beautiful" }, { a: "غَائِم", p: "Ghaa-im", e: "Cloudy" }, { a: "رَطْب", p: "Ratb", e: "Humid" },
+                    { a: "الطَّقْسُ حَارٌّ الْيَوْم", p: "At-taqsu haarun al-yawm", e: "The weather is hot today" }, { a: "الْمَطَرُ يَنْزِلُ الآن", p: "Al-mataru yanzilu al-aan", e: "The rain is falling now" }, { a: "أَنَا أُحِبُّ الثَّلْج", p: "Ana uhibbu ath-thalj", e: "I love snow" }, { a: "السَّمَاءُ غَائِمَةٌ جِدًّا", p: "As-samaa-u ghaa-imatun jiddan", e: "The sky is very cloudy" }, { a: "الرِّيحُ قَوِيَّةٌ هُنَا", p: "Ar-reehu qawiyyatun huna", e: "The wind is strong here" }, { a: "الْجوُّ بَارِدٌ فِي اللَّيْل", p: "Al-jawwu baaridun feel layl", e: "The atmosphere is cold at night" }, { a: "الشَّمْسُ قَوِيَّةٌ جِدًّا", p: "Ash-shamsu qawiyyatun jiddan", e: "The sun is very strong" }, { a: "هَلْ سَيُمْطِرُ غَدًا؟", p: "Hal sayumtiru ghadan?", e: "Will it rain tomorrow?" }, { a: "الطَّقْسُ جَمِيلٌ لِلْمَشْي", p: "At-taqsu jameelun lil-mashy", e: "The weather is beautiful for walking" }, { a: "الرُّطُوبَةُ عَالِيَةٌ هُنَا", p: "Ar-rutoobatu aaliyatun huna", e: "The humidity is high here" }
+                ]
+            },
+            15: {
+                topic: "Direction & Location (الاتِّجَاهَات)",
+                items: [
+                    { a: "يَمِين", p: "Ya-meen", e: "Right" }, { a: "يَسَار", p: "Ya-saar", e: "Left" }, { a: "أَمَام", p: "A-maam", e: "In front" }, { a: "خَلْف", p: "Khalf", e: "Behind" }, { a: "فَوْق", p: "Fawq", e: "Above/Up" }, { a: "تَحْت", p: "Taht", e: "Under/Down" }, { a: "هُنَا", p: "Hu-na", e: "Here" }, { a: "هُنَاكَ", p: "Hu-naa-ka", e: "There" }, { a: "قَرِيب", p: "Qa-reeb", e: "Near" }, { a: "بَعِيد", p: "Ba-eed", e: "Far" },
+                    { a: "اذْهَبْ إِلَى الْيَمِين", p: "Idh-hab ilal yameen", e: "Go to the right" }, { a: "الْبَيْتُ عَلَى الْيَسَار", p: "Al-baytu alal yasaar", e: "The house is on the left" }, { a: "انْتَظِرْنِي هُنَا", p: "Intadhir-nee huna", e: "Wait for me here" }, { a: "الْمَسْجِدُ قَرِيبٌ مِنْ هُنَا", p: "Al-masjidu qareebun min huna", e: "The mosque is near here" }, { a: "الْمَطَارُ بَعِيدٌ جِدًّا", p: "Al-mataaru ba-eedun jiddan", e: "The airport is very far" }, { a: "الْقِطُّ تَحْتَ الطَّاوِلَة", p: "Al-qittu tahta at-taawilah", e: "The cat is under the table" }, { a: "انْظُرْ أَمَامَكَ", p: "Undhur amaamaka", e: "Look in front of you" }, { a: "الْكِتَابُ فَوْقَ السَّرِير", p: "Al-kitaabu fawqa as-sareer", e: "The book is on the bed" }, { a: "مَنْ هُنَاكَ؟", p: "Man hunaaka?", e: "Who is there?" }, { a: "الْمَدْرَسَةُ خَلْفَ الْمَنْزِل", p: "Al-madrasatu khalfa al-manzil", e: "The school is behind the house" }
+                ]
+            },
+            16: {
+                topic: "Common Adjectives (صِفَات)",
+                items: [
+                    { a: "كَبِير", p: "Ka-beer", e: "Big" }, { a: "صَغِير", p: "Sa-gheer", e: "Small" }, { a: "جَدِيد", p: "Ja-deed", e: "New" }, { a: "قَدِيم", p: "Qa-deem", e: "Old" }, { a: "طَوِيل", p: "Ta-weel", e: "Long" }, { a: "قَصِير", p: "Qa-seer", e: "Short" }, { a: "سَرِيع", p: "Sa-ree-a", e: "Fast" }, { a: "بَطِيء", p: "Ba-tee", e: "Slow" }, { a: "سَهْل", p: "Sahl", e: "Easy" }, { a: "صَعْب", p: "Sa-ab", e: "Difficult" },
+                    { a: "هَذَا السُّؤَالُ صَعْب", p: "Haadha as-su-aalu sa-ab", e: "This question is difficult" }, { a: "اللُّغَةُ الْعَرَبِيَّةُ سَهْلَة", p: "Al-lughatu al-arabiyyatu sahlah", e: "Arabic is easy" }, { a: "السَّيَّارَةُ سَرِيعَةٌ جِدًّا", p: "As-sayyaaratu saree-atun jiddan", e: "The car is very fast" }, { a: "بَيْتِي قَدِيمٌ وَلَكِنْ جَمِيل", p: "Baytee qadeemun walaakin jameel", e: "My house is old but beautiful" }, { a: "أُرِيدُ هَاتِفًا جَدِيدًا", p: "Ureedu haatifan jadeedan", e: "I want a new phone" }, { a: "الْوَلَدُ طَوِيلٌ جِدًّا", p: "Al-waladu taweelun jiddan", e: "The boy is very tall" }, { a: "هَذَا مَكْتَبٌ صَغِير", p: "Haadha maktabun sagheer", e: "This is a small office" }, { a: "الْقِطَارُ بَطِيءٌ الْيَوْم", p: "Al-qitaaru batee-un al-yawm", e: "The train is slow today" }, { a: "الرَّجُلُ قَصِيرُ الْقَامَة", p: "Ar-rajulu qaseerul qaamah", e: "The man is short in stature" }, { a: "الْمَدِينَةُ كَبِيرَةٌ وَمُزْدَحِمَة", p: "Al-madeenatu kabeeratun wa muzdahimah", e: "The city is big and crowded" }
+                ]
+            },
+            17: {
+                topic: "Questions (أَدَوَات الِاسْتِفْهَام)",
+                items: [
+                    { a: "مَاذَا", p: "Maa-dhaa", e: "What" }, { a: "لِمَاذَا", p: "Li-maa-dhaa", e: "Why" }, { a: "كَيْفَ", p: "Kay-fa", e: "How" }, { a: "كَم", p: "Kam", e: "How much" }, { a: "مَتَى", p: "Ma-taa", e: "When" }, { a: "أَيْنَ", p: "Ay-na", e: "Where" }, { a: "مَنْ", p: "Man", e: "Who" }, { a: "أَيّ", p: "Ayy", e: "Which" }, { a: "هَل", p: "Hal", e: "Do/Is" }, { a: "مَا", p: "Maa", e: "What (Noun)" },
+                    { a: "مَاذَا تَفْعَلُ الآن؟", p: "Maadhaa taf-alu al-aan?", e: "What are you doing now?" }, { a: "لِمَاذَا تَأَخَّرْت؟", p: "Limaadha ta-akh-khart?", e: "Why are you late?" }, { a: "كَيْفَ حَالُكَ؟", p: "Kayfa haaluka?", e: "How are you?" }, { a: "كَمِ السِّعْر؟", p: "Kam is-si-ar?", e: "How much is the price?" }, { a: "مَتَى سَنَأْكُل؟", p: "Mataa sana-kul?", e: "When will we eat?" }, { a: "أَيْنَ تَسْكُن؟", p: "Ayna taskun?", e: "Where do you live?" }, { a: "مَنْ هَذَا الرَّجُل؟", p: "Man haadha ar-rajul?", e: "Who is this man?" }, { a: "أَيُّ لَوْنٍ تُحِبّ؟", p: "Ay-yu lawnin tuhibb?", e: "Which color do you love?" }, { a: "هَلْ أَنْتَ جَائِع؟", p: "Hal anta jaa-i'?", e: "Are you hungry?" }, { a: "مَا اسْمُكَ؟", p: "Mas-muka?", e: "What is your name?" }
+                ]
+            },
+            18: {
+                topic: "Nature (الطَّبِيعَة)",
+                items: [
+                    { a: "بَحْر", p: "Bahr", e: "Sea" }, { a: "نَهْر", p: "Nahr", e: "River" }, { a: "جَبَل", p: "Ja-bal", e: "Mountain" }, { a: "شَجَرَة", p: "Sha-ja-rah", e: "Tree" }, { a: "زَهْرَة", p: "Zah-rah", e: "Flower" }, { a: "سَمَاء", p: "Sa-maa", e: "Sky" }, { a: "قَمَر", p: "Qa-mar", e: "Moon" }, { a: "نُجُوم", p: "Nu-joom", e: "Stars" }, { a: "أَرْض", p: "Ard", e: "Earth" }, { a: "حَدِيقَة", p: "Ha-dee-qah", e: "Garden" },
+                    { a: "الْبَحْرُ وَاسِعٌ جِدًّا", p: "Al-bahru waasi-un jiddan", e: "The sea is very wide" }, { a: "أُحِبُّ تَسَلُّقَ الْجِبَال", p: "Uhibbu tasalluqa al-jibaal", e: "I love climbing mountains" }, { a: "هَذِهِ الشَّجَرَةُ قَدِيمَة", p: "Haadhihi ash-shajaratu qadeemah", e: "This tree is old" }, { a: "الزَّهْرَةُ رَائِحَتُهَا طَيِّبَة", p: "Az-zahratu raa-ihatu-ha tayyibah", e: "The flower smells good" }, { a: "النُّجُومُ تَلْمَعُ فِي السَّمَاء", p: "An-nujoomu talma-u fees-samaa", e: "The stars shine in the sky" }, { a: "نَحْنُ نَجْلِسُ فِي الْحَدِيقَة", p: "Nahnu najlisu feel hadeeqah", e: "We are sitting in the garden" }, { a: "الْقَمَرُ مُكْتَمِلٌ اللَّيْلَة", p: "Al-qamaru muktamilun al-laylah", e: "The moon is full tonight" }, { a: "الْمَاءُ يَنْزِلُ مِنَ النَّهْر", p: "Al-maa-u yanzilu minal nahr", e: "The water flows from the river" }, { a: "الْأَرْضُ خَضْرَاء", p: "Al-ardu khadraa", e: "The land is green" }, { a: "السَّمَاءُ صَافِيَةٌ الْيَوْم", p: "As-samaa-u saafiyatun al-yawm", e: "The sky is clear today" }
+                ]
+            },
+            19: {
+                topic: "In the Kitchen (فِي الْمَطْبَخ)",
+                items: [
+                    { a: "سِكِّين", p: "Sik-keen", e: "Knife" }, { a: "شَوْكَة", p: "Shaw-kah", e: "Fork" }, { a: "مِلْعَقَة", p: "Mil-a-qah", e: "Spoon" }, { a: "صَحْن", p: "Sahn", e: "Plate" }, { a: "كُوب", p: "Koob", e: "Cup" }, { a: "مِقْلَاة", p: "Miq-laah", e: "Frying pan" }, { a: "قِدْر", p: "Qidr", e: "Pot" }, { a: "ثَلَّاجَة", p: "Thal-laa-jah", e: "Fridge" }, { a: "فُرْن", p: "Furn", e: "Oven" }, { a: "مِنْدِيل", p: "Min-deel", e: "Napkin" },
+                    { a: "أَيْنَ السِّكِّينُ وَالشَّوْكَة؟", p: "Ayna as-sikkeen wash-shawkah?", e: "Where are the knife and fork?" }, { a: "أَحْتَاجُ إِلَى مِلْعَقَةٍ صَغِيرَة", p: "Ahtaaju ila mil-aqatin sagheerah", e: "I need a small spoon" }, { a: "هَذَا الصَّحْنُ نَظِيف", p: "Haadha as-sahnu nadeef", e: "This plate is clean" }, { a: "اشْرَبِ الْمَاءَ فِي الْكُوب", p: "Ishrab al-maa-a feel koob", e: "Drink the water in the cup" }, { a: "الطَّعَامُ فِي الثَّلَّاجَة", p: "At-ta-aamu feeth-thallaajah", e: "The food is in the fridge" }, { a: "الْفُرْنُ سَاخِنٌ جِدًّا", p: "Al-furnu saakhinun jiddan", e: "The oven is very hot" }, { a: "ضَعِ الْمِقْلَاةَ عَلَى النَّار", p: "Da'i al-miqlaata alan naar", e: "Put the frying pan on the fire" }, { a: "هَذَا قِدْرٌ كَبِير", p: "Haadha qidrun kabeer", e: "This is a big pot" }, { a: "أَعْطِنِي مِنْدِيلًا لَوْ سَمَحْت", p: "A-tinee mindeelan law samaht", e: "Give me a napkin please" }, { a: "الْمَطْبَخُ مُرَتَّبٌ الْيَوْم", p: "Al-matbakhu murattabun al-yawm", e: "The kitchen is tidy today" }
+                ]
+            },
+            20: {
+                topic: "Shopping (التَّسَوُّق)",
+                items: [
+                    { a: "سِعْر", p: "Si-ar", e: "Price" }, { a: "نُقُود", p: "Nu-qood", e: "Money" }, { a: "رَخِيص", p: "Ra-khees", e: "Cheap" }, { a: "غَالِي", p: "Ghaa-lee", e: "Expensive" }, { a: "تَخْفِيض", p: "Takh-feed", e: "Discount" }, { a: "فَاتُورَة", p: "Faa-too-rah", e: "Bill" }, { a: "بَائِع", p: "Baa-i", e: "Seller" }, { a: "زُبُون", p: "Zu-boon", e: "Customer" }, { a: "مَجَّانًا", p: "Maj-jaa-nan", e: "For free" }, { a: "بِطَاقَة", p: "Bi-taa-qah", e: "Card" },
+                    { a: "كَمْ سِعْرُ هَذَا الْقَمِيص؟", p: "Kam si-ru haadhal qamees?", e: "How much is this shirt?" }, { a: "هَذَا الْحِذَاءُ غَالِي جِدًّا", p: "Haadha al-hidhaa-u ghaalee jiddan", e: "These shoes are very expensive" }, { a: "هَلْ يُوجَدُ تَخْفِيض؟", p: "Hal yoojadu takh-feed?", e: "Is there a discount?" }, { a: "أُرِيدُ الدَّفْعَ بِالْبِطَاقَة", p: "Ureedu ad-daf-a bil-bitaaqah", e: "I want to pay by card" }, { a: "أَيْنَ هِيَ الْفَاتُورَة؟", p: "Ayna hiya al-faatoorah?", e: "Where is the bill?" }, { a: "هَذَا السُّوقُ رَخِيص", p: "Haadha as-sooqu rakhees", e: "This market is cheap" }, { a: "مَعِي نُقُودٌ قَلِيلَة", p: "Ma-ee nuqoodun qaleelah", e: "I have a little money" }, { a: "الْبَائِعُ لَطِيفٌ جِدًّا", p: "Al-baa-i-u lateefun jiddan", e: "The seller is very kind" }, { a: "هَلْ هَذَا مَجَّانًا؟", p: "Hal haadha maj-jaanan?", e: "Is this for free?" }, { a: "أَنَا زُبُونٌ دَائِمٌ هُنَا", p: "Ana zuboonun daa-imun huna", e: "I am a regular customer here" }
                 ]
             }
         };
