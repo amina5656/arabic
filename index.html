@@ -2,79 +2,85 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Arabic Academy: Level Map & MCQ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arabic Academy: Amina's Quest</title>
     <style>
-        :root { --primary: #1a2a3a; --success: #2ecc71; --error: #e74c3c; --bg: #f4f7f6; --text: #333; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
-        .screen { display: none; padding: 20px; min-height: 100vh; flex-direction: column; align-items: center; }
+        :root { --primary: #1a2a3a; --success: #2ecc71; --error: #e74c3c; --bg: #f4f7f6; --text: #333; --accent: #2980b9; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; color: var(--text); line-height: 1.6; }
+        .screen { display: none; padding: 20px; min-height: 100vh; flex-direction: column; align-items: center; box-sizing: border-box; }
         .active { display: flex; }
         
-        /* Dashboard with Topic Names */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; margin-top: 20px; }
-        .card { background: white; padding: 25px; border-radius: 12px; cursor: pointer; border-top: 6px solid #bdc3c7; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.2s; }
-        .card:hover { transform: translateY(-5px); }
-        .card h3 { margin: 0; color: var(--primary); font-size: 0.9rem; text-transform: uppercase; }
-        .card p { margin: 10px 0 0 0; font-weight: bold; font-size: 1.1rem; }
+        /* Dashboard / Map */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; width: 100%; max-width: 1100px; margin-top: 20px; }
+        .card { background: white; padding: 30px; border-radius: 15px; cursor: pointer; border-top: 8px solid #bdc3c7; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .card h3 { margin: 0; color: #7f8c8d; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        .card p { margin: 10px 0 0 0; font-weight: bold; font-size: 1.2rem; color: var(--primary); }
         .card.completed { border-top-color: var(--success); background: #e8f8f0; }
 
         /* Study Table */
-        .study-container { background: white; width: 100%; max-width: 850px; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-top: 20px; }
-        .row { display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; text-align: center; }
-        .ara { font-size: 1.8rem; font-weight: bold; direction: rtl; color: #000; }
-        .pron { font-style: italic; color: #2980b9; font-size: 1.1rem; }
-        .eng { font-size: 1.1rem; color: #555; }
+        .study-container { background: white; width: 100%; max-width: 900px; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-top: 20px; }
+        .row { display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; padding: 18px 10px; border-bottom: 1px solid #eee; text-align: center; }
+        .header-row { font-weight: bold; border-bottom: 3px solid var(--primary); background: #f9f9f9; border-radius: 10px 10px 0 0; }
+        .ara { font-size: 2rem; font-weight: bold; direction: rtl; color: #000; }
+        .pron { font-style: italic; color: var(--accent); font-size: 1.1rem; }
+        .eng { font-size: 1.1rem; color: #555; font-weight: 500; }
 
         /* MCQ Quiz */
-        .quiz-box { background: white; width: 100%; max-width: 600px; padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .q-display { font-size: 2.8rem; margin: 10px 0; font-weight: bold; direction: rtl; }
-        .p-display { font-style: italic; color: #2980b9; margin-bottom: 25px; font-size: 1.2rem; }
-        .options-grid { display: grid; gap: 12px; width: 100%; margin-top: 20px; }
-        .option-btn { padding: 18px; border: 2px solid #ddd; border-radius: 10px; background: white; cursor: pointer; font-size: 1.1rem; }
+        .quiz-box { background: white; width: 100%; max-width: 650px; padding: 40px; border-radius: 25px; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.12); }
+        .q-display { font-size: 3rem; margin: 15px 0; font-weight: bold; direction: rtl; }
+        .p-display { font-style: italic; color: var(--accent); margin-bottom: 30px; font-size: 1.3rem; }
+        .options-grid { display: grid; gap: 15px; width: 100%; margin-top: 20px; }
+        .option-btn { padding: 20px; border: 2px solid #dfe6e9; border-radius: 12px; background: white; cursor: pointer; font-size: 1.15rem; transition: 0.2s; font-weight: 500; }
+        .option-btn:hover { border-color: var(--accent); background: #f0f7ff; }
         
         .correct { background: var(--success) !important; color: white !important; border-color: var(--success) !important; }
         .wrong { background: var(--error) !important; color: white !important; border-color: var(--error) !important; }
 
-        .btn { padding: 15px 30px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1.1rem; }
-        .btn-quiz-start { background: var(--success); margin-top: 40px; padding: 25px; font-size: 1.3rem; }
+        /* Buttons */
+        .btn { padding: 18px 35px; background: var(--primary); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 1.1rem; transition: 0.3s; }
+        .btn:hover { opacity: 0.9; }
+        .btn-quiz-start { background: var(--success); margin-top: 40px; width: 100%; font-size: 1.4rem; padding: 25px; }
     </style>
 </head>
 <body>
 
-    <section id="welcome" class="screen active" style="justify-content:center; background: var(--primary); color:white; text-align:center;">
-        <h1>AHALAN AMINA</h1>
-        <p>Your Path to Arabic Mastery Begins Here</p>
-        <button class="btn" style="width:auto; background:var(--success);" onclick="showScreen('lvl-select')">ENTER LEARNING MAP</button>
+    <section id="welcome" class="screen active" style="justify-content:center; background: linear-gradient(135deg, #1a2a3a 0%, #2c3e50 100%); color:white; text-align:center;">
+        <h1 style="font-size: 3rem; margin-bottom: 10px;">AHALAN AMINA</h1>
+        <p style="font-size: 1.2rem; opacity: 0.8; margin-bottom: 30px;">100 Levels of Arabic Mastery</p>
+        <button class="btn" style="background:var(--success); padding: 20px 60px;" onclick="showScreen('lvl-select')">START LEARNING</button>
     </section>
 
     <section id="lvl-select" class="screen">
-        <h1>Learning Map</h1>
+        <h1 style="color: var(--primary);">Learning Map</h1>
         <div id="main-grid" class="grid"></div>
     </section>
 
     <section id="study-page" class="screen">
-        <button class="btn" onclick="showScreen('lvl-select')" style="width:auto; margin-bottom:20px;">← Back to Map</button>
+        <div style="width:100%; max-width:900px;">
+            <button class="btn" onclick="showScreen('lvl-select')" style="background:#7f8c8d; padding: 10px 25px;">← Back to Map</button>
+        </div>
         <div class="study-container">
-            <h1 id="lvl-title" style="text-align:center;"></h1>
-            <div class="row" style="font-weight:bold; border-bottom: 3px solid var(--primary); background: #f9f9f9;">
+            <h1 id="lvl-title" style="text-align:center; color: var(--primary); margin-bottom: 30px;"></h1>
+            <div class="row header-row">
                 <span>English Meaning</span><span>Pronunciation</span><span>Arabic Script</span>
             </div>
             <div id="full-list"></div>
-            <button class="btn btn-quiz-start" onclick="startQuiz()">TAKE THE LEVEL QUIZ</button>
+            <button class="btn btn-quiz-start" onclick="startQuiz()">START THE QUEST</button>
         </div>
     </section>
 
     <section id="quiz-page" class="screen">
         <div class="quiz-box">
-            <p id="quiz-progress"></p>
+            <p id="quiz-progress" style="color: #95a5a6; font-weight: bold;"></p>
             <div id="q-text" class="q-display"></div>
             <div id="p-text" class="p-display"></div>
             <div id="options" class="options-grid"></div>
-            <button id="next-btn" class="btn" style="display:none; margin-top:20px;" onclick="nextQuestion()">CONTINUE</button>
+            <button id="next-btn" class="btn" style="display:none; margin-top:30px; background: var(--accent);" onclick="nextQuestion()">CONTINUE</button>
         </div>
     </section>
 
     <script>
-        // Data containing level names and items
         const levelData = {
             1: {
                 topic: "The Greetings",
@@ -101,12 +107,73 @@
                     { a: "أَنَا مُهَنْدِسَةُ بَيَانَات", p: "Ana muhandisatu bayaanaat", e: "I am a Data Engineer" }
                 ]
             },
-            2: { topic: "Colors", items: [] }, 
-            3: { topic: "The Family", items: [] }
+            2: {
+                topic: "Colors (الأَلْوَان)",
+                items: [
+                    { a: "أَحْمَر", p: "Ah-mar", e: "Red" }, { a: "أَزْرَق", p: "Az-raq", e: "Blue" }, { a: "أَخْضَر", p: "Akh-dar", e: "Green" }, { a: "أَصْفَر", p: "As-far", e: "Yellow" }, { a: "أَسْوَد", p: "As-wad", e: "Black" }, { a: "أَبْيَض", p: "Ab-yad", e: "White" }, { a: "بُرْتُقَالِي", p: "Bur-tu-qaa-lee", e: "Orange" }, { a: "وَرْدِي", p: "War-dee", e: "Pink" }, { a: "بُنِّي", p: "Bun-nee", e: "Brown" }, { a: "رَمَادِي", p: "Ra-maa-dee", e: "Grey" },
+                    { a: "السَّمَاءُ لَوْنُهَا أَزْرَق", p: "As-samaa-u lawnu-ha azraq", e: "The sky is blue" }, { a: "هَذَا الْقَلَمُ أَحْمَر", p: "Haadhal qalamu ahmar", e: "This pen is red" }, { a: "الْعُشْبُ لَوْنُهُ أَخْضَر", p: "Al-ushbu lawnuhu akhdar", e: "The grass is green" }, { a: "أُحِبُّ اللَّوْنَ الْأَبْيَض", p: "Uhibbu al-lawna al-abyad", e: "I love the color white" }, { a: "الشَّمْسُ لَوْنُهَا أَصْفَر", p: "Ash-shamsu lawnu-ha asfar", e: "The sun is yellow" }, { a: "عِنْدِي حَقِيبَةٌ سَوْدَاء", p: "Indee haqibatun sawdaa", e: "I have a black bag" }, { a: "الْبَحْرُ لَوْنُهُ أَزْرَق جَمِيل", p: "Al-bahru lawnuhu azraq jameel", e: "The sea is a beautiful blue" }, { a: "التُّفَّاحَةُ لَوْنُهَا أَحْمَر", p: "At-tuffahatu lawnu-ha ahmar", e: "The apple is red" }, { a: "هِيَ تَرْتَدِي فُسْتَانًا وَرْدِيًّا", p: "Hiya tartadi fustaanan wardiyyan", e: "She is wearing a pink dress" }, { a: "الْقَهْوَةُ لَوْنُهَا بُنِّي", p: "Al-qahwatu lawnu-ha bunnee", e: "Coffee is brown" }
+                ]
+            },
+            3: {
+                topic: "The Family (الْعَائِلَة)",
+                items: [
+                    { a: "أَب", p: "Ab", e: "Father" }, { a: "أُم", p: "Umm", e: "Mother" }, { a: "أَخ", p: "Akh", e: "Brother" }, { a: "أُخْت", p: "Ukht", e: "Sister" }, { a: "جَد", p: "Jadd", e: "Grandfather" }, { a: "جَدَّة", p: "Jaddah", e: "Grandmother" }, { a: "عَم", p: "Am", e: "Uncle" }, { a: "عَمَّة", p: "Ammah", e: "Aunt" }, { a: "ابْن", p: "Ibn", e: "Son" }, { a: "ابْنَة", p: "Ibna", e: "Daughter" },
+                    { a: "هَذَا هُوَ أَبِي", p: "Haadha huwa abee", e: "This is my father" }, { a: "أُمِّي تُحِبُّ الْقِرَاءَة", p: "Ummee tuhibbu al-qiraa-ah", e: "My mother loves reading" }, { a: "أَخِي يَعْمَلُ فِي الْمَكْتَب", p: "Akhee ya'malu feel maktab", e: "My brother works in the office" }, { a: "أُخْتِي صَغِيرَةٌ جِدًّا", p: "Ukhtee sagheeratun jiddan", e: "My sister is very small" }, { a: "أَيْنَ جَدِّي الآن؟", p: "Ayna jaddee al-aan?", e: "Where is my grandfather now?" }, { a: "جَدَّتِي تَطْبُخُ الطَّعَام", p: "Jaddatee tatbukhu at-ta'aam", e: "My grandmother is cooking food" }, { a: "عِنْدِي أَخٌ وَاحِد", p: "Indee akhun waahid", e: "I have one brother" }, { a: "هِيَ ابْنَةُ عَمِّي", p: "Hiya ibnatu ammee", e: "She is my uncle's daughter" }, { a: "أُحِبُّ عَائِلَتِي جِدًّا", p: "Uhibbu aa-ilatee jiddan", e: "I love my family very much" }, { a: "كَيْفَ حَالُ أُخْتِكَ؟", p: "Kayfa haalu ukhtika?", e: "How is your sister?" }
+                ]
+            },
+            4: {
+                topic: "Numbers 1-10 (الْأَرْقَام)",
+                items: [
+                    { a: "وَاحِد", p: "Waahid", e: "One" }, { a: "اِثْنَان", p: "Ith-naan", e: "Two" }, { a: "ثَلَاثَة", p: "Tha-laa-tha", e: "Three" }, { a: "أَرْبَعَة", p: "Ar-ba-ah", e: "Four" }, { a: "خَمْسَة", p: "Kham-sa", e: "Five" }, { a: "سِتَّة", p: "Sit-ta", e: "Six" }, { a: "سَبْعَة", p: "Sab-ah", e: "Seven" }, { a: "ثَمَانِيَة", p: "Tha-maa-ni-ya", e: "Eight" }, { a: "تِسْعَة", p: "Tis-ah", e: "Nine" }, { a: "عَشَرَة", p: "A-sha-ra", e: "Ten" },
+                    { a: "عِنْدِي ثَلَاثَةُ إِخْوَة", p: "Indee thalaathatu ikhwah", e: "I have three brothers" }, { a: "هَذَا رَقْمُ هَاتِفِي", p: "Haadha raqmu haatifee", e: "This is my phone number" }, { a: "أَكَلْتُ خَمْسَةَ تُفَّاحَات", p: "Akaltu khamsata tuffaahaat", e: "I ate five apples" }, { a: "فِي الْغُرْفَةِ أَرْبَعَةُ كَرَاسِي", p: "Feel ghurfati arba'atu karaasee", e: "In the room are four chairs" }, { a: "السَّاعَةُ الآنَ الْعَاشِرَة", p: "As-saa'atu al-aan al-aashirah", e: "The time now is ten" }, { a: "مَعِي رِيَالٌ وَاحِدٌ فَقَط", p: "Ma'ee riyaalun waahidun faqat", e: "I have only one Riyal" }, { a: "قَرَأْتُ سَبْعَةَ كُتُب", p: "Qara-tu sab'ata kutub", e: "I read seven books" }, { a: "هَذَا الْوَلَدُ عُمْرُهُ تِسْعُ سَنَوَات", p: "Haadhal waladu umruhu tis'u sanawaat", e: "This boy is nine years old" }, { a: "عِنْدَنَا سِتَّةُ كِلَاب", p: "Indanaa sittatu kilaab", e: "We have six dogs" }, { a: "اشْتَرَيْتُ ثَمَانِيَةَ أَقْلَام", p: "Ishtaraytu thamaaniyata aqlaam", e: "I bought eight pens" }
+                ]
+            },
+            5: {
+                topic: "The House (الْبَيْت)",
+                items: [
+                    { a: "بَاب", p: "Baab", e: "Door" }, { a: "نَافِذَة", p: "Naa-fi-dhah", e: "Window" }, { a: "مَطْبَخ", p: "Mat-bakh", e: "Kitchen" }, { a: "حَمَّام", p: "Ham-maam", e: "Bathroom" }, { a: "غُرْفَةُ نَوْم", p: "Ghur-fat nawm", e: "Bedroom" }, { a: "سَرِير", p: "Sa-reer", e: "Bed" }, { a: "طَاوِلَة", p: "Taa-wi-lah", e: "Table" }, { a: "كُرْسِي", p: "Kur-see", e: "Chair" }, { a: "أَرْض", p: "Ard", e: "Floor" }, { a: "سَقْف", p: "Saqf", e: "Ceiling" },
+                    { a: "اِفْتَحِ الْبَابَ مِنْ فَضْلِك", p: "Iftah al-baaba min fadlik", e: "Open the door please" }, { a: "أَنَا فِي الْمَطْبَخِ الآن", p: "Ana feel matbakhi al-aan", e: "I am in the kitchen now" }, { a: "أَيْنَ غُرْفَةُ النَّوْم؟", p: "Ayna ghurfatu an-nawm?", e: "Where is the bedroom?" }, { a: "الْكُرْسِيُّ مَكْسُور", p: "Al-kursee-yu maksoor", e: "The chair is broken" }, { a: "أَنَامُ عَلَى السَّرِير", p: "Anaamu ala as-sareer", e: "I sleep on the bed" }, { a: "أَغْلِقِ النَّافِذَةَ لَوْ سَمَحْت", p: "Aghliq an-naafidhata law samaht", e: "Close the window please" }, { a: "الطَّاوِلَةُ كَبِيرَةٌ جِدًّا", p: "At-taawilatu kabeeratun jiddan", e: "The table is very big" }, { a: "الْحَمَّامُ نَظِيف", p: "Al-hammaamu nadeef", e: "The bathroom is clean" }, { a: "أُرِيدُ بَيْتًا جَدِيدًا", p: "Ureedu baytan jadeedan", e: "I want a new house" }, { a: "يُوجَدُ سَجَّادٌ عَلَى الْأَرْض", p: "Yoojadu sajjaadun ala al-ard", e: "There is a carpet on the floor" }
+                ]
+            },
+            6: {
+                topic: "Common Verbs (أَفْعَال شَائِعَة)",
+                items: [
+                    { a: "يَأْكُل", p: "Ya-kul", e: "To eat" }, { a: "يَشْرَب", p: "Yash-rab", e: "To drink" }, { a: "يَنَام", p: "Ya-naam", e: "To sleep" }, { a: "يَقْرَأ", p: "Yaq-ra", e: "To read" }, { a: "يَكْتُب", p: "Yak-tub", e: "To write" }, { a: "يَمْشِي", p: "Yam-shee", e: "To walk" }, { a: "يَجْرِي", p: "Yaj-ree", e: "To run" }, { a: "يَعْمَل", p: "Ya-mal", e: "To work" }, { a: "يَسْمَع", p: "Yas-ma", e: "To hear" }, { a: "يَنْظُر", p: "Yan-dhur", e: "To look" },
+                    { a: "هُوَ يَأْكُلُ التُّفَّاح", p: "Huwa ya-kulu at-tuffaah", e: "He eats apples" }, { a: "أَنَا أَشْرَبُ الْمَاء", p: "Ana ashrabu al-maa", e: "I drink water" }, { a: "هِيَ تَقْرَأُ كِتَابًا جَمِيلًا", p: "Hiya taqra-u kitaaban jameelan", e: "She is reading a beautiful book" }, { a: "أَنَا أَكْتُبُ رِسَالَة", p: "Ana aktubu risaalah", e: "I am writing a letter" }, { a: "أَبِي يَعْمَلُ كَثِيرًا", p: "Abee ya-malu katheeran", e: "My father works a lot" }, { a: "الْوَلَدُ يَجْرِي فِي الشَّارِع", p: "Al-waladu yajree fee ash-shaari'", e: "The boy is running in the street" }, { a: "أَنَا أَسْمَعُ صَوْتَكَ", p: "Ana asma'u sawtaka", e: "I hear your voice" }, { a: "اُنْظُرْ إِلَى السَّمَاء", p: "Undhur ila as-samaa", e: "Look at the sky" }, { a: "هَلْ تَنَامُ الآن؟", p: "Hal tanaamu al-aan?", e: "Are you sleeping now?" }, { a: "نَحْنُ نَمْشِي مَعًا", p: "Nahnu namshee ma'an", e: "We walk together" }
+                ]
+            },
+            7: {
+                topic: "Time & Days (الْوَقْت وَالْأَيَّام)",
+                items: [
+                    { a: "يَوْم", p: "Yawm", e: "Day" }, { a: "أُسْبُوع", p: "Us-boo-a", e: "Week" }, { a: "شَهْر", p: "Shahr", e: "Month" }, { a: "سَنَة", p: "Sa-nah", e: "Year" }, { a: "الْيَوْم", p: "Al-yawm", e: "Today" }, { a: "أَمْس", p: "Ams", e: "Yesterday" }, { a: "غَدًا", p: "Gha-dan", e: "Tomorrow" }, { a: "الآن", p: "Al-aan", e: "Now" }, { a: "سَاعَة", p: "Saa-ah", e: "Hour" }, { a: "دَقِيقَة", p: "Da-qee-qah", e: "Minute" },
+                    { a: "الْيَوْمَ هُوَ الْجُمُعَة", p: "Al-yawm huwa al-jumu'ah", e: "Today is Friday" }, { a: "سَأَرَاكَ غَدًا", p: "Sa-araaka ghadan", e: "I will see you tomorrow" }, { a: "أَيْنَ كُنْتَ أَمْس؟", p: "Ayna kunta ams?", e: "Where were you yesterday?" }, { a: "أَحْتَاجُ إِلَى سَاعَةٍ وَاحِدَة", p: "Ahtaaju ila saa'atin waahidah", e: "I need one hour" }, { a: "انْتَظِرْ دَقِيقَةً مِنْ فَضْلِك", p: "Intadhir daqeeqatan min fadlik", e: "Wait a minute please" }, { a: "كَمِ السَّاعَةُ الآن؟", p: "Kam is-saa'atu al-aan?", e: "What time is it now?" }, { a: "هَذِهِ السَّنَةُ صَعْبَة", p: "Haadhihi as-sanatu sa'bah", e: "This year is difficult" }, { a: "سَأُسَافِرُ بَعْدَ شَهْر", p: "Sa-usaafiru ba'da shahr", e: "I will travel after a month" }, { a: "الْوَقْتُ يَمُرُّ سَرِيعًا", p: "Al-waqtu yamurru saree-an", e: "Time passes quickly" }, { a: "نَحْنُ فِي بَدَايَةِ الْأُسْبُوع", p: "Nahnu fee badaayati al-usboo'", e: "We are at the beginning of the week" }
+                ]
+            },
+            8: {
+                topic: "Food & Drink (الطَّعَام)",
+                items: [
+                    { a: "خُبْز", p: "Khubz", e: "Bread" }, { a: "لَحْم", p: "Lahm", e: "Meat" }, { a: "دَجَاج", p: "Da-jaaj", e: "Chicken" }, { a: "أَرُز", p: "A-ruzz", e: "Rice" }, { a: "فَوَاكِه", p: "Fa-waa-kih", e: "Fruits" }, { a: "خُضْرَوَات", p: "Khud-ra-waat", e: "Vegetables" }, { a: "قَهْوَة", p: "Qah-wah", e: "Coffee" }, { a: "شَاي", p: "Shaay", e: "Tea" }, { a: "مَاء", p: "Maa", e: "Water" }, { a: "حَلِيب", p: "Ha-leeb", e: "Milk" },
+                    { a: "أُرِيدُ أَنْ أَكُلَ الْخُبْز", p: "Ureedu an akula al-khubz", e: "I want to eat bread" }, { a: "هَلْ تُحِبُّ الْقَهْوَة؟", p: "Hal tuhibbu al-qahwah?", e: "Do you like coffee?" }, { a: "الطَّعَامُ لَذِيذٌ جِدًّا", p: "At-ta'aamu ladheedhun jiddan", e: "The food is very delicious" }, { a: "أَشْرَبُ الشَّايَ مَعَ السُّكَّر", p: "Ashrabu ash-shaaya ma'a as-sukkar", e: "I drink tea with sugar" }, { a: "عِنْدِي حَسَاسِيَّةٌ مِنَ الْحَلِيب", p: "Indee hasaasitun minal haleeb", e: "I have an allergy to milk" }, { a: "آكُلُ الدَّجَاجَ وَالْأَرُز", p: "Aakulu ad-dajaaja wal-aruzz", e: "I eat chicken and rice" }, { a: "الْمَاءُ بَارِدٌ جِدًّا", p: "Al-maa-u baaridun jiddan", e: "The water is very cold" }, { a: "أُحِبُّ الْفَوَاكِهَ الطَّازَجَة", p: "Uhibbu al-fawaakiha at-taazajah", e: "I love fresh fruits" }, { a: "أَيْنَ هِيَ قَائِمَةُ الطَّعَام؟", p: "Ayna hiya qaa-imatu at-ta'aam?", e: "Where is the menu?" }, { a: "شُكْرًا، أَنَا شَبْعَان", p: "Shukran, ana shab'aan", e: "Thanks, I am full" }
+                ]
+            },
+            9: {
+                topic: "Work & Office (الْعَمَل)",
+                items: [
+                    { a: "مَكْتَب", p: "Mak-tab", e: "Office" }, { a: "شَرِكَة", p: "Sha-ri-kah", e: "Company" }, { a: "مُدِير", p: "Mu-deer", e: "Manager" }, { a: "اجْتِمَاع", p: "Ij-ti-maa", e: "Meeting" }, { a: "هَاتِف", p: "Haa-tif", e: "Phone" }, { a: "حَاسُوب", p: "Haa-soob", e: "Computer" }, { a: "بَرِيد", p: "Ba-reed", e: "Email" }, { a: "مَلَف", p: "Ma-laf", e: "File" }, { a: "رَاتِب", p: "Raa-tib", e: "Salary" }, { a: "مُهَنْدِس", p: "Mu-han-dis", e: "Engineer" },
+                    { a: "أَنَا فِي الشَّرِكَةِ الآن", p: "Ana feel sharikati al-aan", e: "I am at the company now" }, { a: "الْمُدِيرُ فِي اجْتِمَاع", p: "Al-mudeeru fee ijtimaa'", e: "The manager is in a meeting" }, { a: "أَيْنَ الْحَاسُوبُ الْجَدِيد؟", p: "Ayna al-haasoobu al-jadeed?", e: "Where is the new computer?" }, { a: "أُرْسِلُ لَكَ بَرِيدًا الإلِكْتُرُونِيًّا", p: "Ursilu laka bareedan ilikturoniyyan", e: "I will send you an email" }, { a: "اجْتِمَاعُنَا السَّاعَةَ التَّاسِعَة", p: "Ijtimaa'una as-saa'ata at-taasi'ah", e: "Our meeting is at nine o'clock" }, { a: "أَنَا أَعْمَلُ كَمُهَنْدِسَة", p: "Ana a'malu kamuhandisah", e: "I work as an engineer" }, { a: "هَذَا الْمَلَفُّ مُهِمٌّ جِدًّا", p: "Haadhal malaffu muhimmun jiddan", e: "This file is very important" }, { a: "هَاتِفِي لَا يَعْمَل", p: "Haatifee laa ya'mal", e: "My phone is not working" }, { a: "كَيْفَ كَانَ يَوْمُكَ فِي الْعَمَل؟", p: "Kayfa kaana yawmuka feel amal?", e: "How was your day at work?" }, { a: "أَحْتَاجُ إِلَى مَكْتَبٍ كَبِير", p: "Ahtaaju ila maktabin kabeer", e: "I need a large desk" }
+                ]
+            },
+            10: {
+                topic: "Places & Cities (الْأَمَاكِن)",
+                items: [
+                    { a: "مَدِينَة", p: "Ma-dee-nah", e: "City" }, { a: "دَوْلَة", p: "Daw-lah", e: "Country" }, { a: "مَطَار", p: "Ma-taar", e: "Airport" }, { a: "فُنْدُق", p: "Fun-duq", e: "Hotel" }, { a: "سُوق", p: "Sooq", e: "Market" }, { a: "مُسْتَشْفَى", p: "Mus-tash-fa", e: "Hospital" }, { a: "مَدْرَسَة", p: "Mad-ra-sah", e: "School" }, { a: "شَارِع", p: "Shaa-ri-a", e: "Street" }, { a: "مَطْعَم", p: "Mat-am", e: "Restaurant" }, { a: "مَحَطَّة", p: "Ma-hat-tah", e: "Station" },
+                    { a: "أَسْكُنُ فِي مَدِينَةٍ كَبِيرَة", p: "As-kunu fee madeenatin kabeerah", e: "I live in a big city" }, { a: "أَيْنَ يَقَعُ الْمَطَار؟", p: "Ayna yaqa'u al-mataar?", e: "Where is the airport located?" }, { a: "الْمَطْعَمُ قَرِيبٌ مِنْ هُنَا", p: "Al-mat-amu qareebun min huna", e: "The restaurant is near here" }, { a: "سَأَذْهَبُ إِلَى السُّوق", p: "Sa-adh-habu ila as-sooq", e: "I will go to the market" }, { a: "الْفُنْدُقُ غَالِي السِّعْر", p: "Al-funduqu ghaali as-si'r", e: "The hotel is expensive" }, { a: "أَيْنَ هِيَ الْمُسْتَشْفَى؟", p: "Ayna hiya al-mustashfa?", e: "Where is the hospital?" }, { a: "هَذَا الشَّارِعُ هَادِئ", p: "Haadha ash-shaari-u haadi", e: "This street is quiet" }, { a: "سَأَنْتَظِرُكَ فِي الْمَحَطَّة", p: "Sa-antadhiruka feel mahattah", e: "I will wait for you at the station" }, { a: "كَيْفَ نَصِلُ إِلَى الْمَدْرَسَة؟", p: "Kayfa nasilu ila al-madrasah?", e: "How do we get to school?" }, { a: "الدَّوْلَةُ جَمِيلَةٌ فِي الصَّيْف", p: "Ad-dawlatu jameelatun fees-sayf", e: "The country is beautiful in summer" }
+                ]
+            }
         };
 
         let curLvl = 1; let curQ = 0; let quizPool = [];
-        let progress = JSON.parse(localStorage.getItem('amina_map_v1')) || {};
+        let progress = JSON.parse(localStorage.getItem('amina_quest_v1')) || {};
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -116,8 +183,9 @@
         }
 
         function renderGrid() {
-            const grid = document.getElementById('main-grid'); grid.innerHTML = '';
-            for(let i=1; i<=10; i++) { // Showing 10 for demo, set to 100 as needed
+            const grid = document.getElementById('main-grid');
+            grid.innerHTML = '';
+            for(let i=1; i<=10; i++) {
                 const info = levelData[i] || { topic: "Locked Level" };
                 grid.innerHTML += `
                     <div class="card ${progress[i]?'completed':''}" onclick="loadLevel(${i})">
@@ -128,19 +196,24 @@
         }
 
         function loadLevel(lvl) {
-            if(!levelData[lvl] || levelData[lvl].items.length === 0) return alert("Working on this level data!");
+            if(!levelData[lvl]) return;
             curLvl = lvl;
-            document.getElementById('lvl-title').innerText = `Study: ${levelData[lvl].topic}`;
+            document.getElementById('lvl-title').innerText = `Level ${lvl}: ${levelData[lvl].topic}`;
             const list = document.getElementById('full-list');
             list.innerHTML = '';
             levelData[lvl].items.forEach(item => {
-                list.innerHTML += `<div class="row"><span class="eng">${item.e}</span><span class="pron">${item.p}</span><span class="ara">${item.a}</span></div>`;
+                list.innerHTML += `
+                    <div class="row">
+                        <span class="eng">${item.e}</span>
+                        <span class="pron">${item.p}</span>
+                        <span class="ara">${item.a}</span>
+                    </div>`;
             });
             showScreen('study-page');
         }
 
         function startQuiz() {
-            // "No Repeats" logic: We shuffle the pool once and step through it.
+            // SHUFFLE POOL - NO REPEATS
             quizPool = [...levelData[curLvl].items].sort(() => Math.random() - 0.5);
             curQ = 0;
             showScreen('quiz-page');
@@ -150,7 +223,7 @@
         function loadQuestion() {
             const item = quizPool[curQ];
             document.getElementById('next-btn').style.display = "none";
-            document.getElementById('quiz-progress').innerText = `Quest: ${curQ + 1} / ${quizPool.length}`;
+            document.getElementById('quiz-progress').innerText = `Item ${curQ + 1} of ${quizPool.length}`;
             document.getElementById('q-text').innerText = item.a;
             document.getElementById('p-text').innerText = item.p;
 
@@ -171,7 +244,7 @@
                 b.onclick = () => {
                     const btns = document.querySelectorAll('.option-btn');
                     btns.forEach(btn => {
-                        btn.onclick = null;
+                        btn.onclick = null; // Disable after click
                         if(btn.innerText === item.e) btn.classList.add('correct');
                         else if(btn.innerText === choice) btn.classList.add('wrong');
                     });
@@ -182,11 +255,12 @@
         }
 
         function nextQuestion() {
-            if(curQ < quizPool.length - 1) { curQ++; loadQuestion(); }
-            else {
-                alert("Mabrook! You've mastered " + levelData[curLvl].topic);
+            if(curQ < quizPool.length - 1) {
+                curQ++; loadQuestion();
+            } else {
+                alert("Mabrook Amina! Level Complete.");
                 progress[curLvl] = true;
-                localStorage.setItem('amina_map_v1', JSON.stringify(progress));
+                localStorage.setItem('amina_quest_v1', JSON.stringify(progress));
                 showScreen('lvl-select');
             }
         }
