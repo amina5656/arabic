@@ -3,56 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arabic Academy - 100 Levels</title>
+    <title>Arabic Academy - Word & Sentence Mastery</title>
     <style>
-        :root {
-            --primary: #1a2a3a;
-            --secondary: #27ae60;
-            --accent: #d35400;
-            --error: #e74c3c;
-            --bg: #f4f7f6;
-        }
-
+        :root { --primary: #1a2a3a; --secondary: #27ae60; --accent: #d35400; --bg: #f4f7f6; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; color: var(--primary); }
-
-        #welcome-screen {
-            height: 100vh; display: flex; flex-direction: column; justify-content: center;
-            align-items: center; background: radial-gradient(circle, #2c3e50 0%, #000000 100%);
-            color: white; text-align: center;
-        }
-
-        .btn-main {
-            padding: 15px 50px; font-size: 1.2rem; border-radius: 8px; border: none;
-            background: var(--secondary); color: white; cursor: pointer; transition: 0.3s;
-            font-weight: bold; margin-top: 20px;
-        }
-
+        #welcome-screen { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #2c3e50 0%, #000000 100%); color: white; text-align: center; }
+        .btn-main { padding: 15px 50px; font-size: 1.2rem; border-radius: 8px; border: none; background: var(--secondary); color: white; cursor: pointer; transition: 0.3s; font-weight: bold; margin-top: 20px; }
         #main-app { display: none; padding: 20px; max-width: 800px; margin: auto; }
         .progress-bar { background: #ddd; height: 12px; border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
         #progress-fill { background: var(--secondary); height: 100%; width: 0%; transition: 0.8s; }
-
         .module-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        .module-card {
-            background: white; padding: 20px; border-radius: 12px; border-left: 10px solid #bdc3c7;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer;
-        }
+        .module-card { background: white; padding: 20px; border-radius: 12px; border-left: 10px solid #bdc3c7; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; }
         .module-card.unlocked { border-left-color: var(--secondary); }
-
         .card-box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; }
-        .item-row { display: flex; flex-direction: column; padding: 15px 0; border-bottom: 1px solid #eee; }
-        .arabic-text { font-size: 2.2rem; font-weight: bold; color: #000; direction: rtl; }
-        .pronunciation { font-size: 1.1rem; color: var(--accent); font-style: italic; margin: 5px 0; }
-        .translation { font-size: 1.2rem; color: #444; font-weight: bold; }
-
+        .pair-container { padding: 15px 0; border-bottom: 2px solid #f0f0f0; }
+        .pair-container:last-child { border-bottom: none; }
+        .word-row { margin-bottom: 10px; }
+        .sentence-row { padding-left: 20px; border-left: 3px solid var(--accent); background: #fffcf9; padding: 10px; border-radius: 0 8px 8px 0; }
+        .arabic-text { font-size: 2rem; font-weight: bold; color: #000; direction: rtl; }
+        .pronunciation { font-size: 1rem; color: var(--accent); font-style: italic; }
+        .translation { font-size: 1.1rem; color: #444; font-weight: bold; }
         #quiz-box { display: none; background: white; padding: 30px; border-radius: 15px; text-align: center; }
-        .option-btn { 
-            display: block; width: 100%; padding: 15px; margin: 10px 0; 
-            border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.1rem;
-            background: white; transition: 0.2s;
-        }
+        .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.1rem; background: white; transition: 0.2s; }
         .correct { background-color: #2ecc71 !important; color: white !important; border-color: #27ae60 !important; }
         .wrong { background-color: #e74c3c !important; color: white !important; border-color: #c0392b !important; }
-
         .hidden { display: none; }
         .back-link { cursor: pointer; color: var(--accent); margin-bottom: 20px; display: inline-block; font-weight: bold; }
     </style>
@@ -61,13 +35,13 @@
 
     <section id="welcome-screen">
         <h1>ARABIC ACADEMY</h1>
-        <p>Phonetic Reading • Levels 1 - 10</p>
+        <p>Mastery through Sentences • Levels 1 - 10</p>
         <button class="btn-main" onclick="initApp()">START LEARNING</button>
     </section>
 
     <main id="main-app">
         <div id="dashboard">
-            <h2>Course Progress</h2>
+            <h2>Your Journey</h2>
             <div class="progress-bar"><div id="progress-fill"></div></div>
             <div id="module-list" class="module-grid"></div>
         </div>
@@ -75,8 +49,7 @@
         <div id="lesson-view" class="hidden">
             <div class="back-link" onclick="showDashboard()">← Back to Dashboard</div>
             <h2 id="lesson-title"></h2>
-            <div class="card-box" id="vocab-container"></div>
-            <div class="card-box" id="sentence-container"></div>
+            <div class="card-box" id="content-container"></div>
             <button class="btn-main" style="width:100%;" onclick="startQuiz()">TAKE THE QUIZ</button>
         </div>
 
@@ -92,23 +65,92 @@
 
     <script>
         const courseData = [
-            { id: 0, title: "Level 1: Greetings", words: [{a:"مَرْحَبًا", e:"Hello", p:"Mar-ha-ban"}, {a:"أَهْلًا", e:"Welcome", p:"Ah-lan"}, {a:"شُكْرًا", e:"Thank you", p:"Shuk-ran"}, {a:"عَفْوًا", e:"You're welcome", p:"Af-wan"}, {a:"كَيْفَ حَالُكَ؟", e:"How are you?", p:"Kay-fa Ha-luk?"}, {a:"أَنَا بِخَيْر", e:"I am fine", p:"A-na Bi-khayr"}], sentences: [{a:"مَرْحَبًا، كَيْفَ حَالُكَ؟", e:"Hello, how are you?", p:"Mar-ha-ban, kay-fa ha-luk?"}] },
-            { id: 1, title: "Level 2: Colours", words: [{a:"أَحْمَر", e:"Red", p:"Ah-mar"}, {a:"أَزْرَق", e:"Blue", p:"Az-raq"}, {a:"أَخْضَر", e:"Green", p:"Akh-dar"}, {a:"أَصْفَر", e:"Yellow", p:"As-far"}, {a:"أَبْيَض", e:"White", p:"Ab-yad"}, {a:"أَسْوَد", e:"Black", p:"As-wad"}], sentences: [{a:"التُّفَّاحُ أَحْمَر", e:"The apple is red", p:"At-tuf-fa-hu ah-mar"}] },
-            { id: 2, title: "Level 3: My Family", words: [{a:"أَب", e:"Father", p:"Ab"}, {a:"أُم", e:"Mother", p:"Umm"}, {a:"أَخ", e:"Brother", p:"Akh"}, {a:"أُخْت", e:"Sister", p:"Ukht"}, {a:"جَدّ", e:"Grandfather", p:"Jadd"}, {a:"جَدَّة", e:"Grandmother", p:"Jad-dah"}], sentences: [{a:"هَذَا أَبِي", e:"This is my father", p:"Ha-dha a-bi"}] },
-            { id: 3, title: "Level 4: Numbers 1-10", words: [{a:"وَاحِد", e:"One", p:"Wa-hid"}, {a:"اِثْنَان", e:"Two", p:"Ith-nan"}, {a:"ثَلَاثَة", e:"Three", p:"Tha-la-thah"}, {a:"أَرْبَعَة", e:"Four", p:"Ar-ba-ah"}, {a:"خَمْسَة", e:"Five", p:"Kham-sah"}, {a:"عَشَرَة", e:"Ten", p:"A-sha-rah"}], sentences: [{a:"عِنْدِي كِتَابٌ وَاحِد", e:"I have one book", p:"In-di ki-ta-bun wa-hid"}] },
-            { id: 4, title: "Level 5: Common Objects", words: [{a:"كِتَاب", e:"Book", p:"Ki-tab"}, {a:"قَلَم", e:"Pen", p:"Qa-lam"}, {a:"مِفْتَاح", e:"Key", p:"Mif-tah"}, {a:"هَاتِف", e:"Phone", p:"Ha-tif"}, {a:"حَقِيبَة", e:"Bag", p:"Ha-qi-bah"}, {a:"كُرْسِيّ", e:"Chair", p:"Kur-si"}], sentences: [{a:"أَيْنَ مِفْتَاحِي؟", e:"Where is my key?", p:"Ay-na mif-ta-hi?"}] },
-            { id: 5, title: "Level 6: Around the House", words: [{a:"بَيْت", e:"House", p:"Bayt"}, {a:"بَاب", e:"Door", p:"Bab"}, {a:"نَافِذَة", e:"Window", p:"Na-fi-dhah"}, {a:"غُرْفَة", e:"Room", p:"Ghur-fah"}, {a:"مَطْبَخ", e:"Kitchen", p:"Mat-bakh"}, {a:"سَرِير", e:"Bed", p:"Sa-rir"}], sentences: [{a:"الْبَابُ مَفْتُوح", e:"The door is open", p:"Al-ba-bu maf-tuh"}] },
-            { id: 6, title: "Level 7: Food & Drink", words: [{a:"مَاء", e:"Water", p:"Ma'"}, {a:"خُبْز", e:"Bread", p:"Khubz"}, {a:"حَلِيب", e:"Milk", p:"Ha-lib"}, {a:"تُفَّاح", e:"Apple", p:"Tuf-fah"}, {a:"قَهْوَة", e:"Coffee", p:"Qah-wah"}, {a:"لَحْم", e:"Meat", p:"Lahm"}], sentences: [{a:"أُرِيدُ مَاءً", e:"I want water", p:"U-ri-du ma-an"}] },
-            { id: 7, title: "Level 8: The City", words: [{a:"سُوق", e:"Market", p:"Suq"}, {a:"مَدْرَسَة", e:"School", p:"Mad-ra-sah"}, {a:"مَسْجِد", e:"Mosque", p:"Mas-jid"}, {a:"مُسْتَشْفَى", e:"Hospital", p:"Mus-tash-fa"}, {a:"طَرِيق", e:"Road", p:"Ta-riq"}, {a:"مَدِينَة", e:"City", p:"Ma-di-nah"}], sentences: [{a:"الْمَسْجِدُ قَرِيب", e:"The mosque is near", p:"Al-mas-ji-du qa-rib"}] },
-            { id: 8, title: "Level 9: Pronouns", words: [{a:"أَنَا", e:"I", p:"A-na"}, {a:"أَنْتَ", e:"You (Male)", p:"An-ta"}, {a:"أَنْتِ", e:"You (Female)", p:"An-ti"}, {a:"هُوَ", e:"He", p:"Hu-wa"}, {a:"هِيَ", e:"She", p:"Hi-ya"}, {a:"نَحْنُ", e:"We", p:"Nah-nu"}], sentences: [{a:"أَنَا عَرَبِي", e:"I am Arab", p:"A-na a-ra-bi"}] },
-            { id: 9, title: "Level 10: Simple Verbs", words: [{a:"يَأْكُل", e:"Eat", p:"Ya'-kul"}, {a:"يَشْرَب", e:"Drink", p:"Yash-rab"}, {a:"يَذْهَب", e:"Go", p:"Yadh-hab"}, {a:"يَنَام", e:"Sleep", p:"Ya-nam"}, {a:"يَقْرَأ", e:"Read", p:"Yaq-ra'"}, {a:"يَكْتُب", e:"Write", p:"Yak-tub"}], sentences: [{a:"أَنَا أَكْتُبُ رِسَالَة", e:"I am writing a letter", p:"A-na ak-tu-bu ri-sa-lah"}] }
+            {
+                id: 0, title: "Level 1: Greetings",
+                pairs: [
+                    {w:{a:"مَرْحَبًا", e:"Hello", p:"Mar-ha-ban"}, s:{a:"مَرْحَبًا يَا صَدِيقِي", e:"Hello my friend", p:"Mar-ha-ban ya sa-di-qi"}},
+                    {w:{a:"شُكْرًا", e:"Thank you", p:"Shuk-ran"}, s:{a:"شُكْرًا جَزِيلًا", e:"Thank you very much", p:"Shuk-ran ja-zi-lan"}},
+                    {w:{a:"كَيْفَ حَالُكَ؟", e:"How are you?", p:"Kay-fa ha-luk?"}, s:{a:"كَيْفَ حَالُكَ اليَوْم؟", e:"How are you today?", p:"Kay-fa ha-luk-al yawm?"}}
+                ]
+            },
+            {
+                id: 1, title: "Level 2: Colours",
+                pairs: [
+                    {w:{a:"أَحْمَر", e:"Red", p:"Ah-mar"}, s:{a:"السَّيَّارَةُ حَمْرَاء", e:"The car is red", p:"As-say-ya-ra-tu ham-ra"}},
+                    {w:{a:"أَزْرَق", e:"Blue", p:"Az-raq"}, s:{a:"البَحْرُ أَزْرَق", e:"The sea is blue", p:"Al-bah-ru az-raq"}},
+                    {w:{a:"أَخْضَر", e:"Green", p:"Akh-dar"}, s:{a:"العُشْبُ أَخْضَر", e:"The grass is green", p:"Al-ush-bu akh-dar"}}
+                ]
+            },
+            {
+                id: 2, title: "Level 3: Family",
+                pairs: [
+                    {w:{a:"أَب", e:"Father", p:"Ab"}, s:{a:"أَبِي فِي البَيْت", e:"My father is at home", p:"A-bi fil bayt"}},
+                    {w:{a:"أُم", e:"Mother", p:"Umm"}, s:{a:"أُمِّي طَبِيبَة", e:"My mother is a doctor", p:"Um-mi ta-bi-bah"}},
+                    {w:{a:"أَخ", e:"Brother", p:"Akh"}, s:{a:"أَخِي يَلْعَبُ كُرَة القَدَم", e:"My brother plays football", p:"A-khi yal-a-bu ku-rat-al qa-dam"}}
+                ]
+            },
+            {
+                id: 3, title: "Level 4: Numbers",
+                pairs: [
+                    {w:{a:"وَاحِد", e:"One", p:"Wa-hid"}, s:{a:"عِنْدِي كِتَابٌ وَاحِد", e:"I have one book", p:"In-di ki-ta-bun wa-hid"}},
+                    {w:{a:"اِثْنَان", e:"Two", p:"Ith-nan"}, s:{a:"عِنْدِي قَلَمَانِ اثْنَان", e:"I have two pens", p:"In-di qa-la-ma-ni ith-nan"}},
+                    {w:{a:"ثَلَاثَة", e:"Three", p:"Tha-la-thah"}, s:{a:"ثَلَاثَةُ أَيَّام", e:"Three days", p:"Tha-la-tha-tu ay-yam"}}
+                ]
+            },
+            {
+                id: 4, title: "Level 5: Objects",
+                pairs: [
+                    {w:{a:"هَاتِف", e:"Phone", p:"Ha-tif"}, s:{a:"أَيْنَ هَاتِفِي؟", e:"Where is my phone?", p:"Ay-na ha-ti-fi?"}},
+                    {w:{a:"مِفْتَاح", e:"Key", p:"Mif-tah"}, s:{a:"المِفْتَاحُ مَعِي", e:"The key is with me", p:"Al-mif-ta-hu ma-i"}},
+                    {w:{a:"حَقِيبَة", e:"Bag", p:"Ha-qi-bah"}, s:{a:"هَذِهِ حَقِيبَتِي", e:"This is my bag", p:"Ha-dhi-hi ha-qi-ba-ti"}}
+                ]
+            },
+            {
+                id: 5, title: "Level 6: The House",
+                pairs: [
+                    {w:{a:"بَاب", e:"Door", p:"Bab"}, s:{a:"اِفْتَحِ البَاب", e:"Open the door", p:"If-tah-il bab"}},
+                    {a:"مَطْبَخ", e:"Kitchen", p:"Mat-bakh", w:{a:"مَطْبَخ", e:"Kitchen", p:"Mat-bakh"}, s:{a:"أُمِّي فِي المَطْبَخ", e:"My mother is in the kitchen", p:"Um-mi fil mat-bakh"}},
+                    {w:{a:"غُرْفَة", e:"Room", p:"Ghur-fah"}, s:{a:"الغُرْفَةُ كَبِيرَة", e:"The room is big", p:"Al-ghur-fa-tu ka-bi-rah"}}
+                ]
+            },
+            {
+                id: 6, title: "Level 7: Food",
+                pairs: [
+                    {w:{a:"خُبْز", e:"Bread", p:"Khubz"}, s:{a:"أُرِيدُ خُبْزًا", e:"I want bread", p:"U-ri-du khub-zan"}},
+                    {w:{a:"مَاء", e:"Water", p:"Ma'"}, s:{a:"أَشْرَبُ المَاء", e:"I drink the water", p:"Ash-ra-bul ma'"}},
+                    {w:{a:"تُفَّاح", e:"Apple", p:"Tuf-fah"}, s:{a:"التُّفَّاحُ لَذِيذ", e:"The apple is delicious", p:"At-tuf-fa-hu la-dhidh"}}
+                ]
+            },
+            {
+                id: 7, title: "Level 8: Places",
+                pairs: [
+                    {w:{a:"سُوق", e:"Market", p:"Suq"}, s:{a:"أَذْهَبُ إِلَى السُّوق", e:"I go to the market", p:"Adh-ha-bu i-las suq"}},
+                    {w:{a:"مَسْجِد", e:"Mosque", p:"Mas-jid"}, s:{a:"المَسْجِدُ جَمِيل", e:"The mosque is beautiful", p:"Al-mas-ji-du ja-mil"}},
+                    {w:{a:"مَدْرَسَة", e:"School", p:"Mad-ra-sah"}, s:{a:"المَدْرَسَةُ بَعِيدَة", e:"The school is far", p:"Al-mad-ra-sa-tu ba-i-dah"}}
+                ]
+            },
+            {
+                id: 8, title: "Level 9: Pronouns",
+                pairs: [
+                    {w:{a:"أَنَا", e:"I", p:"A-na"}, s:{a:"أَنَا مُهَنْدِس", e:"I am an engineer", p:"A-na mu-han-dis"}},
+                    {w:{a:"أَنْتَ", e:"You (m)", p:"An-ta"}, s:{a:"أَنْتَ طَالِب", e:"You are a student", p:"An-ta ta-lib"}},
+                    {w:{a:"نَحْنُ", e:"We", p:"Nah-nu"}, s:{a:"نَحْنُ بِخَيْر", e:"We are fine", p:"Nah-nu bi-khayr"}}
+                ]
+            },
+            {
+                id: 9, title: "Level 10: Verbs",
+                pairs: [
+                    {w:{a:"يَأْكُل", e:"Eat", p:"Ya'-kul"}, s:{a:"هُوَ يَأْكُلُ التَّمْر", e:"He eats the dates", p:"Hu-wa ya'-ku-lut tamr"}},
+                    {w:{a:"يَشْرَب", e:"Drink", p:"Yash-rab"}, s:{a:"هِيَ تَشْرَبُ الشَّاي", e:"She drinks the tea", p:"Hi-ya tash-ra-bush shay"}},
+                    {w:{a:"يَنَام", e:"Sleep", p:"Ya-nam"}, s:{a:"الوَلَدُ يَنَامُ بَاكِرًا", e:"The boy sleeps early", p:"Al-wa-la-du ya-na-mu ba-ki-ran"}}
+                ]
+            }
         ];
 
-        // CHANGED STORAGE KEY TO RESET PROGRESS AND SHOW ALL LEVELS
-        let userProgress = JSON.parse(localStorage.getItem('arabic_academy_v100_final')) || { unlocked: 0 };
+        let userProgress = JSON.parse(localStorage.getItem('arabic_academy_vFINAL')) || { unlocked: 0 };
         let currentLevel = 0, quizPool = [], score = 0, qIdx = 0, isAnswering = false;
 
-        function save() { localStorage.setItem('arabic_academy_v100_final', JSON.stringify(userProgress)); }
+        function save() { localStorage.setItem('arabic_academy_vFINAL', JSON.stringify(userProgress)); }
 
         function initApp() {
             document.getElementById('welcome-screen').style.display = 'none';
@@ -138,21 +180,34 @@
             document.getElementById('dashboard').classList.add('hidden');
             document.getElementById('lesson-view').classList.remove('hidden');
             document.getElementById('lesson-title').innerText = courseData[i].title;
-            const vC = document.getElementById('vocab-container');
-            const sC = document.getElementById('sentence-container');
-            vC.innerHTML = "<h3>Vocabulary</h3>"; sC.innerHTML = "<h3>Sentences</h3>";
-            courseData[i].words.forEach(w => {
-                vC.innerHTML += `<div class="item-row"><div class="arabic-text">${w.a}</div><div class="pronunciation">Pronounced: ${w.p}</div><div class="translation">English: ${w.e}</div></div>`;
-            });
-            courseData[i].sentences.forEach(s => {
-                sC.innerHTML += `<div class="item-row"><div class="arabic-text">${s.a}</div><div class="pronunciation">Pronounced: ${s.p}</div><div class="translation">English: ${s.e}</div></div>`;
+            const container = document.getElementById('content-container');
+            container.innerHTML = "";
+
+            courseData[i].pairs.forEach(pair => {
+                container.innerHTML += `
+                    <div class="pair-container">
+                        <div class="word-row">
+                            <div class="arabic-text">${pair.w.a}</div>
+                            <div class="pronunciation">Word: ${pair.w.p}</div>
+                            <div class="translation">${pair.w.e}</div>
+                        </div>
+                        <div class="sentence-row">
+                            <div class="arabic-text" style="font-size:1.5rem;">${pair.s.a}</div>
+                            <div class="pronunciation">Sentence: ${pair.s.p}</div>
+                            <div class="translation">${pair.s.e}</div>
+                        </div>
+                    </div>`;
             });
         }
 
         function startQuiz() {
             document.getElementById('lesson-view').classList.add('hidden');
             document.getElementById('quiz-box').style.display = 'block';
-            quizPool = [...courseData[currentLevel].words, ...courseData[currentLevel].sentences];
+            quizPool = [];
+            courseData[currentLevel].pairs.forEach(p => {
+                quizPool.push({a: p.w.a, e: p.w.e});
+                quizPool.push({a: p.s.a, e: p.s.e});
+            });
             quizPool.sort(() => Math.random() - 0.5);
             score = 0; qIdx = 0;
             ask();
@@ -165,10 +220,8 @@
             document.getElementById('q-text').innerText = `Question ${qIdx+1}/${quizPool.length}:`;
             document.getElementById('q-display').innerText = item.a;
             const options = [item.e];
-            const decoys = [...courseData[currentLevel].words, ...courseData[currentLevel].sentences].map(x => x.e).filter(x => x !== item.e);
-            while(options.length < 4 && decoys.length > 0) {
-                options.push(decoys.splice(Math.floor(Math.random()*decoys.length), 1)[0]);
-            }
+            const decoys = courseData.flatMap(l => l.pairs.flatMap(p => [p.w.e, p.s.e])).filter(x => x !== item.e);
+            while(options.length < 4) { options.push(decoys.splice(Math.floor(Math.random()*decoys.length), 1)[0]); }
             options.sort(() => Math.random() - 0.5);
             const optDiv = document.getElementById('q-options');
             optDiv.innerHTML = "";
@@ -184,16 +237,12 @@
         function checkAnswer(btn, selected, correct) {
             if(isAnswering) return;
             isAnswering = true;
-            if(selected === correct) {
-                btn.classList.add('correct');
-                score++;
-            } else {
+            if(selected === correct) { btn.classList.add('correct'); score++; }
+            else { 
                 btn.classList.add('wrong');
-                Array.from(document.getElementsByClassName('option-btn')).forEach(b => {
-                    if(b.innerText === correct) b.classList.add('correct');
-                });
+                Array.from(document.getElementsByClassName('option-btn')).forEach(b => { if(b.innerText === correct) b.classList.add('correct'); });
             }
-            setTimeout(() => { qIdx++; ask(); }, 1000);
+            setTimeout(() => { qIdx++; ask(); }, 1200);
         }
 
         function finish() {
@@ -201,10 +250,10 @@
             const feedback = document.getElementById('q-feedback');
             document.getElementById('q-ui').classList.add('hidden');
             if(pass) {
-                feedback.innerHTML = `<h2 style="color:green">${score}/${quizPool.length}! Perfect!</h2>`;
+                feedback.innerHTML = `<h2 style="color:green">${score}/${quizPool.length}! You Mastered It!</h2>`;
                 if(currentLevel === userProgress.unlocked) { userProgress.unlocked++; save(); }
             } else {
-                feedback.innerHTML = `<h2 style="color:red">${score}/${quizPool.length}</h2><p>100% required to pass.</p>`;
+                feedback.innerHTML = `<h2 style="color:red">${score}/${quizPool.length}</h2><p>You missed a few. Try again!</p>`;
             }
             setTimeout(() => { feedback.innerHTML = ""; document.getElementById('q-ui').classList.remove('hidden'); showDashboard(); }, 3000);
         }
