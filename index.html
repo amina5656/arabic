@@ -3,15 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arabic Academy - All Levels Unlocked</title>
+    <title>Arabic Academy - 10x10 Mastery</title>
     <style>
-        :root { --primary: #1a2a3a; --secondary: #27ae60; --accent: #d35400; --bg: #f4f7f6; }
+        :root { 
+            --primary: #1a2a3a; --secondary: #27ae60; --accent: #d35400; 
+            --bg: #f4f7f6; --grey: #bdc3c7; --amber: #f39c12; --red: #e74c3c; 
+        }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; color: var(--primary); }
         #welcome-screen { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #2c3e50 0%, #000000 100%); color: white; text-align: center; }
         .btn-main { padding: 15px 50px; font-size: 1.2rem; border-radius: 8px; border: none; background: var(--secondary); color: white; cursor: pointer; transition: 0.3s; font-weight: bold; margin-top: 20px; }
         #main-app { display: none; padding: 20px; max-width: 800px; margin: auto; }
+        
         .module-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        .module-card { background: white; padding: 20px; border-radius: 12px; border-left: 10px solid var(--secondary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; }
+        .module-card { background: white; padding: 20px; border-radius: 12px; border-left: 12px solid var(--grey); box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; transition: 0.2s; }
+        .module-card:hover { transform: translateY(-2px); }
+        
+        /* Status Colors */
+        .status-completed { border-left-color: var(--secondary) !important; }
+        .status-started { border-left-color: var(--amber) !important; }
+        .status-failed { border-left-color: var(--red) !important; }
+        .status-never { border-left-color: var(--grey) !important; }
+
         .card-box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; }
         .pair-container { padding: 15px 0; border-bottom: 2px solid #f0f0f0; }
         .word-row { margin-bottom: 15px; text-align: right; }
@@ -19,10 +31,11 @@
         .arabic-text { font-size: 2.2rem; font-weight: bold; color: #000; direction: rtl; display: block; }
         .pronunciation { font-size: 0.9rem; color: var(--accent); font-style: italic; display: block; text-align: left; }
         .translation { font-size: 1.1rem; color: #444; font-weight: bold; display: block; text-align: left; }
-        #quiz-box { display: none; background: white; padding: 30px; border-radius: 15px; text-align: center; }
-        .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.1rem; background: white; }
-        .correct { background-color: #2ecc71 !important; color: white !important; }
-        .wrong { background-color: #e74c3c !important; color: white !important; }
+        
+        #quiz-box { display: none; background: white; padding: 30px; border-radius: 15px; text-align: center; min-height: 400px; }
+        .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.1rem; background: white; transition: 0.2s; }
+        .correct { background-color: var(--secondary) !important; color: white !important; border-color: var(--secondary) !important; }
+        .wrong { background-color: var(--red) !important; color: white !important; border-color: var(--red) !important; }
         .hidden { display: none; }
         .back-link { cursor: pointer; color: var(--accent); margin-bottom: 20px; display: inline-block; font-weight: bold; }
     </style>
@@ -31,13 +44,13 @@
 
     <section id="welcome-screen">
         <h1>ARABIC ACADEMY</h1>
-        <p>10 Levels • 100% Unlocked • 200 Items</p>
-        <button class="btn-main" onclick="initApp()">EXPLORE LEVELS</button>
+        <p>10 Levels • 200 Lessons • Open Access</p>
+        <button class="btn-main" onclick="initApp()">START LEARNING</button>
     </section>
 
     <main id="main-app">
         <div id="dashboard">
-            <h2>Select a Level</h2>
+            <h2>Course Progress</h2>
             <div id="module-list" class="module-grid"></div>
         </div>
 
@@ -45,172 +58,147 @@
             <div class="back-link" onclick="showDashboard()">← Back to Dashboard</div>
             <h2 id="lesson-title"></h2>
             <div class="card-box" id="content-container"></div>
-            <button class="btn-main" style="width:100%;" onclick="startQuiz()">TAKE THE QUIZ</button>
+            <button class="btn-main" style="width:100%; margin-bottom: 40px;" onclick="startQuiz()">TAKE THE QUIZ</button>
         </div>
 
         <div id="quiz-box">
             <h2 id="q-text">Question</h2>
             <div id="q-ui">
-                <div id="q-display" class="arabic-text" style="text-align:center; margin:20px 0;"></div>
+                <div id="q-display" class="arabic-text" style="text-align:center; margin:30px 0;"></div>
                 <div id="q-options"></div>
             </div>
-            <p id="q-feedback"></p>
+            <p id="q-feedback" style="font-weight: bold; font-size: 1.2rem;"></p>
         </div>
     </main>
 
     <script>
         const courseData = [
-            {
-                id: 0, title: "Level 1: Greetings",
-                pairs: [
-                    {w:{a:"مَرْحَبًا", e:"Hello", p:"Mar-ha-ban"}, s:{a:"مَرْحَبًا يَا صَدِيقِي", e:"Hello my friend", p:"Mar-ha-ban ya sa-di-qi"}},
-                    {w:{a:"شُكْرًا", e:"Thank you", p:"Shuk-ran"}, s:{a:"شُكْرًا جَزِيلًا", e:"Thank you very much", p:"Shuk-ran ja-zi-lan"}},
-                    {w:{a:"كَيْفَ حَالُكَ؟", e:"How are you?", p:"Kay-fa ha-luk?"}, s:{a:"كَيْفَ حَالُكَ اليَوْم؟", e:"How are you today?", p:"Kay-fa ha-luk-al yawm?"}},
-                    {w:{a:"أَهْلًا", e:"Welcome", p:"Ah-lan"}, s:{a:"أَهْلًا بِكَ فِي بَيْتِي", e:"Welcome to my house", p:"Ah-lan bi-ka fi bay-ti"}},
-                    {w:{a:"صَبَاحُ الْخَيْرِ", e:"Good morning", p:"Sa-ba-hul khayr"}, s:{a:"صَبَاحُ الْخَيْرِ يَا أُمِّي", e:"Good morning, my mother", p:"Sa-ba-hul khay-ri ya um-mi"}},
-                    {w:{a:"مَسَاءُ الْخَيْرِ", e:"Good evening", p:"Ma-sa-ul khayr"}, s:{a:"مَسَاءُ الْخَيْرِ يَا أَبِي", e:"Good evening, my father", p:"Ma-sa-ul khay-ri ya a-bi"}},
-                    {w:{a:"عَفْوًا", e:"You're welcome", p:"Af-wan"}, s:{a:"عَفْوًا، أَيْنَ الْمَسْجِد؟", e:"Excuse me, where is the mosque?", p:"Af-wan, ay-nal mas-jid?"}},
-                    {w:{a:"أَنَا بِخَيْر", e:"I am fine", p:"A-na bi-khayr"}, s:{a:"الْحَمْدُ لِلَّه، أَنَا بِخَيْر", e:"Praise be to God, I am fine", p:"Al-ham-du lillah, a-na bi-khayr"}},
-                    {w:{a:"مَعَ السَّلَامَةِ", e:"Goodbye", p:"Ma-as sa-la-mah"}, s:{a:"أَرَاكَ غَدًا، مَعَ السَّلَامَةِ", e:"See you tomorrow, goodbye", p:"A-ra-ka gha-dan, ma-as sa-la-mah"}},
-                    {w:{a:"تَصْبَحُ عَلَى خَيْر", e:"Good night", p:"Tas-bah a-la khayr"}, s:{a:"لَيْلَةً سَعِيدَةً، تَصْبَحُ عَلَى خَيْر", e:"Happy night, good night", p:"Lay-la-tan sa-i-da-tan, tas-bah a-la khayr"}}
-                ]
-            },
-            {
-                id: 1, title: "Level 2: Colours",
-                pairs: [
-                    {w:{a:"أَحْمَر", e:"Red", p:"Ah-mar"}, s:{a:"هَذَا قَلَمٌ أَحْمَر", e:"This is a red pen", p:"Ha-dha qa-la-mun ah-mar"}},
-                    {w:{a:"أَزْرَق", e:"Blue", p:"Az-raq"}, s:{a:"السَّمَاءُ زَرْقَاءُ جَمِيلَة", e:"The sky is beautiful blue", p:"As-sa-ma-u zar-qa-u ja-mi-lah"}},
-                    {w:{a:"أَخْضَر", e:"Green", p:"Akh-dar"}, s:{a:"الشَّجَرُ أَخْضَرُ الْآن", e:"The tree is green now", p:"Ash-sha-ja-ru akh-da-rul an"}},
-                    {w:{a:"أَصْفَر", e:"Yellow", p:"As-far"}, s:{a:"الشَّمْسُ صَفْرَاءُ سَاطِعَة", e:"The sun is bright yellow", p:"Ash-sham-su saf-ra-u sa-ti-ah"}},
-                    {w:{a:"أَبْيَض", e:"White", p:"Ab-yad"}, s:{a:"الثَّلْجُ أَبْيَضُ نَقِيّ", e:"The snow is pure white", p:"Ath-thal-ju ab-ya-du na-qi"}},
-                    {w:{a:"أَسْوَد", e:"Black", p:"As-wad"}, s:{a:"لَدَيَّ قِطٌّ أَسْوَد", e:"I have a black cat", p:"La-day-ya qit-tun as-wad"}},
-                    {w:{a:"بُرْتُقَالِي", e:"Orange", p:"Bur-tu-qa-li"}, s:{a:"أُحِبُّ اللَّوْنَ الْبُرْتُقَالِي", e:"I love the orange color", p:"U-hib-bul law-nal bur-tu-qa-li"}},
-                    {w:{a:"وَرْدِي", e:"Pink", p:"War-di"}, s:{a:"الْوَرْدَةُ لَوْنُهَا وَرْدِي", e:"The rose is pink", p:"Al-war-da-tu law-nu-ha war-di"}},
-                    {w:{a:"بَنَفْسَجِي", e:"Purple", p:"Ba-naf-sa-ji"}, s:{a:"هَذَا فُسْتَانٌ بَنَفْسَجِي", e:"This is a purple dress", p:"Ha-dha fus-ta-nun ba-naf-sa-ji"}},
-                    {w:{a:"بُنِّي", e:"Brown", p:"Bun-ni"}, s:{a:"الطَّاوِلَةُ لَوْنُهَا بُنِّي", e:"The table's color is brown", p:"At-ta-wi-la-tu law-nu-ha bun-ni"}}
-                ]
-            },
-            {
-                id: 2, title: "Level 3: Family",
-                pairs: [
-                    {w:{a:"أَب", e:"Father", p:"Ab"}, s:{a:"أَبِي فِي الْعَمَل", e:"My father is at work", p:"A-bi fil a-mal"}},
-                    {w:{a:"أُم", e:"Mother", p:"Umm"}, s:{a:"أُمِّي فِي الْمَطْبَخ", e:"My mother is in the kitchen", p:"Um-mi fil mat-bakh"}},
-                    {w:{a:"أَخ", e:"Brother", p:"Akh"}, s:{a:"أَخِي يَلْعَبُ الْآن", e:"My brother is playing now", p:"A-khi yal-a-bul an"}},
-                    {w:{a:"أُخْت", e:"Sister", p:"Ukht"}, s:{a:"أُخْتِي تَدْرُسُ بِجِدّ", e:"My sister is studying hard", p:"Ukh-ti tad-ru-su bi-jidd"}},
-                    {w:{a:"جَدّ", e:"Grandfather", p:"Jadd"}, s:{a:"جَدِّي رَجُلٌ حَكِيم", e:"My grandfather is a wise man", p:"Jad-di ra-ju-lun ha-kim"}},
-                    {w:{a:"جَدَّة", e:"Grandmother", p:"Jad-dah"}, s:{a:"جَدَّتِي تَحْكِي قِصَصًا", e:"My grandmother tells stories", p:"Jad-da-ti tah-ki qi-sa-san"}},
-                    {w:{a:"اِبْن", e:"Son", p:"Ibn"}, s:{a:"هُوَ اِبْنِي الْوَحِيد", e:"He is my only son", p:"Hu-wa ib-nil wa-hid"}},
-                    {w:{a:"اِبْنَة", e:"Daughter", p:"Ib-nah"}, s:{a:"اِبْنَتِي تُحِبُّ الْقِرَاءَة", e:"My daughter loves reading", p:"Ib-na-ti tu-hib-bul qi-ra-ah"}},
-                    {w:{a:"عَمّ", e:"Uncle", p:"Amm"}, s:{a:"عَمِّي يَعِيشُ قَرِيبًا", e:"My uncle lives nearby", p:"Am-mi ya-i-shu qa-ri-ban"}},
-                    {w:{a:"خَالَة", e:"Aunt", p:"Kha-lah"}, s:{a:"خَالَتِي طَبِيبَةٌ مَاهِرَة", e:"My aunt is a skilled doctor", p:"Kha-la-ti ta-bi-ba-tun ma-hi-rah"}}
-                ]
-            },
-            {
-                id: 3, title: "Level 4: Numbers",
-                pairs: [
-                    {w:{a:"وَاحِد", e:"One", p:"Wa-hid"}, s:{a:"عِنْدِي قَلَمٌ وَاحِد", e:"I have one pen", p:"In-di qa-la-mun wa-hid"}},
-                    {w:{a:"اِثْنَان", e:"Two", p:"Ith-nan"}, s:{a:"لِي عَيْنَانِ اِثْنَان", e:"I have two eyes", p:"Li ay-na-ni ith-nan"}},
-                    {w:{a:"ثَلَاثَة", e:"Three", p:"Tha-la-thah"}, s:{a:"ثَلَاثَةُ أَيَّامٍ فِي الْأُسْبُوع", e:"Three days in the week", p:"Tha-la-tha-tu ay-ya-min fil us-bu"}},
-                    {w:{a:"أَرْبَعَة", e:"Four", p:"Ar-ba-ah"}, s:{a:"أَرْبَعَةُ فُصُولٍ فِي السَّنَة", e:"Four seasons in the year", p:"Ar-ba-a-tu fu-su-lin fis sa-nah"}},
-                    {w:{a:"خَمْسَة", e:"Five", p:"Kham-sah"}, s:{a:"لِي خَمْسَةُ أَصَابِع", e:"I have five fingers", p:"Li kham-sa-tu a-sa-bi"}},
-                    {w:{a:"سِتَّة", e:"Six", p:"Sit-tah"}, s:{a:"سِتَّةُ طُلَّابٍ جُدُد", e:"Six new students", p:"Sit-ta-tu tul-la-bin ju-dud"}},
-                    {w:{a:"سَبْعَة", e:"Seven", p:"Sab-ah"}, s:{a:"سَبْعَةُ أَلْوَانٍ فِي الْقَوْس", e:"Seven colors in the rainbow", p:"Sab-a-tu al-wa-nin fil qaws"}},
-                    {w:{a:"ثَمَانِيَة", e:"Eight", p:"Tha-ma-ni-yah"}, s:{a:"ثَمَانِيَةُ كَرَاسِيَّ هُنَا", e:"Eight chairs here", p:"Tha-ma-ni-ya-tu ka-ra-si hu-na"}},
-                    {w:{a:"تِسْعَة", e:"Nine", p:"Tis-ah"}, s:{a:"تِسْعَةُ مَجَلَّاتٍ قَدِيمَة", e:"Nine old magazines", p:"Tis-a-tu ma-jal-la-tin qa-di-mah"}},
-                    {w:{a:"عَشَرَة", e:"Ten", p:"A-sha-rah"}, s:{a:"عَشَرَةُ دَنَانِيرَ فَقَط", e:"Ten Dinars only", p:"A-sha-ra-tu da-na-ni-ra fa-qat"}}
-                ]
-            },
-            {
-                id: 4, title: "Level 5: Objects",
-                pairs: [
-                    {w:{a:"كِتَاب", e:"Book", p:"Ki-tab"}, s:{a:"الْكِتَابُ عَلَى الْمَكْتَب", e:"The book is on the desk", p:"Al-ki-ta-bu a-lal mak-tab"}},
-                    {w:{a:"قَلَم", e:"Pen", p:"Qa-lam"}, s:{a:"أَكْتُبُ بِالْقَلَمِ الْأَزْرَق", e:"I write with the blue pen", p:"Ak-tu-bu bil qa-la-mil az-raq"}},
-                    {w:{a:"هَاتِف", e:"Phone", p:"Ha-tif"}, s:{a:"هَاتِفِي فِي الْحَقِيبَة", e:"My phone is in the bag", p:"Ha-ti-fi fil ha-qi-bah"}},
-                    {w:{a:"مِفْتَاح", e:"Key", p:"Mif-tah"}, s:{a:"أَيْنَ مِفْتَاحُ الْبَيْت؟", e:"Where is the house key?", p:"Ay-na mif-ta-hul bayt?"}},
-                    {w:{a:"سَاعَة", e:"Watch", p:"Sa-ah"}, s:{a:"سَاعَتِي جَمِيلَةٌ جِدًّا", e:"My watch is very beautiful", p:"Sa-a-ti ja-mi-la-tun jid-dan"}},
-                    {w:{a:"نَظَّارَة", e:"Glasses", p:"Naz-za-rah"}, s:{a:"أَلْبَسُ نَظَّارَةً جَدِيدَة", e:"I wear new glasses", p:"Al-ba-su naz-za-ra-tan ja-di-dah"}},
-                    {w:{a:"حَقِيبَة", e:"Bag", p:"Ha-qi-bah"}, s:{a:"الْحَقِيبَةُ ثَقِيلَةٌ لِلْغَايَة", e:"The bag is extremely heavy", p:"Al-ha-qi-ba-tu tha-qi-la-tun lil-gha-yah"}},
-                    {w:{a:"وَرَقَة", e:"Paper", p:"Wa-ra-qah"}, s:{a:"أَحْتَاجُ إِلَى وَرَقَةٍ بَيْضَاء", e:"I need a white paper", p:"Ah-ta-ju i-la wa-ra-qa-tin bay-da"}},
-                    {w:{a:"مِحْفَظَة", e:"Wallet", p:"Mih-fa-zah"}, s:{a:"نَسِيتُ مِحْفَظَتِي هُنَاكَ", e:"I forgot my wallet there", p:"Na-si-tu mih-fa-za-ti hu-nak"}},
-                    {w:{a:"مِظَلَّة", e:"Umbrella", p:"Mi-zal-lah"}, s:{a:"اِحْمِلِ الْمِظَلَّةَ، فَالْجَوُّ مَاطِر", e:"Carry the umbrella, it is raining", p:"Ih-mi-lil mi-zal-lah, fal-jaw-wu ma-tir"}}
-                ]
-            },
-            {
-                id: 5, title: "Level 6: Home",
-                pairs: [
-                    {w:{a:"بَيْت", e:"House", p:"Bayt"}, s:{a:"بَيْتِي كَبِيرٌ وَنَظِيف", e:"My house is big and clean", p:"Bay-ti ka-bi-run wa-na-zif"}},
-                    {w:{a:"بَاب", e:"Door", p:"Bab"}, s:{a:"اِفْتَحِ الْبَابَ مَنْ فَضْلِكَ", e:"Open the door please", p:"If-tah-il ba-ba min fad-lik"}},
-                    {w:{a:"نَافِذَة", e:"Window", p:"Na-fi-dhah"}, s:{a:"أَغْلِقِ النَّافِذَةَ الْآن", e:"Close the window now", p:"Agh-liq-in na-fi-dha-tal an"}},
-                    {w:{a:"غُرْفَة", e:"Room", p:"Ghur-fah"}, s:{a:"غُرْفَةُ النَّوْمِ هَادِئَة", e:"The bedroom is quiet", p:"Ghur-fa-tun naw-mi ha-di-ah"}},
-                    {w:{a:"سَرِير", e:"Bed", p:"Sa-rir"}, s:{a:"أَنَامُ عَلَى سَرِيرٍ نَاعِم", e:"I sleep on a soft bed", p:"A-na-mu a-la sa-ri-rin na-im"}},
-                    {w:{a:"مَطْبَخ", e:"Kitchen", p:"Mat-bakh"}, s:{a:"أُمِّي تَطْبُخُ فِي الْمَطْبَخ", e:"My mother cooks in the kitchen", p:"Um-mi tat-bu-khu fil mat-bakh"}},
-                    {w:{a:"طَاوِلَة", e:"Table", p:"Ta-wi-lah"}, s:{a:"الطَّعَامُ عَلَى الطَّاوِلَة", e:"The food is on the table", p:"At-ta-a-mu a-lat ta-wi-lah"}},
-                    {w:{a:"كُرْسِيّ", e:"Chair", p:"Kur-si"}, s:{a:"اِجْلِسْ عَلَى هَذَا الْكُرْسِيّ", e:"Sit on this chair", p:"Ij-lis a-la ha-dhal kur-si"}},
-                    {w:{a:"حَمَّام", e:"Bathroom", p:"Ham-mam"}, s:{a:"الْحَمَّامُ نَظِيفٌ جِدًّا", e:"The bathroom is very clean", p:"Al-ham-ma-mu na-zi-fun jid-dan"}},
-                    {w:{a:"حَدِيقَة", e:"Garden", p:"Ha-di-qah"}, s:{a:"نَلْعَبُ فِي الْحَدِيقَةِ كُلَّ يَوْم", e:"We play in the garden every day", p:"Nal-a-bu fil ha-di-qa-ti kul-la yawm"}}
-                ]
-            },
-            {
-                id: 6, title: "Level 7: Food",
-                pairs: [
-                    {w:{a:"خُبْز", e:"Bread", p:"Khubz"}, s:{a:"آكُلُ الْخُبْزَ فِي الصَّبَاح", e:"I eat bread in the morning", p:"A-ku-lul khub-za fis sa-bah"}},
-                    {w:{a:"مَاء", e:"Water", p:"Ma'"}, s:{a:"أَشْرَبُ الْمَاءَ الْبَارِد", e:"I drink cold water", p:"Ash-ra-bul ma-al ba-rid"}},
-                    {w:{a:"حَلِيب", e:"Milk", p:"Ha-lib"}, s:{a:"الْحَلِيبُ مُفِيدٌ لِلْأَطْفَال", e:"Milk is beneficial for children", p:"Al-ha-li-bu mu-fi-dun lil-at-fal"}},
-                    {w:{a:"لَحْم", e:"Meat", p:"Lahm"}, s:{a:"أُحِبُّ لَحْمَ الدَّجَاج", e:"I love chicken meat", p:"U-hib-bu lah-mad da-jaj"}},
-                    {w:{a:"أَرُزّ", e:"Rice", p:"A-ruzz"}, s:{a:"آكُلُ الْأَرُزَّ مَعَ الْخُضَار", e:"I eat rice with vegetables", p:"A-ku-lul a-ruz-za ma-al khu-dar"}},
-                    {w:{a:"تُفَّاح", e:"Apple", p:"Tuf-fah"}, s:{a:"التُّفَّاحُ فَاكِهَةٌ لَذِيذَة", e:"Apple is a delicious fruit", p:"At-tuf-fa-hu fa-ki-ha-tun la-dhi-dhah"}},
-                    {w:{a:"سُكَّر", e:"Sugar", p:"Suk-kar"}, s:{a:"لَا أَضَعُ السُّكَّرَ فِي الشَّاي", e:"I don't put sugar in the tea", p:"La a-da-us suk-ka-ra fish shay"}},
-                    {w:{a:"مِلْح", e:"Salt", p:"Milh"}, s:{a:"الْمِلْحُ قَلِيلٌ فِي الطَّعَام", e:"The salt is low in the food", p:"Al-mil-hu qa-li-lun fit ta-am"}},
-                    {w:{a:"قَهْوَة", e:"Coffee", p:"Qah-wah"}, s:{a:"أَشْرَبُ الْقَهْوَةَ مُرَّة", e:"I drink bitter coffee", p:"Ash-ra-bul qah-wa-ta mur-rah"}},
-                    {w:{a:"عَسَل", e:"Honey", p:"A-sal"}, s:{a:"الْعَسَلُ طَبِيعِيٌّ وَصِحِّيّ", e:"Honey is natural and healthy", p:"Al-a-sa-lu ta-bi-iy-yun wa-sih-hi"}}
-                ]
-            },
-            {
-                id: 7, title: "Level 8: Places",
-                pairs: [
-                    {w:{a:"سُوق", e:"Market", p:"Suq"}, s:{a:"أَذْهَبُ إِلَى السُّوقِ لِلتَّسَوُّق", e:"I go to the market for shopping", p:"Adh-ha-bu i-las su-qi lit-ta-saw-wuq"}},
-                    {w:{a:"مَدْرَسَة", e:"School", p:"Mad-ra-sah"}, s:{a:"الْمَدْرَسَةُ قَرِيبَةٌ مِنْ هُنَا", e:"The school is near here", p:"Al-mad-ra-sa-tu qa-ri-ba-tun min hu-na"}},
-                    {w:{a:"مَسْجِد", e:"Mosque", p:"Mas-jid"}, s:{a:"أُصَلِّي فِي الْمَسْجِدِ الْكَبِير", e:"I pray in the big mosque", p:"U-sal-li fil mas-ji-dil ka-bir"}},
-                    {w:{a:"مُسْتَشْفَى", e:"Hospital", p:"Mus-tash-fa"}, s:{a:"أَذْهَبُ إِلَى الْمُسْتَشْفَى لِلْعِلَاج", e:"I go to the hospital for treatment", p:"Adh-ha-bu i-lal mus-tash-fa lil-i-laj"}},
-                    {w:{a:"مَطْعَم", e:"Restaurant", p:"Mat-am"}, s:{a:"نَأْكُلُ فِي هَذَا الْمَطْعَم", e:"We eat in this restaurant", p:"Na-ku-lu fi ha-dhal mat-am"}},
-                    {w:{a:"مَدِينَة", e:"City", p:"Ma-di-nah"}, s:{a:"الْمَدِينَةُ مُزْدَحِمَةٌ دَائِمًا", e:"The city is always crowded", p:"Al-ma-di-na-tu muz-da-hi-ma-tun da-i-man"}},
-                    {w:{a:"طَرِيق", e:"Road", p:"Ta-riq"}, s:{a:"الطَّرِيقُ طَوِيلٌ وَوَاسِع", e:"The road is long and wide", p:"At-ta-ri-qu ta-wi-lun wa-wa-si"}},
-                    {w:{a:"مَحَلّ", e:"Shop", p:"Ma-hall"}, s:{a:"هَذَا الْمَحَلُّ يَبِيعُ الْكُتُب", e:"This shop sells books", p:"Ha-dhal ma-hal-lu ya-bi-ul ku-tub"}},
-                    {w:{a:"حَدِيقَة", e:"Park", p:"Ha-di-qah"}, s:{a:"أَمْشِي فِي الْحَدِيقَةِ الْعَامَّة", e:"I walk in the public park", p:"Am-shi fil ha-di-qa-til am-mah"}},
-                    {w:{a:"فُنْدُق", e:"Hotel", p:"Fun-duq"}, s:{a:"أَسْكُنُ فِي فُنْدُقٍ جَمِيل", e:"I stay in a beautiful hotel", p:"As-ku-nu fi fun-du-qin ja-mil"}}
-                ]
-            },
-            {
-                id: 8, title: "Level 9: Pronouns",
-                pairs: [
-                    {w:{a:"أَنَا", e:"I", p:"A-na"}, s:{a:"أَنَا طَالِبٌ فِي الْجَامِعَة", e:"I am a university student", p:"A-na ta-li-bun fil ja-mi-ah"}},
-                    {w:{a:"أَنْتَ", e:"You (m)", p:"An-ta"}, s:{a:"أَنْتَ صَدِيقِي الْمُفَضَّل", e:"You are my favorite friend", p:"An-ta sa-di-qil mu-fad-dal"}},
-                    {w:{a:"أَنْتِ", e:"You (f)", p:"An-ti"}, s:{a:"أَنْتِ طَالِبَةٌ ذَكِيَّة", e:"You (f) are a smart student", p:"An-ti ta-li-ba-tun dha-kiy-yah"}},
-                    {w:{a:"هُوَ", e:"He", p:"Hu-wa"}, s:{a:"هُوَ مُهَنْدِسٌ مَشْهُور", e:"He is a famous engineer", p:"Hu-wa mu-han-di-sun mash-hur"}},
-                    {w:{a:"هِيَ", e:"She", p:"Hi-ya"}, s:{a:"هِيَ تَعْمَلُ فِي الْمَدْرَسَة", e:"She works in the school", p:"Hi-ya ta-ma-lu fil mad-ra-sah"}},
-                    {w:{a:"نَحْنُ", e:"We", p:"Nah-nu"}, s:{a:"نَحْنُ نُسَافِرُ كُلَّ صَيْف", e:"We travel every summer", p:"Nah-nu nu-sa-fi-ru kul-la sayf"}},
-                    {w:{a:"أَنْتُمْ", e:"You all", p:"An-tum"}, s:{a:"أَنْتُمْ جِيرَانٌ طَيِّبُون", e:"You all are good neighbors", p:"An-tum ji-ra-nun tay-yi-bun"}},
-                    {w:{a:"هُمْ", e:"They", p:"Hum"}, s:{a:"هُمْ يَلْعَبُونَ كُرَةَ الْقَدَم", e:"They play football", p:"Hum yal-a-bu-na ku-ra-tal qa-dam"}},
-                    {w:{a:"هَذَا", e:"This (m)", p:"Ha-dha"}, s:{a:"هَذَا هُوَ كِتَابِي", e:"This is my book", p:"Ha-dha hu-wa ki-ta-bi"}},
-                    {w:{a:"هَذِهِ", e:"This (f)", p:"Ha-dhi-hi"}, s:{a:"هَذِهِ هِيَ مَدْرَسَتِي", e:"This is my school", p:"Ha-dhi-hi hi-ya mad-ra-sa-ti"}}
-                ]
-            },
-            {
-                id: 9, title: "Level 10: Actions",
-                pairs: [
-                    {w:{a:"يَأْكُل", e:"Eat", p:"Ya'-kul"}, s:{a:"هُوَ يَأْكُلُ التُّفَّاح", e:"He eats the apple", p:"Hu-wa ya'-ku-lut tuf-fah"}},
-                    {w:{a:"يَشْرَب", e:"Drink", p:"Yash-rab"}, s:{a:"هِيَ تَشْرَبُ الْعَصِير", e:"She drinks the juice", p:"Hi-ya tash-ra-bul a-sir"}},
-                    {w:{a:"يَقْرَأ", e:"Read", p:"Yaq-ra'"}, s:{a:"أَقْرَأُ كِتَابًا كُلَّ يَوْم", e:"I read a book every day", p:"Aq-ra-u ki-ta-ban kul-la yawm"}},
-                    {w:{a:"يَكْتُب", e:"Write", p:"Yak-tub"}, s:{a:"يَكْتُبُ الطَّالِبُ الدَّرْس", e:"The student writes the lesson", p:"Yak-tu-but ta-li-bud dars"}},
-                    {w:{a:"يَذْهَب", e:"Go", p:"Yadh-hab"}, s:{a:"أَذْهَبُ إِلَى الْعَمَلِ صَبَاحًا", e:"I go to work in the morning", p:"Adh-ha-bu i-lal a-ma-li sa-ba-han"}},
-                    {w:{a:"يَنَام", e:"Sleep", p:"Ya-nam"}, s:{a:"أَنَامُ مُبَكِّرًا كُلَّ لَيْلَة", e:"I sleep early every night", p:"A-na-mu mu-bak-ki-ran kul-la lay-lah"}},
-                    {w:{a:"يَمْشِي", e:"Walk", p:"Yam-shi"}, s:{a:"أَمْشِي فِي الشَّارِعِ الْآن", e:"I walk in the street now", p:"Am-shi fish sha-ri-il an"}},
-                    {w:{a:"يَسْمَع", e:"Hear", p:"Yas-ma"}, s:{a:"أَسْمَعُ صَوْتَ الْأَذَان", e:"I hear the sound of Adhan", p:"As-ma-u saw-tal a-dhan"}},
-                    {w:{a:"يَجْلِس", e:"Sit", p:"Yaj-lis"}, s:{a:"يَجْلِسُ الرَّجُلُ عَلَى الْكُرْسِيّ", e:"The man sits on the chair", p:"Yaj-li-sur ra-ju-lu a-lal kur-si"}},
-                    {w:{a:"يَتَكَلَّم", e:"Speak", p:"Ya-ta-kal-lam"}, s:{a:"أَتَكَلَّمُ الْعَرَبِيَّةَ جَيِّدًا", e:"I speak Arabic well", p:"A-ta-kal-la-mul a-ra-biy-ya-ta jay-yi-dan"}}
-                ]
-            }
+            { id: 0, title: "Level 1: Greetings", pairs: [
+                {w:{a:"مَرْحَبًا", e:"Hello", p:"Mar-ha-ban"}, s:{a:"مَرْحَبًا يَا صَدِيقِي", e:"Hello my friend", p:"Mar-ha-ban ya sa-di-qi"}},
+                {w:{a:"شُكْرًا", e:"Thank you", p:"Shuk-ran"}, s:{a:"شُكْرًا جَزِيلًا لَكَ", e:"Thank you very much to you", p:"Shuk-ran ja-zi-lan la-ka"}},
+                {w:{a:"كَيْفَ حَالُكَ؟", e:"How are you?", p:"Kay-fa ha-luk?"}, s:{a:"كَيْفَ حَالُكَ اليَوْم؟", e:"How are you today?", p:"Kay-fa ha-luk-al yawm?"}},
+                {w:{a:"أَهْلًا", e:"Welcome", p:"Ah-lan"}, s:{a:"أَهْلًا بِكَ فِي بَيْتِي", e:"Welcome to my house", p:"Ah-lan bi-ka fi bay-ti"}},
+                {w:{a:"صَبَاحُ الْخَيْرِ", e:"Good morning", p:"Sa-ba-hul khayr"}, s:{a:"صَبَاحُ الْخَيْرِ يَا أُمِّي", e:"Good morning, my mother", p:"Sa-ba-hul khay-ri ya um-mi"}},
+                {w:{a:"مَسَاءُ الْخَيْرِ", e:"Good evening", p:"Ma-sa-ul khayr"}, s:{a:"مَسَاءُ الْخَيْرِ يَا أَبِي", e:"Good evening, my father", p:"Ma-sa-ul khay-ri ya a-bi"}},
+                {w:{a:"عَفْوًا", e:"You're welcome / Excuse me", p:"Af-wan"}, s:{a:"عَفْوًا، أَيْنَ الْمَسْجِد؟", e:"Excuse me, where is the mosque?", p:"Af-wan, ay-nal mas-jid?"}},
+                {w:{a:"أَنَا بِخَيْر", e:"I am fine", p:"A-na bi-khayr"}, s:{a:"الْحَمْدُ لِلَّه، أَنَا بِخَيْر", e:"Praise be to God, I am fine", p:"Al-ham-du lillah, a-na bi-khayr"}},
+                {w:{a:"مَعَ السَّلَامَةِ", e:"Goodbye", p:"Ma-as sa-la-mah"}, s:{a:"أَرَاكَ غَدًا، مَعَ السَّلَامَةِ", e:"See you tomorrow, goodbye", p:"A-ra-ka gha-dan, ma-as sa-la-mah"}},
+                {w:{a:"تَصْبَحُ عَلَى خَيْر", e:"Good night", p:"Tas-bah a-la khayr"}, s:{a:"لَيْلَةً سَعِيدَةً، تَصْبَحُ عَلَى خَيْر", e:"Happy night, good night", p:"Lay-la-tan sa-i-da-tan, tas-bah a-la khayr"}}
+            ]},
+            { id: 1, title: "Level 2: Colours", pairs: [
+                {w:{a:"أَحْمَر", e:"Red", p:"Ah-mar"}, s:{a:"التُّفَّاحَةُ لَوْنُهَا أَحْمَر", e:"The apple's color is red", p:"At-tuf-fa-ha-tu law-nu-ha ah-mar"}},
+                {w:{a:"أَزْرَق", e:"Blue", p:"Az-raq"}, s:{a:"السَّمَاءُ زَرْقَاءُ وَجَمِيلَة", e:"The sky is blue and beautiful", p:"As-sa-ma-u zar-qa-u wa ja-mi-lah"}},
+                {w:{a:"أَخْضَر", e:"Green", p:"Akh-dar"}, s:{a:"الْعُشْبُ فِي الْحَدِيقَةِ أَخْضَر", e:"The grass in the garden is green", p:"Al-ush-bu fil ha-di-qa-ti akh-dar"}},
+                {w:{a:"أَصْفَر", e:"Yellow", p:"As-far"}, s:{a:"لَوْنُ الشَّمْسِ أَصْفَر", e:"The color of the sun is yellow", p:"Law-nush sham-si as-far"}},
+                {w:{a:"أَبْيَض", e:"White", p:"Ab-yad"}, s:{a:"هَذَا الْوَرَقُ أَبْيَضُ نَقِيّ", e:"This paper is pure white", p:"Ha-dhal wa-ra-qu ab-ya-du na-qi"}},
+                {w:{a:"أَسْوَد", e:"Black", p:"As-wad"}, s:{a:"الْقِطُّ الْأَسْوَدُ يَنَامُ هُنَا", e:"The black cat sleeps here", p:"Al-qit-tul as-wa-du ya-na-mu hu-na"}},
+                {w:{a:"بُرْتُقَالِي", e:"Orange", p:"Bur-tu-qa-li"}, s:{a:"أُحِبُّ الْبُرْتُقَالَ لَوْنُهُ بُرْتُقَالِي", e:"I love the orange, its color is orange", p:"U-hib-bul bur-tu-qa-la law-nu-hu bur-tu-qa-li"}},
+                {w:{a:"وَرْدِي", e:"Pink", p:"War-di"}, s:{a:"اشْتَرَيْتُ قَمِيصًا وَرْدِيًّا", e:"I bought a pink shirt", p:"Ish-ta-ray-tu qa-mi-san war-diy-yan"}},
+                {w:{a:"بَنَفْسَجِي", e:"Purple", p:"Ba-naf-sa-ji"}, s:{a:"الْعِنَبُ لَوْنُهُ بَنَفْسَجِي", e:"The grapes' color is purple", p:"Al-i-na-bu law-nu-hu ba-naf-sa-ji"}},
+                {w:{a:"بُنِّي", e:"Brown", p:"Bun-ni"}, s:{a:"هَذِهِ الطَّاوِلَةُ بُنِّيَّةُ اللَّوْن", e:"This table is brown in color", p:"Ha-dhi-hit ta-wi-la-tu bun-ni-ya-tul lawn"}}
+            ]},
+            { id: 2, title: "Level 3: Family", pairs: [
+                {w:{a:"أَب", e:"Father", p:"Ab"}, s:{a:"أَبِي يَعْمَلُ فِي الْمَكْتَب", e:"My father works in the office", p:"A-bi ya-ma-lu fil mak-tab"}},
+                {w:{a:"أُم", e:"Mother", p:"Umm"}, s:{a:"أُمِّي تَطْبُخُ طَعَامًا لَذِيذًا", e:"My mother cooks delicious food", p:"Um-mi tat-bu-khu ta-a-man la-dhi-dhan"}},
+                {w:{a:"أَخ", e:"Brother", p:"Akh"}, s:{a:"أَخِي يَلْعَبُ كُرَةَ الْقَدَم", e:"My brother plays football", p:"A-khi yal-a-bu ku-ra-tal qa-dam"}},
+                {w:{a:"أُخْت", e:"Sister", p:"Ukht"}, s:{a:"أُخْتِي تَدْرُسُ فِي الْمَدْرَسَة", e:"My sister studies at school", p:"Ukh-ti tad-ru-su fil mad-ra-sah"}},
+                {w:{a:"جَدّ", e:"Grandfather", p:"Jadd"}, s:{a:"جَدِّي رَجُلٌ طَيِّبٌ جِدًّا", e:"My grandfather is a very kind man", p:"Jad-di ra-ju-lun tay-yi-bun jid-dan"}},
+                {w:{a:"جَدَّة", e:"Grandmother", p:"Jad-dah"}, s:{a:"جَدَّتِي تَحْكِي لِي قِصَصًا", e:"My grandmother tells me stories", p:"Jad-da-ti tah-ki li qi-sa-san"}},
+                {w:{a:"اِبْن", e:"Son", p:"Ibn"}, s:{a:"هَذَا اِبْنِي الصَّغِير", e:"This is my little son", p:"Ha-dha ib-nis sa-ghir"}},
+                {w:{a:"اِبْنَة", e:"Daughter", p:"Ib-nah"}, s:{a:"اِبْنَتِي تُحِبُّ الرَّسْم", e:"My daughter loves drawing", p:"Ib-na-ti tu-hib-bur rasm"}},
+                {w:{a:"عَمّ", e:"Uncle (Paternal)", p:"Amm"}, s:{a:"عَمِّي يَسْكُنُ فِي مَدِينَةٍ أُخْرَى", e:"My uncle lives in another city", p:"Am-mi yas-ku-nu fi ma-di-na-tin ukh-ra"}},
+                {w:{a:"خَالَة", e:"Aunt (Maternal)", p:"Kha-lah"}, s:{a:"زُرْتُ خَالَتِي فِي نِهَايَةِ الأُسْبُوع", e:"I visited my aunt on the weekend", p:"Zur-tu kha-la-ti fi ni-ha-ya-til us-bu"}}
+            ]},
+            { id: 3, title: "Level 4: Numbers", pairs: [
+                {w:{a:"وَاحِد", e:"One", p:"Wa-hid"}, s:{a:"عِنْدِي كِتَابٌ وَاحِدٌ فَقَط", e:"I have one book only", p:"In-di ki-ta-bun wa-hi-dun fa-qat"}},
+                {w:{a:"اِثْنَان", e:"Two", p:"Ith-nan"}, s:{a:"هَذَانِ قَلَمَانِ اِثْنَان", e:"These are two pens", p:"Ha-dha-ni qa-la-ma-ni ith-nan"}},
+                {w:{a:"ثَلَاثَة", e:"Three", p:"Tha-la-thah"}, s:{a:"أَكَلْتُ ثَلَاثَةَ تُفَّاحَات", e:"I ate three apples", p:"A-kal-tu tha-la-tha-ta tuf-fa-hat"}},
+                {w:{a:"أَرْبَعَة", e:"Four", p:"Ar-ba-ah"}, s:{a:"لَدَيَّ أَرْبَعَةُ إِخْوَة", e:"I have four siblings", p:"La-day-ya ar-ba-a-tu ikh-wah"}},
+                {w:{a:"خَمْسَة", e:"Five", p:"Kham-sah"}, s:{a:"سِعْرُ هَذَا خَمْسَةُ دَنَانِير", e:"The price of this is five Dinars", p:"Si-ru ha-dha kham-sa-tu da-na-nir"}},
+                {w:{a:"سِتَّة", e:"Six", p:"Sit-tah"}, s:{a:"يَعْمَلُ سِتَّةُ عُمَّالٍ هُنَا", e:"Six workers work here", p:"Ya-ma-lu sit-ta-tu um-ma-lin hu-na"}},
+                {w:{a:"سَبْعَة", e:"Seven", p:"Sab-ah"}, s:{a:"فِي الأُسْبُوعِ سَبْعَةُ أَيَّام", e:"In the week are seven days", p:"fil us-bu-i sab-a-tu ay-yam"}},
+                {w:{a:"ثَمَانِيَة", e:"Eight", p:"Tha-ma-ni-yah"}, s:{a:"لَدَيَّ ثَمَانِيَةُ كَرَاسٍ فِي الْبَيْت", e:"I have eight chairs in the house", p:"La-day-ya tha-ma-ni-ya-tu ka-ra-sin fil bayt"}},
+                {w:{a:"تِسْعَة", e:"Nine", p:"Tis-ah"}, s:{a:"فِي الصَّفِّ تِسْعَةُ طُلَّاب", e:"In the class are nine students", p:"fis saf-fi tis-a-tu tul-lab"}},
+                {w:{a:"عَشَرَة", e:"Ten", p:"A-sha-rah"}, s:{a:"هَذِهِ عَشَرَةُ رِيَالَات", e:"These are ten Riyals", p:"Ha-dhi-hi a-sha-ra-tu ri-ya-lat"}}
+            ]},
+            { id: 4, title: "Level 5: Common Objects", pairs: [
+                {w:{a:"كِتَاب", e:"Book", p:"Ki-tab"}, s:{a:"الْكِتَابُ عَلَى الْمَكْتَب", e:"The book is on the desk", p:"Al-ki-ta-bu a-lal mak-tab"}},
+                {w:{a:"قَلَم", e:"Pen", p:"Qa-lam"}, s:{a:"أَكْتُبُ بِالْقَلَمِ الْأَزْرَق", e:"I write with the blue pen", p:"Ak-tu-bu bil qa-la-mil az-raq"}},
+                {w:{a:"هَاتِف", e:"Phone", p:"Ha-tif"}, s:{a:"أَيْنَ هَاتِفِي الْمَحْمُول؟", e:"Where is my mobile phone?", p:"Ay-na ha-ti-fil mah-mul?"}},
+                {w:{a:"مِفْتَاح", e:"Key", p:"Mif-tah"}, s:{a:"ضَاعَ مِفْتَاحُ السَّيَّارَة", e:"The car key was lost", p:"Da-a mif-ta-hus say-ya-rah"}},
+                {w:{a:"سَاعَة", e:"Watch/Clock", p:"Sa-ah"}, s:{a:"سَاعَتِي جَمِيلَةٌ وَجَدِيدَة", e:"My watch is beautiful and new", p:"Sa-a-ti ja-mi-la-tun wa ja-di-dah"}},
+                {w:{a:"نَظَّارَة", e:"Glasses", p:"Naz-za-rah"}, s:{a:"أَلْبَسُ النَّظَّارَةَ لِلْقِرَاءَة", e:"I wear glasses for reading", p:"Al-ba-sun naz-za-ra-ta lil qi-ra-ah"}},
+                {w:{a:"حَقِيبَة", e:"Bag", p:"Ha-qi-bah"}, s:{a:"هَذِهِ حَقِيبَةٌ ثَقِيلَة", e:"This is a heavy bag", p:"Ha-dhi-hi ha-qi-ba-tun tha-qi-lah"}},
+                {w:{a:"وَرَقَة", e:"Paper", p:"Wa-ra-qah"}, s:{a:"أَحْتَاجُ إِلَى وَرَقَةٍ بَيْضَاء", e:"I need a white paper", p:"Ah-ta-ju i-la wa-ra-qa-tin bay-da"}},
+                {w:{a:"كُرْسِيّ", e:"Chair", p:"Kur-si"}, s:{a:"اِجْلِسْ عَلَى هَذَا الْكُرْسِيّ", e:"Sit on this chair", p:"Ij-lis a-la ha-dhal kur-si"}},
+                {w:{a:"طَاوِلَة", e:"Table", p:"Ta-wi-lah"}, s:{a:"الْقَهْوَةُ عَلَى الطَّاوِلَة", e:"The coffee is on the table", p:"Al-qah-wa-tu a-lat ta-wi-lah"}}
+            ]},
+            { id: 5, title: "Level 6: Home", pairs: [
+                {w:{a:"بَيْت", e:"House", p:"Bayt"}, s:{a:"بَيْتِي كَبِيرٌ وَمُرِيح", e:"My house is big and comfortable", p:"Bay-ti ka-bi-run wa mu-rih"}},
+                {w:{a:"بَاب", e:"Door", p:"Bab"}, s:{a:"اِفْتَحِ الْبَابَ مِنْ فَضْلِكَ", e:"Open the door please", p:"If-tah-il ba-ba min fad-lik"}},
+                {w:{a:"نَافِذَة", e:"Window", p:"Na-fi-dhah"}, s:{a:"أَغْلِقِ النَّافِذَةَ، الْجَوُّ بَارِد", e:"Close the window, the weather is cold", p:"Agh-liq-in na-fi-dhah, al-jaw-wu ba-rid"}},
+                {w:{a:"غُرْفَة", e:"Room", p:"Ghur-fah"}, s:{a:"غُرْفَتِي نَظِيفَةٌ وَمُرَتَّبَة", e:"My room is clean and tidy", p:"Ghur-fa-ti na-zi-fa-tun wa mu-rat-ta-bah"}},
+                {w:{a:"مَطْبَخ", e:"Kitchen", p:"Mat-bakh"}, s:{a:"أُمِّي فِي الْمَطْبَخِ الْآن", e:"My mother is in the kitchen now", p:"Um-mi fil mat-ba-khil an"}},
+                {w:{a:"سَرِير", e:"Bed", p:"Sa-rir"}, s:{a:"أَنَامُ عَلَى سَرِيرٍ نَاعِم", e:"I sleep on a soft bed", p:"A-na-mu a-la sa-ri-rin na-im"}},
+                {w:{a:"حَمَّام", e:"Bathroom", p:"Ham-mam"}, s:{a:"الْحَمَّامُ نَظِيفٌ جِدًّا", e:"The bathroom is very clean", p:"Al-ham-ma-mu na-zi-fun jid-dan"}},
+                {w:{a:"حَدِيقَة", e:"Garden", p:"Ha-di-qah"}, s:{a:"الْأَطْفَالُ يَلْعَبُونَ فِي الْحَدِيقَة", e:"The children are playing in the garden", p:"Al-at-fa-lu yal-a-bu-na fil ha-di-qah"}},
+                {w:{a:"سَقْف", e:"Roof/Ceiling", p:"Saqf"}, s:{a:"سَقْفُ الْبَيْتِ عَالٍ", e:"The roof of the house is high", p:"Saq-ful bay-ti a-lin"}},
+                {w:{a:"أَرْض", e:"Floor/Earth", p:"Ard"}, s:{a:"الْكِتَابُ سَقَطَ عَلَى الْأَرْض", e:"The book fell on the floor", p:"Al-ki-ta-bu sa-qa-ta a-lal ard"}}
+            ]},
+            { id: 6, title: "Level 7: Food & Drink", pairs: [
+                {w:{a:"خُبْز", e:"Bread", p:"Khubz"}, s:{a:"آكُلُ الْخُبْزَ مَعَ الْجُبْن", e:"I eat bread with cheese", p:"A-ku-lul khub-za ma-al jubn"}},
+                {w:{a:"مَاء", e:"Water", p:"Ma'"}, s:{a:"أَشْرَبُ الْمَاءَ كُلَّ صَبَاح", e:"I drink water every morning", p:"Ash-ra-bul ma-a kul-la sa-bah"}},
+                {w:{a:"حَلِيب", e:"Milk", p:"Ha-lib"}, s:{a:"الْحَلِيبُ مُفِيدٌ لِلْجِسْم", e:"Milk is beneficial for the body", p:"Al-ha-li-bu mu-fi-dun lil jism"}},
+                {w:{a:"قَهْوَة", e:"Coffee", p:"Qah-wah"}, s:{a:"أَشْرَبُ الْقَهْوَةَ بِدُونِ سُكَّر", e:"I drink coffee without sugar", p:"Ash-ra-bul qah-wa-ta bi-du-ni suk-kar"}},
+                {w:{a:"شَاي", e:"Tea", p:"Shay"}, s:{a:"أُحِبُّ الشَّايَ مَعَ النَّعْنَاع", e:"I love tea with mint", p:"U-hib-bush sha-ya ma-an na-na"}},
+                {w:{a:"لَحْم", e:"Meat", p:"Lahm"}, s:{a:"نَأْكُلُ اللَّحْمَ فِي الْغَدَاء", e:"We eat meat at lunch", p:"Na-ku-lul lah-ma fil gha-da"}},
+                {w:{a:"أَرُزّ", e:"Rice", p:"A-ruzz"}, s:{a:"الْأَرُزُّ طَعَامٌ أَسَاسِيّ", e:"Rice is a basic food", p:"Al-a-ruz-zu ta-a-mun a-sa-si"}},
+                {w:{a:"خُضَار", e:"Vegetables", p:"Khu-dar"}, s:{a:"الْخُضَارُ طَازِجَةٌ وَصِحِّيَّة", e:"The vegetables are fresh and healthy", p:"Al-khu-da-ru ta-zi-ja-tun wa sih-hiy-yah"}},
+                {w:{a:"فَاكِهَة", e:"Fruit", p:"Fa-ki-hah"}, s:{a:"الْفَاكِهَةُ حُلْوَةُ الْمَذَاق", e:"The fruit is sweet in taste", p:"Al-fa-ki-ha-tu hul-wa-tul ma-dhaq"}},
+                {w:{a:"سُكَّر", e:"Sugar", p:"Suk-kar"}, s:{a:"السُّكَّرُ كَثِيرٌ فِي هَذَا", e:"The sugar is too much in this", p:"As-suk-ka-ru ka-thi-run fi ha-dha"}}
+            ]},
+            { id: 7, title: "Level 8: Places", pairs: [
+                {w:{a:"سُوق", e:"Market", p:"Suq"}, s:{a:"أَذْهَبُ إِلَى السُّوقِ لِلتَّسَوُّق", e:"I go to the market for shopping", p:"Adh-ha-bu i-las su-qi lit ta-saw-wuq"}},
+                {w:{a:"مَدْرَسَة", e:"School", p:"Mad-ra-sah"}, s:{a:"الْمَدْرَسَةُ بَعِيدَةٌ عَنْ هُنَا", e:"The school is far from here", p:"Al-mad-ra-sa-tu ba-i-da-tun an hu-na"}},
+                {w:{a:"مَسْجِد", e:"Mosque", p:"Mas-jid"}, s:{a:"أُصَلِّي فِي الْمَسْجِدِ الْكَبِير", e:"I pray in the big mosque", p:"U-sal-li fil mas-ji-dil ka-bir"}},
+                {w:{a:"مُسْتَشْفَى", e:"Hospital", p:"Mus-tash-fa"}, s:{a:"الطَّبِيبُ يَعْمَلُ فِي الْمُسْتَشْفَى", e:"The doctor works in the hospital", p:"At-ta-bi-bu ya-ma-lu fil mus-tash-fa"}},
+                {w:{a:"مَطْعَم", e:"Restaurant", p:"Mat-am"}, s:{a:"نَأْكُلُ الْعَشَاءَ فِي الْمَطْعَم", e:"We eat dinner at the restaurant", p:"Na-ku-lul a-sha-a fil mat-am"}},
+                {w:{a:"مَدِينَة", e:"City", p:"Ma-di-nah"}, s:{a:"الْمَدِينَةُ مُزْدَحِمَةٌ دَائِمًا", e:"The city is always crowded", p:"Al-ma-di-na-tu muz-da-hi-ma-tun da-i-man"}},
+                {w:{a:"قَرْيَة", e:"Village", p:"Qar-yah"}, s:{a:"الْقَرْيَةُ هَادِئَةٌ وَجَمِيلَة", e:"The village is quiet and beautiful", p:"Al-qar-ya-tu ha-di-a-tun wa ja-mi-lah"}},
+                {w:{a:"شَارِع", e:"Street", p:"Sha-ri"}, s:{a:"هَذَا الشَّارِعُ طَوِيلٌ جِدًّا", e:"This street is very long", p:"Ha-dhash sha-ri-u ta-wi-lun jid-dan"}},
+                {w:{a:"مَطَار", e:"Airport", p:"Ma-tar"}, s:{a:"أَذْهَبُ إِلَى الْمَطَارِ لِلسَّفَر", e:"I go to the airport for travel", p:"Adh-ha-bu i-lal ma-ta-ri lis sa-far"}},
+                {w:{a:"مَكْتَب", e:"Office", p:"Mak-tab"}, s:{a:"أَعْمَلُ فِي مَكْتَبٍ كَبِير", e:"I work in a big office", p:"A-ma-lu fi mak-ta-bin ka-bir"}}
+            ]},
+            { id: 8, title: "Level 9: Pronouns", pairs: [
+                {w:{a:"أَنَا", e:"I", p:"A-na"}, s:{a:"أَنَا أَتَعَلَّمُ الْعَرَبِيَّة", e:"I am learning Arabic", p:"A-na a-ta-al-la-mul a-ra-biy-yah"}},
+                {w:{a:"أَنْتَ", e:"You (Male)", p:"An-ta"}, s:{a:"أَنْتَ صَدِيقٌ وَفِيّ", e:"You are a loyal friend", p:"An-ta sa-di-qun wa-fi"}},
+                {w:{a:"أَنْتِ", e:"You (Female)", p:"An-ti"}, s:{a:"أَنْتِ طَالِبَةٌ مُجْتَهِدَة", e:"You are a hardworking student", p:"An-ti ta-li-ba-tun muj-ta-hi-dah"}},
+                {w:{a:"هُوَ", e:"He", p:"Hu-wa"}, s:{a:"هُوَ يَقْرَأُ كِتَابًا مُفِيدًا", e:"He is reading a useful book", p:"Hu-wa yaq-ra-u ki-ta-ban mu-fi-dan"}},
+                {w:{a:"هِيَ", e:"She", p:"Hi-ya"}, s:{a:"هِيَ تَكْتُبُ رِسَالَةً طَوِيلَة", e:"She is writing a long letter", p:"Hi-ya tak-tu-bu ri-sa-la-tan ta-wi-lah"}},
+                {w:{a:"نَحْنُ", e:"We", p:"Nah-nu"}, s:{a:"نَحْنُ نُسَافِرُ غَدًا", e:"We are traveling tomorrow", p:"Nah-nu nu-sa-fi-ru gha-dan"}},
+                {w:{a:"أَنْتُمْ", e:"You (Plural)", p:"An-tum"}, s:{a:"أَنْتُمْ طُلَّابٌ مَاهِرُون", e:"You are skilled students", p:"An-tum tul-la-bun ma-hi-run"}},
+                {w:{a:"هُمْ", e:"They", p:"Hum"}, s:{a:"هُمْ يَلْعَبُونَ فِي النَّادِي", e:"They are playing at the club", p:"Hum yal-a-bu-na fin na-di"}},
+                {w:{a:"هَذَا", e:"This (Male)", p:"Ha-dha"}, s:{a:"هَذَا هُوَ الْكِتَابُ", e:"This is the book", p:"Ha-dha hu-wal ki-tab"}},
+                {w:{a:"هَذِهِ", e:"This (Female)", p:"Ha-dhi-hi"}, s:{a:"هَذِهِ هِيَ السَّيَّارَة", e:"This is the car", p:"Ha-dhi-hi hi-yas say-ya-rah"}}
+            ]},
+            { id: 9, title: "Level 10: Simple Verbs", pairs: [
+                {w:{a:"يَأْكُل", e:"To Eat", p:"Ya-kul"}, s:{a:"الْوَلَدُ يَأْكُلُ التُّفَّاحَة", e:"The boy is eating the apple", p:"Al-wa-la-du ya-ku-lut tuf-fa-hah"}},
+                {w:{a:"يَشْرَب", e:"To Drink", p:"Yash-rab"}, s:{a:"الرَّجُلُ يَشْرَبُ الْقَهْوَة", e:"The man is drinking the coffee", p:"Ar-ra-ju-lu yash-ra-bul qah-wah"}},
+                {w:{a:"يَقْرَأ", e:"To Read", p:"Yaq-ra'"}, s:{a:"أَقْرَأُ الْقُرْآنَ كُلَّ يَوْم", e:"I read the Quran every day", p:"Aq-ra-ul Qur-a-na kul-la yawm"}},
+                {w:{a:"يَكْتُب", e:"To Write", p:"Yak-tub"}, s:{a:"الْبِنْتُ تَكْتُبُ الْوَاجِب", e:"The girl is writing the homework", p:"Al-bin-tu tak-tu-bul wa-jib"}},
+                {w:{a:"يَذْهَب", e:"To Go", p:"Yadh-hab"}, s:{a:"يَذْهَبُ الأَبُ إِلَى الْعَمَل", e:"The father goes to work", p:"Yadh-ha-bul a-bu i-lal a-mal"}},
+                {w:{a:"يَرْجِع", e:"To Return", p:"Yar-ji"}, s:{a:"أَرْجِعُ مِنَ الْمَدْرَسَةِ عَصْرًا", e:"I return from school in the afternoon", p:"Ar-ji-u mi-nal mad-ra-sa-ti as-ran"}},
+                {w:{a:"يَنَام", e:"To Sleep", p:"Ya-nam"}, s:{a:"يَنَامُ الطِّفْلُ مُبَكِّرًا", e:"The baby sleeps early", p:"Ya-na-mut tif-lu mu-bak-ki-ran"}},
+                {w:{a:"يَسْتَيْقِظ", e:"To Wake up", p:"Yas-tay-qiz"}, s:{a:"أَسْتَيْقِظُ عِنْدَ الْفَجْر", e:"I wake up at Fajr", p:"Yas-tay-qi-zu in-dal fajr"}},
+                {w:{a:"يَلْعَب", e:"To Play", p:"Yal-ab"}, s:{a:"يَلْعَبُ الْأَوْلَادُ بِالْكُرَة", e:"The boys are playing with the ball", p:"Yal-a-bul aw-la-du bil ku-rah"}},
+                {w:{a:"يَعْمَل", e:"To Work", p:"Ya-mal"}, s:{a:"الْمُهَنْدِسُ يَعْمَلُ بِجِدّ", e:"The engineer works hard", p:"Al-mu-han-di-su ya-ma-lu bi-jidd"}}
+            ]}
         ];
+
+        let levelStatus = JSON.parse(localStorage.getItem('arabic_status_map')) || {};
+        let currentLevel = 0;
+
+        function saveStatus() { localStorage.setItem('arabic_status_map', JSON.stringify(levelStatus)); }
 
         function initApp() {
             document.getElementById('welcome-screen').style.display = 'none';
@@ -224,10 +212,18 @@
             document.getElementById('quiz-box').style.display = 'none';
             const list = document.getElementById('module-list');
             list.innerHTML = "";
+            
             courseData.forEach((lvl, i) => {
+                const status = levelStatus[i] || "never";
                 const div = document.createElement('div');
-                div.className = "module-card";
-                div.innerHTML = `<h3>${lvl.title}</h3><p>Open Access</p>`;
+                div.className = `module-card status-${status}`;
+                
+                let label = "Never Started";
+                if(status === "started") label = "In Progress";
+                if(status === "completed") label = "Completed";
+                if(status === "failed") label = "Quiz Failed";
+
+                div.innerHTML = `<h3>${lvl.title}</h3><p>${label}</p>`;
                 div.onclick = () => startLesson(i);
                 list.appendChild(div);
             });
@@ -235,9 +231,15 @@
 
         function startLesson(i) {
             currentLevel = i;
+            if(!levelStatus[i] || levelStatus[i] === "never") {
+                levelStatus[i] = "started";
+                saveStatus();
+            }
+
             document.getElementById('dashboard').classList.add('hidden');
             document.getElementById('lesson-view').classList.remove('hidden');
             document.getElementById('lesson-title').innerText = courseData[i].title;
+            
             const container = document.getElementById('content-container');
             container.innerHTML = "";
             courseData[i].pairs.forEach(pair => {
@@ -255,13 +257,16 @@
                         </div>
                     </div>`;
             });
+            window.scrollTo(0,0);
         }
 
         let quizPool = [], score = 0, qIdx = 0, isAnswering = false;
+
         function startQuiz() {
             document.getElementById('lesson-view').classList.add('hidden');
             document.getElementById('quiz-box').style.display = 'block';
             quizPool = [];
+            // Add all words and sentences from the current level to the quiz
             courseData[currentLevel].pairs.forEach(p => {
                 quizPool.push({a: p.w.a, e: p.w.e});
                 quizPool.push({a: p.s.a, e: p.s.e});
@@ -272,15 +277,22 @@
         }
 
         function ask() {
-            if(qIdx >= quizPool.length) { finish(); return; }
+            if(qIdx >= quizPool.length) { finishQuiz(); return; }
             isAnswering = false;
             const item = quizPool[qIdx];
             document.getElementById('q-text').innerText = `Question ${qIdx+1}/${quizPool.length}`;
             document.getElementById('q-display').innerText = item.a;
+            document.getElementById('q-feedback').innerText = "";
+            
+            // Create options
             const options = [item.e];
             const decoys = courseData.flatMap(l => l.pairs.flatMap(p => [p.w.e, p.s.e])).filter(x => x !== item.e);
-            while(options.length < 4) options.push(decoys.splice(Math.floor(Math.random()*decoys.length), 1)[0]);
+            while(options.length < 4) {
+                let d = decoys.splice(Math.floor(Math.random()*decoys.length), 1)[0];
+                if(!options.includes(d)) options.push(d);
+            }
             options.sort(() => Math.random() - 0.5);
+            
             const optDiv = document.getElementById('q-options');
             optDiv.innerHTML = "";
             options.forEach(o => {
@@ -290,18 +302,39 @@
                 b.onclick = () => {
                     if(isAnswering) return;
                     isAnswering = true;
-                    if(o === item.e) { b.classList.add('correct'); score++; }
-                    else b.classList.add('wrong');
-                    setTimeout(() => { qIdx++; ask(); }, 1000);
+                    if(o === item.e) {
+                        b.classList.add('correct');
+                        score++;
+                    } else {
+                        b.classList.add('wrong');
+                        // Highlight the correct one
+                        Array.from(optDiv.children).forEach(btn => {
+                            if(btn.innerText === item.e) btn.classList.add('correct');
+                        });
+                    }
+                    setTimeout(() => { qIdx++; ask(); }, 1200);
                 };
                 optDiv.appendChild(b);
             });
         }
 
-        function finish() {
+        function finishQuiz() {
+            const passed = (score === quizPool.length);
+            levelStatus[currentLevel] = passed ? "completed" : "failed";
+            saveStatus();
+            
             const feedback = document.getElementById('q-feedback');
-            feedback.innerHTML = `<h2>Quiz Complete! Score: ${score}/${quizPool.length}</h2>`;
-            setTimeout(() => { feedback.innerHTML = ""; showDashboard(); }, 3000);
+            if(passed) {
+                feedback.innerHTML = `<span style="color:var(--secondary)">PERFECT! 100% Score! Level Completed.</span>`;
+            } else {
+                feedback.innerHTML = `<span style="color:var(--red)">Score: ${score}/${quizPool.length}. Review and try again for Green status!</span>`;
+            }
+            
+            setTimeout(() => { 
+                feedback.innerHTML = ""; 
+                showDashboard(); 
+                window.scrollTo(0,0);
+            }, 3000);
         }
     </script>
 </body>
