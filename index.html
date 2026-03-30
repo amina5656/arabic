@@ -237,7 +237,7 @@
         function renderGrid() {
             const grid = document.getElementById('main-grid');
             grid.innerHTML = '';
-            for(let i=1; i<=10; i++) {
+            for(let i=1; i<=20; i++) {
                 const info = levelData[i] || { topic: "Locked Level" };
                 grid.innerHTML += `
                     <div class="card ${progress[i]?'completed':''}" onclick="loadLevel(${i})">
